@@ -1,7 +1,7 @@
 <template>
   <el-table
     :data="cardList"
-    style="width: 100%;margin-top:5%;margin-left:-3%"
+    style="width: 100%;margin-top:6%;margin-left:1%"
   >
     <el-table-column
       label="卡号"

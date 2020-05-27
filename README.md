@@ -1,6 +1,3 @@
-# admin_vue
+# intelligence-campus
 
 智慧校园后台管理系统前端
-
-
-###田震测试

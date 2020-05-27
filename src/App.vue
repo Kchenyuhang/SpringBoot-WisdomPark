@@ -1,8 +1,5 @@
 <template>
   <div id="app">
-    <div id="top-bar">
-
-    </div>
     <div id="nav">
       <!-- 权限管理相关操作 -->
       <h4
@@ -134,6 +131,11 @@ export default {
 </script>
 
 <style lang="scss">
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
 #app {
   font-family: 2avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
