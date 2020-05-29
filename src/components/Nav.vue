@@ -1,51 +1,90 @@
 <template>
-  <div>
-    <el-button @click="isCollapse = !isCollapse">收起</el-button>
-    <el-menu default-active="1-4-1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" :collapse="isCollapse">
-      <el-submenu :index="index" v-for="(item, index) in menuList" :key="index">
-        <template slot="title">
-            <p class="row">
-            <i :class="item.icon" style="  flex: 0 0 20%; text-align: left;"></i>
-            <span style="  flex: 0 0 80%; text-align: left;">{{ item.menu }}</span>
-            </p>
-        </template>
-        <el-menu-item-group>
-          <el-menu-item :index="index + '-' + index1" v-for="(item1, index1) in item.submenu" :key="index1">{{ item1 }}</el-menu-item>
-        </el-menu-item-group>
-      </el-submenu>
-    </el-menu>
-  </div>
+  <el-container>
+    <el-header height="60px" style="background-color: rgb(38, 38, 38)">
+      <el-row class="header">
+        <el-col :span="3" class="row-bg text" style="color: #fff; text-align:left">
+          <span style="margin-right: 10px">后台管理系统</span>
+          <i class="el-icon-s-fold" @click="changeSide"></i>
+        </el-col>
+        <el-col :span="21">
+          <el-row class="nav-top">
+            <el-col style="text-align:left">
+              <el-breadcrumb separator="/">
+                <el-breadcrumb-item :to="{ path: '/' }">{{menu.name}}</el-breadcrumb-item>
+                <el-breadcrumb-item v-if="menu.childName !== ''">{{menu.childName}}</el-breadcrumb-item>
+              </el-breadcrumb>
+            </el-col>
+            <el-col class="header-right">
+              <el-tooltip class="item" effect="dark" content="全屏" placement="bottom">
+              <i class="el-icon-full-screen header-icon" style="margin-right:30px"></i>
+              </el-tooltip>
+              <el-avatar :size="50" src="https://empty" @error="errorHandler">
+                <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png" />
+              </el-avatar>
+            </el-col>
+          </el-row>
+          <el-row></el-row>
+        </el-col>
+      </el-row>
+    </el-header>
+  </el-container>
 </template>
 
 <script>
+import Bus from '../js/bus'
 export default {
-  name: 'nav',
+  name: 'Nav',
   data() {
     return {
       isCollapse: true,
-      show: true
+      menu: {
+        name: '主页',
+        childName: ''
+      }
     }
   },
-  props: ['menuList'],
+  components: {},
+  created() {},
+  mounted() {
+    var _this = this
+    Bus.$on('menuName', function(menuName){
+      _this.menu.name = menuName
+    }),
+    Bus.$on('childMenuName', function(childMenuName){
+      _this.menu.childName = childMenuName
+    })
+  },
   methods: {
-    handleOpen(key, keyPath) {
-      console.log(key, keyPath)
-    },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath)
+    changeSide() {
+      this.isCollapse = !this.isCollapse
+      Bus.$emit('isCollapse', this.isCollapse)
     }
-  }
+  },
+  computed: {}
 }
 </script>
 
-<style>
-.el-menu-vertical-demo:not(.el-menu--collapse) {
-  width: 200px;
-  min-height: 400px;
+<style scoped lang="scss">
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.row {
-    display: flex;
-    align-items: center;
+.nav-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-icon {
+  font-size: 30px;
+  color: white;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 }
 </style>

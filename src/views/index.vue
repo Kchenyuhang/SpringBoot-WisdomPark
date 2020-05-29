@@ -1,44 +1,11 @@
 <template>
-  <el-container>
-    <el-header height="50px" style="background-color: rgb(38, 38, 38)">
-      <el-row class="row-bg text" style="color: #fff">后台管理系统</el-row>
-    </el-header>
-    <el-container>
-      <Nav :menuList="menuList"></Nav>
-      <!-- 侧边栏
-      <el-aside width="200px">
-        <el-col :span="24">
-          <el-menu
-            router
-            default-active="1"
-            class="el-menu-vertical-demo"
-            @open="handleOpen"
-            @close="handleClose"
-            background-color="rgb(48, 65, 86)"
-            text-color="#fff"
-            active-text-color="#ffd04b"
-            unique-opened
-          >
-            <el-submenu v-for="(item, index) in menuList" :key="index" :index="index + ''">
-              <template slot="title" style="height: 100px; margin-left: 0">
-                <i :class="item.icon"></i>
-                <span>{{ item.menu }}</span>
-              </template>
-              <el-menu-item-group v-if="item.submenu != null">
-                <el-menu-item v-for="(obj, i) in item.submenu" :key="i" :index="obj">{{ obj }}</el-menu-item>
-              </el-menu-item-group>
-            </el-submenu>
-          </el-menu>
-        </el-col>
-      </el-aside> -->
-      <el-main>
-        <router-view />
-      </el-main>
-    </el-container>
+  <el-container style="display:flex; flex-direction: column;">
+    <Nav></Nav>
+    <Side :menuList="menuList" style="margin-top:10px"></Side>
   </el-container>
 </template>
-
 <script>
+import Side from '../components/Side'
 import Nav from '../components/Nav'
 export default {
   name: 'Index',
@@ -48,16 +15,25 @@ export default {
         {
           icon: 'el-icon-turn-off',
           menu: 'Permission',
-          submenu: ['admin', 'role']
+          submenu: [
+            {
+              menu: 'admin'
+            },
+            {
+              menu: 'role'
+            },
+          ]
         },
         {
           icon: 'el-icon-postcard',
           menu: 'Configuration',
+          path: '/admin',
           submenu: ['appVersion', 'statement', 'feedback']
         },
         {
           icon: 'el-icon-setting',
           menu: 'Base',
+          path: '/role',
           submenu: ['tower', 'room', 'semester', 'clazz', 'student', 'teacher']
         },
         {
@@ -89,6 +65,7 @@ export default {
     }
   },
   components: {
+    Side,
     Nav
   },
   created() {},
@@ -99,7 +76,7 @@ export default {
     },
     handleClose(key, keyPath) {
       console.log(key, keyPath)
-    }
+    },
   },
   computed: {}
 }
