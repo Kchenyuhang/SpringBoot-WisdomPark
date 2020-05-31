@@ -10,17 +10,22 @@
           <el-row class="nav-top">
             <el-col style="text-align:left">
               <el-breadcrumb separator="/">
-                <el-breadcrumb-item :to="{ path: '/' }">{{menu.name}}</el-breadcrumb-item>
-                <el-breadcrumb-item v-if="menu.childName !== ''">{{menu.childName}}</el-breadcrumb-item>
+                <el-breadcrumb-item :to="{ path: '/' }">{{ menu.name }}</el-breadcrumb-item>
+                <el-breadcrumb-item v-if="menu.childName !== ''">{{ menu.childName }}</el-breadcrumb-item>
               </el-breadcrumb>
             </el-col>
             <el-col class="header-right">
               <el-tooltip class="item" effect="dark" content="全屏" placement="bottom">
-              <i class="el-icon-full-screen header-icon" style="margin-right:30px"></i>
+                <i class="el-icon-full-screen header-icon" style="margin-right:30px"></i>
               </el-tooltip>
-              <el-avatar :size="50" src="https://empty" @error="errorHandler">
-                <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png" />
-              </el-avatar>
+              <el-dropdown>
+                <el-avatar :size="50" src="https://empty" @error="errorHandler">
+                  <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png" />
+                </el-avatar>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item @click="logout">退出</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
             </el-col>
           </el-row>
           <el-row></el-row>
@@ -47,17 +52,24 @@ export default {
   created() {},
   mounted() {
     var _this = this
-    Bus.$on('menuName', function(menuName){
+    Bus.$on('menuName', function(menuName) {
       _this.menu.name = menuName
     }),
-    Bus.$on('childMenuName', function(childMenuName){
-      _this.menu.childName = childMenuName
-    })
+      Bus.$on('childMenuName', function(childMenuName) {
+        _this.menu.childName = childMenuName
+      })
   },
   methods: {
     changeSide() {
       this.isCollapse = !this.isCollapse
       Bus.$emit('isCollapse', this.isCollapse)
+    },
+    logout(){
+      alert(1)
+      localStorage.removeItem('user')
+      localStorage.removeItem('menuList')
+      localStorage.removeItem('token')
+      this.$router.push('/login')
     }
   },
   computed: {}

@@ -11,64 +11,16 @@ export default {
   name: 'Index',
   data() {
     return {
-      menuList: [
-        {
-          icon: 'el-icon-turn-off',
-          menu: 'Permission',
-          submenu: [
-            {
-              menu: 'admin'
-            },
-            {
-              menu: 'role'
-            },
-          ]
-        },
-        {
-          icon: 'el-icon-postcard',
-          menu: 'Configuration',
-          path: '/admin',
-          submenu: ['appVersion', 'statement', 'feedback']
-        },
-        {
-          icon: 'el-icon-setting',
-          menu: 'Base',
-          path: '/role',
-          submenu: ['tower', 'room', 'semester', 'clazz', 'student', 'teacher']
-        },
-        {
-          icon: 'el-icon-user',
-          menu: 'Account',
-          submenu: ['account']
-        },
-        {
-          icon: 'el-icon-notebook-2',
-          menu: 'Book',
-          submenu: ['book', 'borrow']
-        },
-        {
-          icon: 'el-icon-wallet',
-          menu: 'Card',
-          submenu: ['card', 'order', 'reportLoss']
-        },
-        {
-          icon: 'el-icon-money',
-          menu: 'Information',
-          submenu: ['infoType', 'infoManage']
-        },
-        {
-          icon: 'el-icon-s-grid',
-          menu: 'Administration',
-          submenu: ['timeTable', 'examiination']
-        }
-      ]
+      menuList: []
     }
   },
   components: {
     Side,
     Nav
   },
-  created() {},
+  created() {
+    this.getMenuList()
+  },
   mounted() {},
   methods: {
     handleOpen(key, keyPath) {
@@ -77,8 +29,28 @@ export default {
     handleClose(key, keyPath) {
       console.log(key, keyPath)
     },
+    getMenuList() {
+      localStorage.setItem('token', 'lksdjfklsdjfiosiofja;ljdfsdjfkljs')
+      let phoneNumber = JSON.parse(localStorage.getItem("user")).sysUserPhoneNumber
+      alert(phoneNumber)
+      this.axios({
+        method: 'get',
+        url: 'http://localhost:8080/sysUser/menus',
+        params: {
+          phoneNumber: phoneNumber
+        },
+        // 设置请求头Content-Type
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+      }).then((res) => {
+        console.log(res.data.data)
+        this.menuList = res.data.data
+        this.$store.commit('setMenuList', res.data.data)
+        localStorage.setItem('menuList', JSON.stringify(res.data.data))
+      })
+    }
   },
-  computed: {}
+  computed: {
+  }
 }
 </script>
 
