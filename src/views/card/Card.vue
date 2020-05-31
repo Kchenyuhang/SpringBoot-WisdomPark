@@ -163,6 +163,54 @@
         >确 定</el-button>
       </span>
     </el-dialog>
+
+    <!-- 流水明细 -->
+    <el-dialog
+      title="流水查询"
+      :visible.sync="datailcenterDialogVisible"
+      width="30%"
+      left
+    >
+      <el-form
+        status-icon
+        :label-position="labelPosition"
+        label-width="80px"
+      >
+
+        <el-collapse accordion>
+          <div
+            v-for="(item,index) in detailList"
+            :key='index'
+          >
+            <el-collapse-item>
+              <template slot="title">
+                {{item.gmtCreate}}<i
+                  class="el-icon-s-shop"
+                  style="margin-left:15%"
+                ></i>{{item.description}} -{{item.orderMoney}}
+              </template>
+              <div><i class="el-icon-s-shop"></i>{{item.description}}</div>
+              <div>
+                <h4>-{{item.orderMoney}}</h4>
+              </div>
+              <div>交易成功</div>
+              <div> <span style="margin-left:-10%">付款方式</span> <span style="margin-left:25%">{{item.payMethod}}</span></div>
+              <div><span style="margin-left:-10%">交易流水号</span><span style="margin-left:25%">{{item.orderNumber}}</span></div>
+              <div><span style="margin-left:-5%"> 创建时间</span><span style="margin-left:18%">{{item.gmtCreate}}</span></div>
+
+            </el-collapse-item>
+          </div>
+        </el-collapse>
+
+      </el-form>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="datailcenterDialogVisible = false">取 消</el-button>
+      </span>
+    </el-dialog>
+
     <div class="tab-hearder">
       <el-row style="margin-left:-80%">
         <el-button
@@ -187,6 +235,7 @@
       </el-row>
 
     </div>
+
     <!-- 表格展示 -->
     <el-table
       :data="cardList"
@@ -251,7 +300,7 @@
           <el-button
             size="mini"
             type="primary"
-            @click="handleEdit(scope.$index, scope.row)"
+            @click="handleDetail(scope.$index, scope.row)"
           >流水账单</el-button>
           <el-button
             size="mini"
@@ -291,7 +340,7 @@
         :page-sizes="[10, 20, 30, 40]"
         :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="40"
+        :total="total"
       >
       </el-pagination>
     </div>
@@ -326,10 +375,13 @@ export default {
       radio3: true,
       radio4: false,
       cardList: [],
+      detailList: [],
       currentPage: 0,
+      total: 40,
       pageSize: 10,
       updatecenterDialogVisible: false,
       addcenterDialogVisible: false,
+      datailcenterDialogVisible: false,
       delVisible: false, //删除提示弹框的状态
       value1: '',
       input: '',
@@ -366,7 +418,8 @@ export default {
     },
     currentPage: function() {
       this.getCardAll()
-    }
+    },
+    total: function() {}
   },
   methods: {
     //激活状态
@@ -386,6 +439,7 @@ export default {
       })
         .then((res) => {
           this.cardList = res.data.data
+          console.log(res.data.data.length)
         })
         .catch(function(error) {
           console.log(error)
@@ -453,10 +507,7 @@ export default {
           } else {
             this.$message.success('信息修改成功')
           }
-          // this.updatecenterDialogVisible = false
-          // this.getCardAll()
           console.log(res)
-          // this.$message.success('信息修改成功')
         })
         .catch(function(error) {
           console.log(error)
@@ -482,6 +533,30 @@ export default {
           this.addcenterDialogVisible = false
           this.getCardAll()
           console.log(res)
+        })
+        .catch(function(error) {
+          console.log(error)
+        })
+    },
+    //明细
+    handleDetail(index, row) {
+      this.idx = index
+      this.msg = row //每一条数据的记录
+      this.datailcenterDialogVisible = true
+      this.getDetail()
+    },
+    //清单明细
+    getDetail() {
+      console.log(this.msg.jobNumber)
+      this.axios({
+        method: 'get',
+        url: 'http://localhost:8080/card/consume',
+        params: {
+          job_number: this.msg.jobNumber
+        }
+      })
+        .then((res) => {
+          this.detailList = res.data.data
         })
         .catch(function(error) {
           console.log(error)
