@@ -129,8 +129,8 @@
           prop="status"
         >
           <el-radio-group v-model="ruleForm1.status">
-            <el-radio label="true"></el-radio>
-            <el-radio label="false"></el-radio>
+            <el-radio label="true">激活</el-radio>
+            <el-radio label="false">未激活</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item
@@ -147,8 +147,8 @@
           prop="isdeleted"
         >
           <el-radio-group v-model="ruleForm1.isdeleted">
-            <el-radio label="true"></el-radio>
-            <el-radio label="false"></el-radio>
+            <el-radio label="true">已删除</el-radio>
+            <el-radio label="false">未删除</el-radio>
           </el-radio-group>
         </el-form-item>
       </el-form>
@@ -321,6 +321,10 @@ export default {
       }
     }
     return {
+      radio1: true,
+      radio2: false,
+      radio3: true,
+      radio4: false,
       cardList: [],
       currentPage: 0,
       pageSize: 10,
@@ -430,26 +434,33 @@ export default {
     },
     //修改一卡通信息
     confirmUpdate() {
-      console.log(this.msg.pkCardId)
       this.axios({
         method: 'put',
         url: 'http://localhost:8080/card/modification',
-        params: {
-          pk_card_id: this.msg.pkCardId,
-          // status: this.msg.status,
+        data: {
+          pkCardId: this.msg.pkCardId,
+          status: this.msg.status,
           cardPassword: this.ruleForm.checkPass,
           jobNumber: this.ruleForm.jobnumber,
           cardBalance: this.ruleForm.balance
         }
       })
         .then((res) => {
-          alert('15454')
           this.updatecenterDialogVisible = false
           this.getCardAll()
+          if (res.data.data == null) {
+            this.$message.success('该一卡通未激活，信息修改失败')
+          } else {
+            this.$message.success('信息修改成功')
+          }
+          // this.updatecenterDialogVisible = false
+          // this.getCardAll()
           console.log(res)
+          // this.$message.success('信息修改成功')
         })
         .catch(function(error) {
           console.log(error)
+          this.$message.success('该一卡通未激活，信息修改失败')
         })
     },
     //新增一卡通
