@@ -1,5 +1,5 @@
 <template>
-  <div style="width:100%">
+  <div style="width: 100%">
     <!-- 修改弹出框 -->
     <el-dialog title="编辑一卡通" :visible.sync="updatecenterDialogVisible" width="30%" left>
       <el-form :model="ruleForm" status-icon :rules="rules" :label-position="labelPosition" label-width="80px">
@@ -102,7 +102,7 @@
     </el-dialog>
 
     <div class="tab-hearder">
-      <el-row style="display:flex; justify-content: flex-start; ">
+      <el-row style="margin-left:-80%">
         <el-button size="mini" type="primary" @click="addcenterDialogVisible = true">增加</el-button>
         <el-button size="mini" type="warning" disabled>修改</el-button>
         <el-button size="mini" type="danger" disabled>删除</el-button>
@@ -391,8 +391,4 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
- .a {
-   
- }
-</style>
+<style scoped lang="scss"></style>
