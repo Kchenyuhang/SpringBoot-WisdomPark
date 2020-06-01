@@ -232,6 +232,8 @@
           type="success"
           size="mini"
         >导出</el-button>
+
+        </el-input>
       </el-row>
 
     </div>
@@ -370,12 +372,9 @@ export default {
       }
     }
     return {
-      radio1: true,
-      radio2: false,
-      radio3: true,
-      radio4: false,
       cardList: [],
       detailList: [],
+      searchInput: [],
       currentPage: 0,
       total: 40,
       pageSize: 10,
