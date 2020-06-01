@@ -9,6 +9,8 @@ import httpAxios from './views/utils/httpAxios'
 
 Vue.use(ElementUI)
 
+// 设置默认接口请求路径
+
 Vue.prototype.axios = axios
 
 Vue.config.productionTip = false
