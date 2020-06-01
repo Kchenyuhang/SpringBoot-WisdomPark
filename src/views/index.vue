@@ -1,7 +1,10 @@
 <template>
   <el-container style="display:flex; flex-direction: column;">
     <Nav></Nav>
+    <div style="display:flex">
     <Side :menuList="menuList" style="margin-top:10px"></Side>
+    <router-view/>
+    </div>
   </el-container>
 </template>
 <script>

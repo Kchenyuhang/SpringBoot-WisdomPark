@@ -15,7 +15,7 @@ const routes = [
        * 权限管理相关路由
        */
       {
-        path: '/admin',
+        path: 'admin',
         name: 'Admin',
         component: () => import('../views/permission/Admin.vue')
       },

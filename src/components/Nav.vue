@@ -23,7 +23,7 @@
                   <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png" />
                 </el-avatar>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item @click="logout">退出</el-dropdown-item>
+                  <el-dropdown-item><span @click="logout()">退出</span></el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </el-col>
