@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-menu default-active="1-4-1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" :collapse="isCollapse">
-      <el-submenu :index="index" v-for="(item, index) in menuList" :key="index">
+      <el-submenu v-for="(item, index) in menuList" :key="index" :index="index + ''">
         <template slot="title">
           <p class="row" @click="changeMenu(item)">
             <i :class="item.icon" style="  flex: 0 0 20%; text-align: left;"></i>

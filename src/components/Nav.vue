@@ -23,7 +23,7 @@
                   <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png" />
                 </el-avatar>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item @click="logout">退出</el-dropdown-item>
+                  <el-dropdown-item><span @click="logout()">退出</span></el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </el-col>
@@ -60,11 +60,14 @@ export default {
       })
   },
   methods: {
+    errorHandler() {
+      alert('头像加载失败')
+    },
     changeSide() {
       this.isCollapse = !this.isCollapse
       Bus.$emit('isCollapse', this.isCollapse)
     },
-    logout(){
+    logout() {
       alert(1)
       localStorage.removeItem('user')
       localStorage.removeItem('menuList')

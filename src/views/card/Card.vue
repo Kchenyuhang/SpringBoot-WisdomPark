@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="width: 100%">
     <!-- 修改弹出框 -->
     <el-dialog title="编辑一卡通" :visible.sync="updatecenterDialogVisible" width="30%" left>
       <el-form :model="ruleForm" status-icon :rules="rules" :label-position="labelPosition" label-width="80px">

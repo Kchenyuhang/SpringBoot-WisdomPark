@@ -1,7 +1,10 @@
 <template>
   <el-container style="display:flex; flex-direction: column;">
     <Nav></Nav>
-    <Side :menuList="menuList" style="margin-top:10px"></Side>
+    <div style="display:flex">
+      <Side :menuList="menuList" style="margin-top:10px"></Side>
+      <router-view />
+    </div>
   </el-container>
 </template>
 <script>
@@ -31,8 +34,8 @@ export default {
     },
     getMenuList() {
       localStorage.setItem('token', 'lksdjfklsdjfiosiofja;ljdfsdjfkljs')
-      let phoneNumber = JSON.parse(localStorage.getItem("user")).sysUserPhoneNumber
-      alert(phoneNumber)
+      let phoneNumber = JSON.parse(localStorage.getItem('user')).sysUserPhoneNumber
+      // alert(phoneNumber)
       this.axios({
         method: 'get',
         url: 'http://localhost:8080/sysUser/menus',
@@ -49,8 +52,7 @@ export default {
       })
     }
   },
-  computed: {
-  }
+  computed: {}
 }
 </script>
 
