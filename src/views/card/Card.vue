@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="width:100%">
     <!-- 修改弹出框 -->
     <el-dialog
       title="编辑一卡通"
@@ -22,6 +22,7 @@
             type="password"
             v-model="ruleForm.pass"
             autocomplete="off"
+            placeholder="123456"
           ></el-input>
         </el-form-item>
         <el-form-item
@@ -32,6 +33,7 @@
             type="password"
             v-model="ruleForm.checkPass"
             autocomplete="off"
+            placeholder="123456"
           ></el-input>
         </el-form-item>
         <el-form-item
@@ -212,7 +214,7 @@
     </el-dialog>
 
     <div class="tab-hearder">
-      <el-row style="margin-left:-80%">
+      <el-row style="margin-left:-80%;margin-top:1%">
         <el-button
           size="mini"
           type="primary"
@@ -232,7 +234,6 @@
           type="success"
           size="mini"
         >导出</el-button>
-        </el-input>
       </el-row>
 
     </div>
@@ -240,11 +241,11 @@
     <!-- 表格展示 -->
     <el-table
       :data="cardList"
-      style="width: 100%;margin-top:2%;margin-left:1%"
+      style="margin-top:2%;width:100%"
     >
       <el-table-column
         label="卡号"
-        width="180"
+        width="150"
       >
         <template slot-scope="scope">
           <span style="margin-left:-5%">{{ scope.row.cardNumber }}</span>
@@ -252,7 +253,7 @@
       </el-table-column>
       <el-table-column
         label="卡密"
-        width="180"
+        width="150"
       >
         <template slot-scope="scope">
           <span>{{ scope.row.cardPassword }}</span>
@@ -260,7 +261,7 @@
       </el-table-column>
       <el-table-column
         label="绑定账号"
-        width="180"
+        width="150"
       >
         <template slot-scope="scope">
           <span>{{ scope.row.jobNumber }}</span>
@@ -268,7 +269,7 @@
       </el-table-column>
       <el-table-column
         label="余额"
-        width="180"
+        width="150"
       >
         <template slot-scope="scope">
           <span>{{ scope.row.cardBalance }}</span>
@@ -291,7 +292,10 @@
           <span>{{ scope.row.gmtCreate }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column
+        label="操作"
+        width="250"
+      >
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -373,7 +377,6 @@ export default {
     return {
       cardList: [],
       detailList: [],
-      searchInput: [],
       currentPage: 0,
       total: 40,
       pageSize: 10,
@@ -384,7 +387,6 @@ export default {
       value1: '',
       input: '',
       msg: '', //记录每一条的信息，便于取id
-      delarr: [], //存放删除的数据
       ruleForm: {
         pass: '',
         checkPass: '',
@@ -509,7 +511,6 @@ export default {
         })
         .catch(function(error) {
           console.log(error)
-          this.$message.success('该一卡通未激活，信息修改失败')
         })
     },
     //新增一卡通
@@ -530,7 +531,11 @@ export default {
         .then((res) => {
           this.addcenterDialogVisible = false
           this.getCardAll()
-          console.log(res)
+          if (res.data.data == null) {
+            this.$message.success('该一卡通账号已存在，请勿重复新增')
+          } else {
+            this.$message.success('一卡通添加成功')
+          }
         })
         .catch(function(error) {
           console.log(error)
