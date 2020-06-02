@@ -1,5 +1,5 @@
 <template>
-  <div style="width:100%">
+  <div style="width:100%;margin-left:3%">
     <!-- 修改弹出框 -->
     <el-dialog
       title="编辑一卡通"
@@ -377,7 +377,7 @@ export default {
     return {
       cardList: [],
       detailList: [],
-      currentPage: 0,
+      currentPage: 1,
       total: 40,
       pageSize: 10,
       updatecenterDialogVisible: false,
@@ -439,7 +439,6 @@ export default {
       })
         .then((res) => {
           this.cardList = res.data.data
-          console.log(res.data.data.length)
         })
         .catch(function(error) {
           console.log(error)
