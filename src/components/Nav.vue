@@ -19,7 +19,7 @@
                 <i class="el-icon-full-screen header-icon" style="margin-right:30px"></i>
               </el-tooltip>
               <el-dropdown>
-                <el-avatar :size="50" src="https://empty" @error="errorHandler">
+                <el-avatar :size="50" src="https://empty">
                   <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png" />
                 </el-avatar>
                 <el-dropdown-menu slot="dropdown">

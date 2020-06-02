@@ -1,9 +1,9 @@
 <template>
   <el-container style="display:flex; flex-direction: column;">
     <Nav></Nav>
-    <div style="display:flex">
-    <Side :menuList="menuList" style="margin-top:10px"></Side>
-    <router-view/>
+    <div class="container">
+      <Side :menuList="menuList" style="margin-top:10px;"></Side>
+      <router-view style="flex:0 0 85%"/>
     </div>
   </el-container>
 </template>
@@ -34,8 +34,7 @@ export default {
     },
     getMenuList() {
       localStorage.setItem('token', 'lksdjfklsdjfiosiofja;ljdfsdjfkljs')
-      let phoneNumber = JSON.parse(localStorage.getItem("user")).sysUserPhoneNumber
-      alert(phoneNumber)
+      let phoneNumber = JSON.parse(localStorage.getItem('user')).sysUserPhoneNumber
       this.axios({
         method: 'get',
         url: 'http://localhost:8080/sysUser/menus',
@@ -52,8 +51,7 @@ export default {
       })
     }
   },
-  computed: {
-  }
+  computed: {}
 }
 </script>
 
@@ -67,6 +65,12 @@ export default {
 .side {
   background-color: blue;
 }
+
+.container {
+  display: flex;
+  max-width: 100%;
+}
+
 .area {
   background-color: red;
 }
