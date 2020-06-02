@@ -1,13 +1,13 @@
 <template>
-  <div style="width: 100%">
+  <div style="width:100%;margin-left:3%">
     <!-- 修改弹出框 -->
     <el-dialog title="编辑一卡通" :visible.sync="updatecenterDialogVisible" width="30%" left>
       <el-form :model="ruleForm" status-icon :rules="rules" label-width="80px">
         <el-form-item label="密码" prop="pass">
-          <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
+          <el-input type="password" v-model="ruleForm.pass" autocomplete="off" placeholder="123456"></el-input>
         </el-form-item>
         <el-form-item label="确认密码" prop="checkPass">
-          <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
+          <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off" placeholder="123456"></el-input>
         </el-form-item>
         <el-form-item label="绑定号码" prop="job_number">
           <el-input v-model.number="ruleForm.jobnumber"></el-input>
@@ -37,12 +37,7 @@
         <el-form-item label="活动时间">
           <el-col :span="11">
             <el-form-item prop="date1">
-              <el-date-picker
-                type="date"
-                placeholder="选择日期"
-                v-model="ruleForm1.date1"
-                style="width: 100%;"
-              ></el-date-picker>
+              <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm1.date1" style="width: 100%;"></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col class="line" :span="2">-</el-col>
@@ -52,7 +47,7 @@
             </el-form-item>
           </el-col>
         </el-form-item>
-        <el-form-item required label="状态" prop="status">
+        <el-form-item required="" label="状态" prop="status">
           <el-radio-group v-model="ruleForm1.status">
             <el-radio label="true">激活</el-radio>
             <el-radio label="false">未激活</el-radio>
@@ -61,7 +56,7 @@
         <el-form-item required label="余额" prop="cardbalance1">
           <el-input v-model="ruleForm1.cardbalance1"></el-input>
         </el-form-item>
-        <el-form-item required label="删除标志" prop="isdeleted">
+        <el-form-item required="" label="删除标志" prop="isdeleted">
           <el-radio-group v-model="ruleForm1.isdeleted">
             <el-radio label="true">已删除</el-radio>
             <el-radio label="false">未删除</el-radio>
@@ -81,29 +76,21 @@
           <div v-for="(item, index) in detailList" :key="index">
             <el-collapse-item>
               <template slot="title">
-                {{ item.gmtCreate }}
-                <i class="el-icon-s-shop" style="margin-left:15%"></i>
-                {{ item.description }} -{{ item.orderMoney }}
+                {{ item.gmtCreate }}<i class="el-icon-s-shop" style="margin-left:15%"></i>{{ item.description }} -{{ item.orderMoney }}
               </template>
-              <div>
-                <i class="el-icon-s-shop"></i>
-                {{ item.description }}
-              </div>
+              <div><i class="el-icon-s-shop"></i>{{ item.description }}</div>
               <div>
                 <h4>-{{ item.orderMoney }}</h4>
               </div>
               <div>交易成功</div>
               <div>
-                <span style="margin-left:-10%">付款方式</span>
-                <span style="margin-left:25%">{{ item.payMethod }}</span>
+                <span style="margin-left:-10%">付款方式</span> <span style="margin-left:25%">{{ item.payMethod }}</span>
               </div>
               <div>
-                <span style="margin-left:-10%">交易流水号</span>
-                <span style="margin-left:25%">{{ item.orderNumber }}</span>
+                <span style="margin-left:-10%">交易流水号</span><span style="margin-left:25%">{{ item.orderNumber }}</span>
               </div>
               <div>
-                <span style="margin-left:-5%">创建时间</span>
-                <span style="margin-left:18%">{{ item.gmtCreate }}</span>
+                <span style="margin-left:-5%"> 创建时间</span><span style="margin-left:18%">{{ item.gmtCreate }}</span>
               </div>
             </el-collapse-item>
           </div>
@@ -115,7 +102,7 @@
     </el-dialog>
 
     <div class="tab-hearder">
-      <el-row style="margin-left:-80%">
+      <el-row style="margin-left:-80%;margin-top:1%">
         <el-button size="mini" type="primary" @click="addcenterDialogVisible = true">增加</el-button>
         <el-button size="mini" type="warning" disabled>修改</el-button>
         <el-button size="mini" type="danger" disabled>删除</el-button>
@@ -124,29 +111,29 @@
     </div>
 
     <!-- 表格展示 -->
-    <el-table :data="cardList" style="width: 100%;margin-top:2%">
-      <el-table-column label="卡号" width="180">
+    <el-table :data="cardList" style="margin-top:2%;width:100%">
+      <el-table-column label="卡号" width="150">
         <template slot-scope="scope">
           <span style="margin-left:-5%">{{ scope.row.cardNumber }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="卡密" width="180">
+      <el-table-column label="卡密" width="150">
         <template slot-scope="scope">
           <span>{{ scope.row.cardPassword }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="绑定账号" width="180">
+      <el-table-column label="绑定账号" width="150">
         <template slot-scope="scope">
           <span>{{ scope.row.jobNumber }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="余额" width="180">
+      <el-table-column label="余额" width="150">
         <template slot-scope="scope">
           <span>{{ scope.row.cardBalance }}</span>
         </template>
       </el-table-column>
       <el-table-column label="状态" width="180" :formatter="onLineStatus">
-        <template></template>
+        <template> </template>
       </el-table-column>
       <el-table-column label="创建时间" width="180">
         <template slot-scope="scope">
@@ -179,7 +166,8 @@
         :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
-      ></el-pagination>
+      >
+      </el-pagination>
     </div>
   </div>
 </template>
@@ -207,13 +195,9 @@ export default {
       }
     }
     return {
-      radio1: true,
-      radio2: false,
-      radio3: true,
-      radio4: false,
       cardList: [],
       detailList: [],
-      currentPage: 0,
+      currentPage: 1,
       total: 40,
       pageSize: 10,
       updatecenterDialogVisible: false,
@@ -223,7 +207,6 @@ export default {
       value1: '',
       input: '',
       msg: '', //记录每一条的信息，便于取id
-      delarr: [], //存放删除的数据
       ruleForm: {
         pass: '',
         checkPass: '',
@@ -268,7 +251,7 @@ export default {
     getCardAll() {
       this.axios({
         method: 'post',
-        url: 'http://localhost:8080/card/all',
+        url: 'http://localhost:8080/card/list',
         data: {
           currentPage: this.currentPage,
           pageSize: this.pageSize
@@ -276,7 +259,6 @@ export default {
       })
         .then((res) => {
           this.cardList = res.data.data
-          console.log(res.data.data.length)
         })
         .catch(function(error) {
           console.log(error)
@@ -348,7 +330,6 @@ export default {
         })
         .catch(function(error) {
           console.log(error)
-          this.$message.success('该一卡通未激活，信息修改失败')
         })
     },
     //新增一卡通
@@ -369,7 +350,11 @@ export default {
         .then((res) => {
           this.addcenterDialogVisible = false
           this.getCardAll()
-          console.log(res)
+          if (res.data.data == null) {
+            this.$message.success('该一卡通账号已存在，请勿重复新增')
+          } else {
+            this.$message.success('一卡通添加成功')
+          }
         })
         .catch(function(error) {
           console.log(error)

@@ -60,11 +60,14 @@ export default {
       })
   },
   methods: {
+    errorHandler() {
+      alert('头像加载失败')
+    },
     changeSide() {
       this.isCollapse = !this.isCollapse
       Bus.$emit('isCollapse', this.isCollapse)
     },
-    logout(){
+    logout() {
       alert(1)
       localStorage.removeItem('user')
       localStorage.removeItem('menuList')
