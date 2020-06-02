@@ -4,18 +4,18 @@
     <el-header class="header">
       <el-form :inline="true" ref="form" :model="form" size="mini">
         <el-form-item>
-          <el-select v-model="form.semester" placeholder="学期" @change="test()">
-            <el-option v-for="(item, index) in semesterList" :key="index" :label="item.name" :value="index"></el-option>
+          <el-select v-model="form.semester" placeholder="学期" @change="changeWeekCount()">
+            <el-option v-for="(item, index) in semesterList" :key="index" :value="item.name"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-select v-model="form.clazz" placeholder="班级" @change="test()">
-            <el-option v-for="(item, index) in clazzList" :key="index" :label="item" :value="index"></el-option>
+          <el-select v-model="form.clazz" placeholder="班级" @change="changeClazz()">
+            <el-option v-for="(item, index) in clazzList" :key="index" :value="item.name"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-select v-model="form.week" placeholder="周次" @change="test()">
-            <el-option v-for="(item, index) in week" :key="item" :label="item" :value="index"></el-option>
+          <el-select v-model="form.week" placeholder="周次" @change="showSchedule()">
+            <el-option v-for="(item, index) in weekList" :key="index" :value="item"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -26,30 +26,31 @@
         <thead>
           <tr>
             <th colspan="2"></th>
-            <th v-for="item in weekDuration1.slice(0, 7)" :key="item + 1">周{{ item }}</th>
+            <th v-for="item in weekDuration1.slice(0, 6)" :key="item + 1">周{{ item }}</th>
+            <th>周日</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td rowspan="2">上午</td>
             <td>1-2</td>
-            <td>English</td>
-            <td>Chinese</td>
-            <td>History</td>
-            <td>Geography</td>
-            <td>Geography</td>
-            <td>Geography</td>
-            <td>Geography</td>
+            <td v-for="(item, index) in courseList1" :key="index" :style="{ backgroundColor: item.backgroundColor }">
+              <div class="info" v-show="item.isShow">
+                <span>{{ item.subjectName }}</span>
+                <span>{{ item.teacherName }}</span>
+                <span>{{ item.roomName }}</span>
+              </div>
+            </td>
           </tr>
           <tr>
             <td>3-4</td>
-            <td>English</td>
-            <td>Chinese</td>
-            <td>History</td>
-            <td>Geography</td>
-            <td>Geography</td>
-            <td>Geography</td>
-            <td>Geography</td>
+            <td v-for="(item, index) in courseList2" :key="index" :style="{ backgroundColor: item.backgroundColor }">
+              <div class="info" v-show="item.isShow">
+                <span>{{ item.subjectName }}</span>
+                <span>{{ item.teacherName }}</span>
+                <span>{{ item.roomName }}</span>
+              </div>
+            </td>
           </tr>
           <tr>
             <td colspan="9"></td>
@@ -57,23 +58,23 @@
           <tr>
             <td rowspan="2">下午</td>
             <td>5-6</td>
-            <td>English</td>
-            <td>Chinese</td>
-            <td>History</td>
-            <td>History</td>
-            <td>History</td>
-            <td>History</td>
-            <td>Geography</td>
+            <td v-for="(item, index) in courseList3" :key="index" :style="{ backgroundColor: item.backgroundColor }">
+              <div class="info" v-show="item.isShow">
+                <span>{{ item.subjectName }}</span>
+                <span>{{ item.teacherName }}</span>
+                <span>{{ item.roomName }}</span>
+              </div>
+            </td>
           </tr>
           <tr>
             <td>7-8</td>
-            <td>English</td>
-            <td>Chinese</td>
-            <td>History</td>
-            <td>Geography</td>
-            <td>Geography</td>
-            <td>Geography</td>
-            <td>Geography</td>
+            <td v-for="(item, index) in courseList4" :key="index" :style="{ backgroundColor: item.backgroundColor }">
+              <div class="info" v-show="item.isShow">
+                <span>{{ item.subjectName }}</span>
+                <span>{{ item.teacherName }}</span>
+                <span>{{ item.roomName }}</span>
+              </div>
+            </td>
           </tr>
           <tr>
             <td colspan="9"></td>
@@ -81,13 +82,13 @@
           <tr>
             <td>晚间</td>
             <td>9-10</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td v-for="(item, index) in courseList5" :key="index" :style="{ backgroundColor: item.backgroundColor }">
+              <div class="info" v-show="item.isShow">
+                <span>{{ item.subjectName }}</span>
+                <span>{{ item.teacherName }}</span>
+                <span>{{ item.roomName }}</span>
+              </div>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -136,18 +137,32 @@ export default {
         clazz: '',
         week: ''
       },
-      semester: ['第一学期', '第二学期', '第三学期', '第四学期'],
-      clazz: ['软件1851'],
-      week: ['1', '2', '3', '4'],
-      text: '高数',
-      // 周次数组
+      // 界面底部的周次数组
       weekDuration1: ['一', '二', '三', '四', '五', '六', '七', '八', '九'],
       isChoice1: [],
       weekDuration2: ['十', '十一', '十二', '十三', '十四', '十五', '十六', '十七', '十八'],
       isChoice2: [],
-      // 存放学期和班级的数组
+      // 存放学期和班级、周次的数组
       clazzList: [],
-      semesterList: []
+      semesterList: [],
+      weekList: [],
+      // scheduleDto 对象
+      scheduleDto: {
+        semesterId: null,
+        clazzId: null,
+        week: null
+      },
+      // 存放课程信息的数组:
+      // 1-2 节课的课程数据
+      courseList1: [],
+      // 1-2 节课的课程数据
+      courseList2: [],
+      // 1-2 节课的课程数据
+      courseList3: [],
+      // 1-2 节课的课程数据
+      courseList4: [],
+      // 1-2 节课的课程数据
+      courseList5: []
     }
   },
   components: {},
@@ -158,22 +173,35 @@ export default {
       this.isChoice2.splice(i, 0, false)
     }
     this.getAllInfo()
+    this.courseList1 = this.initArr()
+    this.courseList2 = this.initArr()
+    this.courseList3 = this.initArr()
+    this.courseList4 = this.initArr()
+    this.courseList5 = this.initArr()
   },
   mounted() {},
   methods: {
+    /**
+     * 获取所有班级和学期数据
+     */
     async getAllInfo() {
       let clazzRes = await API.init('/clazz/all', null, 'get')
       let semesterRes = await API.init('/semester/all', null, 'get')
       for (let i = 0; i < clazzRes.data.length; i++) {
-        this.clazzList.splice(i, 0, clazzRes.data[i].name)
+        this.clazzList.push({
+          name: clazzRes.data[i].name,
+          id: clazzRes.data[i].pkClazzId
+        })
       }
       for (let i = 0; i < semesterRes.data.length; i++) {
         this.semesterList.push({
           name: semesterRes.data[i].name,
-          weekCount: semesterRes.data[i].weekCount
+          weekCount: semesterRes.data[i].weekCount,
+          id: semesterRes.data[i].pkSemesterId
         })
       }
     },
+
     /**
      * 选择 1-9 周的 td 方法
      */
@@ -188,6 +216,117 @@ export default {
     choice2(i) {
       let status = this.isChoice2[i]
       this.isChoice2.splice(i, 1, !status)
+    },
+
+    /**
+     * 根据所选学期寻找出对应的周次
+     */
+    changeWeekCount() {
+      // 遍历学期数组，查找出操作者选中的那一个选项值
+      for (let i = 0; i < this.semesterList.length; i++) {
+        if (this.form.semester == this.semesterList[i].name) {
+          // 查找出当前选中学期对应的周次数（本学期内应有多少周的课程）
+          this.weekList = this.semesterList[i].weekCount
+          // 查找出当前选中学期对应的学期id，为下面查找课程做铺垫
+          this.scheduleDto.semesterId = this.semesterList[i].id
+          return
+        }
+      }
+    },
+
+    /**
+     * 当选中的班级发生改变时，进行数据判断操作
+     */
+    changeClazz() {
+      for (let i = 0; i < this.clazzList.length; i++) {
+        if (this.form.clazz == this.clazzList[i].name) {
+          // 查找出当前选中班级对应的班级id，为下面查找课程做铺垫
+          this.scheduleDto.clazzId = this.clazzList[i].id
+          return
+        }
+      }
+    },
+
+    /**
+     * 根据 学期id、班级id、周次 查询出当周的课程信息
+     */
+    async showSchedule() {
+      this.scheduleDto.week = this.form.week
+      let scheduleRes = await API.init('/timetable/info', this.scheduleDto, 'post')
+      // 本周内所有课程的数组
+      let courseList = scheduleRes.data
+      // 以上课时间将课程分组
+      // 每天上午第一节课
+      let cou1 = []
+      // 每天上午第二节课
+      let cou2 = []
+      // 每天上午第三节课
+      let cou3 = []
+      // 每天上午第四节课
+      let cou4 = []
+      // 每天上午第五节课
+      let cou5 = []
+      for (let i = 0; i < courseList.length; i++) {
+        let item = courseList[i]
+        let time = item.time
+        switch (time) {
+          case 1:
+            cou1.push(item)
+            break
+          case 2:
+            cou2.push(item)
+            break
+          case 3:
+            cou3.push(item)
+            break
+          case 4:
+            cou4.push(item)
+            break
+          case 5:
+            cou5.push(item)
+            break
+        }
+      }
+      // 依次遍历数组，拟造出一个完整的 td数组
+      this.courseList1 = this.createTd(cou1)
+      this.courseList2 = this.createTd(cou2)
+      this.courseList3 = this.createTd(cou3)
+      this.courseList4 = this.createTd(cou4)
+      this.courseList5 = this.createTd(cou5)
+    },
+
+    /**
+     * 传入一个数组对象，遍历并填充数组，拟造出一个完整的 td 数组（七天）
+     */
+    createTd(arr) {
+      let array = []
+      // 初始化 array 数组，默认 isShow = false, data = null
+      for (let i = 0; i < 7; i++) {
+        array[i] = {
+          isShow: false
+        }
+      }
+      // 根据 arr 数组内的数据，重新给 array数组赋值
+      for (let i = 0; i < arr.length; i++) {
+        const item = arr[i]
+        item['isShow'] = true
+        array[item.weekDay - 1] = item
+      }
+      return array
+    },
+
+    /**
+     * 初始化 td数组的方法
+     */
+    initArr() {
+      let array = []
+      // 初始化 array 数组，默认 isShow = false, data = null
+      for (let i = 0; i < 7; i++) {
+        array[i] = {
+          isShow: false
+        }
+      }
+      return array
     }
   },
   computed: {}
@@ -218,5 +357,9 @@ table {
     height: 70px;
     border: 1px solid blank;
   }
+}
+.info {
+  display: flex;
+  flex-direction: column;
 }
 </style>
