@@ -1,82 +1,188 @@
 <template>
   <div style="width:100%;margin-left:3%">
     <!-- 修改弹出框 -->
-    <el-dialog title="编辑一卡通" :visible.sync="updatecenterDialogVisible" width="30%" left>
-      <el-form :model="ruleForm" status-icon :rules="rules" label-width="80px">
-        <el-form-item label="密码" prop="pass">
-          <el-input type="password" v-model="ruleForm.pass" autocomplete="off" placeholder="123456"></el-input>
+    <el-dialog
+      title="编辑一卡通"
+      :visible.sync="updatecenterDialogVisible"
+      width="30%"
+      left
+    >
+      <el-form
+        :model="ruleForm"
+        status-icon
+        :rules="rules"
+        label-width="80px"
+      >
+        <el-form-item
+          label="密码"
+          prop="pass"
+        >
+          <el-input
+            type="password"
+            v-model="ruleForm.pass"
+            autocomplete="off"
+            placeholder="123456"
+          ></el-input>
         </el-form-item>
-        <el-form-item label="确认密码" prop="checkPass">
-          <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off" placeholder="123456"></el-input>
+        <el-form-item
+          label="确认密码"
+          prop="checkPass"
+        >
+          <el-input
+            type="password"
+            v-model="ruleForm.checkPass"
+            autocomplete="off"
+            placeholder="123456"
+          ></el-input>
         </el-form-item>
-        <el-form-item label="绑定号码" prop="job_number">
+        <el-form-item
+          label="绑定号码"
+          prop="job_number"
+        >
           <el-input v-model.number="ruleForm.jobnumber"></el-input>
         </el-form-item>
-        <el-form-item label="余额" prop="balance">
+        <el-form-item
+          label="余额"
+          prop="balance"
+        >
           <el-input v-model.number="ruleForm.balance"></el-input>
         </el-form-item>
       </el-form>
-      <span slot="footer" class="dialog-footer">
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="updatecenterDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="confirmUpdate">确 定</el-button>
+        <el-button
+          type="primary"
+          @click="confirmUpdate"
+        >确 定</el-button>
       </span>
     </el-dialog>
 
     <!-- 增加弹出框 -->
-    <el-dialog title="新增一卡通" :visible.sync="addcenterDialogVisible" width="30%" center>
-      <el-form label-width="80px" :model="ruleForm1">
-        <el-form-item required label="卡号" prop="cardNumber">
+    <el-dialog
+      title="新增一卡通"
+      :visible.sync="addcenterDialogVisible"
+      width="30%"
+      center
+    >
+      <el-form
+        label-width="80px"
+        :model="ruleForm1"
+      >
+        <el-form-item
+          required
+          label="卡号"
+          prop="cardNumber"
+        >
           <el-input v-model="ruleForm1.cardNumber"></el-input>
         </el-form-item>
-        <el-form-item required label="绑定卡号" prop="jobNumber">
+        <el-form-item
+          required
+          label="绑定卡号"
+          prop="jobNumber"
+        >
           <el-input v-model="ruleForm1.jobNumber"></el-input>
         </el-form-item>
-        <el-form-item required label="卡号密码" prop="cardPassword">
-          <el-input type="password" v-model="ruleForm1.cardPassword" autocomplete="off"></el-input>
+        <el-form-item
+          required
+          label="卡号密码"
+          prop="cardPassword"
+        >
+          <el-input
+            type="password"
+            v-model="ruleForm1.cardPassword"
+            autocomplete="off"
+          ></el-input>
         </el-form-item>
         <el-form-item label="活动时间">
           <el-col :span="11">
             <el-form-item prop="date1">
-              <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm1.date1" style="width: 100%;"></el-date-picker>
+              <el-date-picker
+                type="date"
+                placeholder="选择日期"
+                v-model="ruleForm1.date1"
+                style="width: 100%;"
+              ></el-date-picker>
             </el-form-item>
           </el-col>
-          <el-col class="line" :span="2">-</el-col>
+          <el-col
+            class="line"
+            :span="2"
+          >-</el-col>
           <el-col :span="11">
             <el-form-item prop="date2">
-              <el-time-picker placeholder="创建时间" v-model="ruleForm1.date2" style="width: 100%;"></el-time-picker>
+              <el-time-picker
+                placeholder="创建时间"
+                v-model="ruleForm1.date2"
+                style="width: 100%;"
+              ></el-time-picker>
             </el-form-item>
           </el-col>
         </el-form-item>
-        <el-form-item required="" label="状态" prop="status">
+        <el-form-item
+          required=""
+          label="状态"
+          prop="status"
+        >
           <el-radio-group v-model="ruleForm1.status">
             <el-radio label="true">激活</el-radio>
             <el-radio label="false">未激活</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item required label="余额" prop="cardbalance1">
+        <el-form-item
+          required
+          label="余额"
+          prop="cardbalance1"
+        >
           <el-input v-model="ruleForm1.cardbalance1"></el-input>
         </el-form-item>
-        <el-form-item required="" label="删除标志" prop="isdeleted">
+        <el-form-item
+          required=""
+          label="删除标志"
+          prop="isdeleted"
+        >
           <el-radio-group v-model="ruleForm1.isdeleted">
             <el-radio label="true">已删除</el-radio>
             <el-radio label="false">未删除</el-radio>
           </el-radio-group>
         </el-form-item>
       </el-form>
-      <span slot="footer" class="dialog-footer">
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="addcenterDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="confirmAdd">确 定</el-button>
+        <el-button
+          type="primary"
+          @click="confirmAdd"
+        >确 定</el-button>
       </span>
     </el-dialog>
 
     <!-- 流水明细 -->
-    <el-dialog title="流水查询" :visible.sync="datailcenterDialogVisible" width="30%" left>
-      <el-form status-icon label-width="80px">
+    <el-dialog
+      title="流水查询"
+      :visible.sync="datailcenterDialogVisible"
+      width="30%"
+      left
+    >
+      <el-form
+        status-icon
+        label-width="80px"
+      >
         <el-collapse accordion>
-          <div v-for="(item, index) in detailList" :key="index">
+          <div
+            v-for="(item, index) in detailList"
+            :key="index"
+          >
             <el-collapse-item>
               <template slot="title">
-                {{ item.gmtCreate }}<i class="el-icon-s-shop" style="margin-left:15%"></i>{{ item.description }} -{{ item.orderMoney }}
+                {{ item.gmtCreate }}<i
+                  class="el-icon-s-shop"
+                  style="margin-left:15%"
+                ></i>{{ item.description }} -{{ item.orderMoney }}
               </template>
               <div><i class="el-icon-s-shop"></i>{{ item.description }}</div>
               <div>
@@ -96,68 +202,146 @@
           </div>
         </el-collapse>
       </el-form>
-      <span slot="footer" class="dialog-footer">
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="datailcenterDialogVisible = false">取 消</el-button>
       </span>
     </el-dialog>
 
     <div class="tab-hearder">
       <el-row style="margin-left:-80%;margin-top:1%">
-        <el-button size="mini" type="primary" @click="addcenterDialogVisible = true">增加</el-button>
-        <el-button size="mini" type="warning" disabled>修改</el-button>
-        <el-button size="mini" type="danger" disabled>删除</el-button>
-        <el-button type="success" size="mini">导出</el-button>
+        <el-button
+          size="mini"
+          type="primary"
+          @click="addcenterDialogVisible = true"
+        >增加</el-button>
+        <el-button
+          size="mini"
+          type="warning"
+          disabled
+        >修改</el-button>
+        <el-button
+          size="mini"
+          type="danger"
+          disabled
+        >删除</el-button>
+        <el-button
+          type="success"
+          size="mini"
+        >导出</el-button>
       </el-row>
     </div>
 
     <!-- 表格展示 -->
-    <el-table :data="cardList" style="margin-top:2%;width:100%">
-      <el-table-column label="卡号" width="150">
+    <el-table
+      :data="cardList"
+      style="margin-top:2%;width:100%"
+    >
+      <el-table-column
+        label="卡号"
+        width="150"
+      >
         <template slot-scope="scope">
           <span style="margin-left:-5%">{{ scope.row.cardNumber }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="卡密" width="150">
+      <el-table-column
+        label="卡密"
+        width="150"
+      >
         <template slot-scope="scope">
           <span>{{ scope.row.cardPassword }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="绑定账号" width="150">
+      <el-table-column
+        label="绑定账号"
+        width="150"
+      >
         <template slot-scope="scope">
           <span>{{ scope.row.jobNumber }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="余额" width="150">
+      <el-table-column
+        label="余额"
+        width="150"
+      >
         <template slot-scope="scope">
           <span>{{ scope.row.cardBalance }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="状态" width="180" :formatter="onLineStatus">
-        <template> </template>
+      <el-table-column
+        label="状态"
+        width="180"
+      >
+        <template slot-scope="scope">
+          <el-switch
+            v-model="scope.row.status"
+            active-color="#13ce66"
+            :disabled="scope.row.status == 1"
+            inactive-color="#ff4949"
+            @change="changeSwitchA($event, scope.row, scope.$index)"
+          >
+            >
+          </el-switch>
+        </template>
       </el-table-column>
-      <el-table-column label="创建时间" width="180">
+      <el-table-column
+        label="创建时间"
+        width="180"
+      >
         <template slot-scope="scope">
           <i class="el-icon-time"></i>
           <span>{{ scope.row.gmtCreate }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="250">
+      <el-table-column
+        label="操作"
+        width="250"
+      >
         <template slot-scope="scope">
-          <el-button size="mini" type="success" @click="handleUpdate(scope.$index, scope.row)">编辑</el-button>
-          <el-button size="mini" type="primary" @click="handleDetail(scope.$index, scope.row)">流水账单</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          <el-button
+            size="mini"
+            type="success"
+            @click="handleUpdate(scope.$index, scope.row)"
+          >编辑</el-button>
+          <el-button
+            size="mini"
+            type="primary"
+            @click="handleDetail(scope.$index, scope.row)"
+          >流水账单</el-button>
+          <el-button
+            size="mini"
+            type="danger"
+            @click="handleDelete(scope.$index, scope.row)"
+          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <!-- 删除提示框 -->
-    <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
+    <el-dialog
+      title="提示"
+      :visible.sync="delVisible"
+      width="300px"
+      center
+    >
       <div class="del-dialog-cnt">一卡通信息删除不可恢复，是否确定删除？</div>
-      <span slot="footer" class="dialog-footer">
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="delVisible = false">取 消</el-button>
-        <el-button type="primary" @click="deleteRow">确 定</el-button>
+        <el-button
+          type="primary"
+          @click="deleteRow"
+        >确 定</el-button>
       </span>
     </el-dialog>
-    <div class="block" style="margin-top:2%">
+    <div
+      class="block"
+      style="margin-top:2%"
+    >
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -206,6 +390,7 @@ export default {
       delVisible: false, //删除提示弹框的状态
       value1: '',
       input: '',
+      gmtTime: '',
       msg: '', //记录每一条的信息，便于取id
       ruleForm: {
         pass: '',
@@ -242,11 +427,11 @@ export default {
     total: function() {}
   },
   methods: {
-    //激活状态
-    onLineStatus: function(row, column) {
-      console.log(column)
-      return row.status == 1 ? '激活' : row.status == 0 ? '未激活' : 'aaa'
-    },
+    // //激活状态
+    // onLineStatus: function(row, column) {
+    //   console.log(column)
+    //   return row.status == 1 ? '激活' : row.status == 0 ? '未激活' : 'aaa'
+    // },
     // 分页查询所有
     getCardAll() {
       this.axios({
@@ -259,10 +444,28 @@ export default {
       })
         .then((res) => {
           this.cardList = res.data.data
+          for (let i = 0; i < this.cardList.length; i++) {
+            this.cardList[i].gmtCreate = this.formatDate(this.cardList[i].gmtCreate)
+          }
         })
         .catch(function(error) {
           console.log(error)
         })
+    },
+    formatDate(value) {
+      let date = new Date(value)
+      let y = date.getFullYear()
+      let MM = date.getMonth() + 1
+      MM = MM < 10 ? '0' + MM : MM
+      let d = date.getDate()
+      d = d < 10 ? '0' + d : d
+      let h = date.getHours()
+      h = h < 10 ? '0' + h : h
+      let m = date.getMinutes()
+      m = m < 10 ? '0' + m : m
+      let s = date.getSeconds()
+      s = s < 10 ? '0' + s : s
+      return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s
     },
     // 当前页展示数据
     handleSizeChange: function(pageSize) {
@@ -299,6 +502,29 @@ export default {
         })
       this.delVisible = false //关闭删除提示模态框
     },
+    //激活一卡通
+    changeSwitchA(index, row) {
+      this.idx = index
+      this.msg = row //每一条数据的记录
+      console.log(this.msg.pkCardId)
+      this.axios({
+        method: 'post',
+        url: 'http://localhost:8080/card/statuschange',
+        params: {
+          pk_card_id: this.msg.pkCardId,
+          status: true
+        }
+      })
+        // eslint-disable-next-line no-unused-vars
+        .then((res) => {
+          this.$message.success('激活成功')
+          this.getCardAll()
+        })
+        .catch(function(error) {
+          console.log(error)
+        })
+    },
+
     //编辑
     handleUpdate(index, row) {
       this.idx = index

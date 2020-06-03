@@ -89,7 +89,8 @@
           <el-button
             size="mini"
             type="primary"
-          >流水账单</el-button>
+            @click="handleStatus(scope.$index, scope.row)"
+          >挂失</el-button>
           <el-button
             size="mini"
             type="danger"
@@ -98,6 +99,44 @@
         </template>
       </el-table-column>
     </el-table>
+    <!-- 申请挂失弹出框 -->
+    <el-dialog
+      title="提示"
+      :visible.sync="statusVisible"
+      width="300px"
+      center
+    >
+      <div class="del-dialog-cnt">该一卡通正在申请挂失，是否确定挂失</div>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="statusVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="changeStatus"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 删除提示框 -->
+    <el-dialog
+      title="提示"
+      :visible.sync="delVisible"
+      width="300px"
+      center
+    >
+      <div class="del-dialog-cnt">一卡通信息删除不可恢复，是否确定删除？</div>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="delVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="deleteRow"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -108,7 +147,9 @@ export default {
     return {
       tableData: [],
       currentPage: 1,
-      pageSize: 10
+      pageSize: 10,
+      delVisible: false,
+      statusVisible: false
     }
   },
   components: {},
@@ -124,6 +165,7 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
+    //分页查询
     getLossAll() {
       this.axios({
         method: 'post',
@@ -139,6 +181,42 @@ export default {
         .catch(function(error) {
           console.log(error)
         })
+    },
+    //申请挂失
+    handleStatus(index, row) {
+      this.idx = index
+      this.msg = row //每一条数据的记录
+      if (this.msg.lossStatus == false) {
+        this.statusVisible = true
+      } else {
+        this.$message.success('该一卡通已挂失')
+      }
+    },
+    changeStatus() {
+      console.log(this.msg.pkReportLossId)
+      this.axios({
+        method: 'post',
+        url: 'http://localhost:8080/loss/statuschange',
+        params: {
+          pk_report_loss_id: this.msg.pkReportLossId,
+          loss_status: true
+        }
+      })
+        // eslint-disable-next-line no-unused-vars
+        .then((res) => {
+          this.getLossAll()
+          this.$message.success('挂失成功')
+        })
+        .catch(function(error) {
+          console.log(error)
+        })
+      this.statusVisible = false
+    },
+    //单行删除
+    handleDelete(index, row) {
+      this.idx = index
+      this.msg = row //每一条数据的记录
+      this.delVisible = true
     }
   },
   computed: {}
