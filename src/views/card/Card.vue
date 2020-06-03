@@ -1,8 +1,8 @@
 <template>
-  <div style="width:100%">
+  <div style="width:100%;margin-left:3%">
     <!-- 修改弹出框 -->
     <el-dialog title="编辑一卡通" :visible.sync="updatecenterDialogVisible" width="30%" left>
-      <el-form :model="ruleForm" status-icon :rules="rules" :label-position="labelPosition" label-width="80px">
+      <el-form :model="ruleForm" status-icon :rules="rules" label-width="80px">
         <el-form-item label="密码" prop="pass">
           <el-input type="password" v-model="ruleForm.pass" autocomplete="off" placeholder="123456"></el-input>
         </el-form-item>
@@ -24,7 +24,7 @@
 
     <!-- 增加弹出框 -->
     <el-dialog title="新增一卡通" :visible.sync="addcenterDialogVisible" width="30%" center>
-      <el-form :label-position="labelPosition" label-width="80px" :model="ruleForm1">
+      <el-form label-width="80px" :model="ruleForm1">
         <el-form-item required label="卡号" prop="cardNumber">
           <el-input v-model="ruleForm1.cardNumber"></el-input>
         </el-form-item>
@@ -72,7 +72,7 @@
 
     <!-- 流水明细 -->
     <el-dialog title="流水查询" :visible.sync="datailcenterDialogVisible" width="30%" left>
-      <el-form status-icon :label-position="labelPosition" label-width="80px">
+      <el-form status-icon label-width="80px">
         <el-collapse accordion>
           <div v-for="(item, index) in detailList" :key="index">
             <el-collapse-item>
@@ -105,7 +105,7 @@
 
     <div class="tab-hearder">
       <el-row style="margin-left:-80%;margin-top:1%">
-        <el-button size="mini" ty pe="primary" @click="addcenterDialogVisible = true">增加</el-button>
+        <el-button size="mini" type="primary" @click="addcenterDialogVisible = true">增加</el-button>
         <el-button size="mini" type="warning" disabled>修改</el-button>
         <el-button size="mini" type="danger" disabled>删除</el-button>
         <el-button type="success" size="mini">导出</el-button>
@@ -134,8 +134,13 @@
           <span>{{ scope.row.cardBalance }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="状态" width="180" :formatter="onLineStatus">
-        <template> </template>
+      <el-table-column label="状态" width="180">
+        <template slot-scope="scope">
+          <el-switch v-model="scope.row.status" active-color="#13ce66" :disabled="scope.row.status == 1"
+            inactive-color="#ff4949" @change="changeSwitchA($event, scope.row, scope.$index)">
+            >
+          </el-switch>
+        </template>
       </el-table-column>
       <el-table-column label="创建时间" width="180">
         <template slot-scope="scope">
@@ -193,7 +198,7 @@ export default {
     return {
       cardList: [],
       detailList: [],
-      currentPage: 0,
+      currentPage: 1,
       total: 40,
       pageSize: 10,
       updatecenterDialogVisible: false,
@@ -202,6 +207,7 @@ export default {
       delVisible: false, //删除提示弹框的状态
       value1: '',
       input: '',
+      gmtTime: '',
       msg: '', //记录每一条的信息，便于取id
       ruleForm: {
         pass: '',
@@ -238,16 +244,16 @@ export default {
     total: function() {}
   },
   methods: {
-    //激活状态
-    onLineStatus: function(row, column) {
-      console.log(column)
-      return row.status == 1 ? '激活' : row.status == 0 ? '未激活' : 'aaa'
-    },
+    // //激活状态
+    // onLineStatus: function(row, column) {
+    //   console.log(column)
+    //   return row.status == 1 ? '激活' : row.status == 0 ? '未激活' : 'aaa'
+    // },
     // 分页查询所有
     getCardAll() {
       this.axios({
         method: 'post',
-        url: 'http://localhost:8080/card/all',
+        url: 'http://localhost:8080/card/list',
         data: {
           currentPage: this.currentPage,
           pageSize: this.pageSize
@@ -255,11 +261,28 @@ export default {
       })
         .then((res) => {
           this.cardList = res.data.data
-          console.log(res.data.data.length)
+          for (let i = 0; i < this.cardList.length; i++) {
+            this.cardList[i].gmtCreate = this.formatDate(this.cardList[i].gmtCreate)
+          }
         })
         .catch(function(error) {
           console.log(error)
         })
+    },
+    formatDate(value) {
+      let date = new Date(value)
+      let y = date.getFullYear()
+      let MM = date.getMonth() + 1
+      MM = MM < 10 ? '0' + MM : MM
+      let d = date.getDate()
+      d = d < 10 ? '0' + d : d
+      let h = date.getHours()
+      h = h < 10 ? '0' + h : h
+      let m = date.getMinutes()
+      m = m < 10 ? '0' + m : m
+      let s = date.getSeconds()
+      s = s < 10 ? '0' + s : s
+      return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s
     },
     // 当前页展示数据
     handleSizeChange: function(pageSize) {
@@ -296,6 +319,29 @@ export default {
         })
       this.delVisible = false //关闭删除提示模态框
     },
+    //激活一卡通
+    changeSwitchA(index, row) {
+      this.idx = index
+      this.msg = row //每一条数据的记录
+      console.log(this.msg.pkCardId)
+      this.axios({
+        method: 'post',
+        url: 'http://localhost:8080/card/statuschange',
+        params: {
+          pk_card_id: this.msg.pkCardId,
+          status: true
+        }
+      })
+        // eslint-disable-next-line no-unused-vars
+        .then((res) => {
+          this.$message.success('激活成功')
+          this.getCardAll()
+        })
+        .catch(function(error) {
+          console.log(error)
+        })
+    },
+
     //编辑
     handleUpdate(index, row) {
       this.idx = index

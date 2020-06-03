@@ -1,19 +1,20 @@
 <template>
   <div>
     <el-menu default-active="1-4-1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" :collapse="isCollapse">
-      <el-submenu v-for="(item, index) in menuList" :key="index" :index="index + ''">
+      <el-submenu v-for="(item, index) in menuList" :key="index" :index="item.name">
         <template slot="title">
-          <p class="row" @click="changeMenu(item)">
+          <p class="row">
             <i :class="item.icon" style="  flex: 0 0 20%; text-align: left;"></i>
             <span style="  flex: 0 0 80%; text-align: left;">{{ item.name }}</span>
           </p>
         </template>
         <el-menu-item-group>
           <el-menu-item
-            :index="index + '-' + index1"
             v-for="(item1, index1) in item.subMenus"
             :key="index1"
             @click="changeChildMenu(item1)"
+            :route="item1.path"
+            :index="index + '-' + index1"
             >{{ item1.name }}</el-menu-item
           >
         </el-menu-item-group>
@@ -46,10 +47,8 @@ export default {
       console.log(key, keyPath)
     },
     changeMenu(item) {
-      if (item.path != null) {
         this.$router.push(item.path)
-      }
-      Bus.$emit('menuName', item.menu)
+        Bus.$emit('menuName', item.menu)
     },
     changeChildMenu(item1) {
       if (item1.path != null) {
@@ -61,9 +60,12 @@ export default {
 }
 </script>
 
-<style>
+<style scoped lang="scss">
+.container {
+}
+
 .el-menu-vertical-demo:not(.el-menu--collapse) {
-  width: 200px;
+  min-width: 200px;
   min-height: 400px;
 }
 
