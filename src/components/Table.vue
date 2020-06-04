@@ -1,22 +1,36 @@
 <template>
-  <div>
-    <el-table :data="towerList.slice(start, end)" style="width: 100%;" border>
-      <el-table-column label="楼栋名" prop="name"></el-table-column>
-      <el-table-column label="经度" prop="longitude"></el-table-column>
-      <el-table-column label="纬度" prop="latitude"></el-table-column>
-      <el-table-column label="创建时间" prop="gmtCreate"></el-table-column>
-      <el-table-column align="right">
-        <template slot="header" slot-scope>
-          <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />
-        </template>
-        <template slot-scope="scope">
-          <p style="text-align:center">
-            <el-button size="mini" icon="el-icon-edit" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button size="mini" icon="el-icon-delete" type="danger" @click="handleDelete(scope.row)">删除</el-button>
-          </p>
-        </template>
-      </el-table-column>
-    </el-table>
+  <el-row class="row">
+    <el-row>
+      <el-col :span="1"> </el-col>
+      <el-col :span="23">
+        <el-table ref="multipleTable" :data="towerList.slice(start, end)" tooltip-effect="dark" style="width: 100%">
+          <el-table-column label="楼栋名">
+            <template slot-scope="scope">{{ scope.row.name }}</template>
+          </el-table-column>
+          <el-table-column label="经度">
+            <template slot-scope="scope">{{ scope.row.longitude }}</template>
+          </el-table-column>
+          <el-table-column label="纬度">
+            <template slot-scope="scope">{{ scope.row.latitude }}</template>
+          </el-table-column>
+          <el-table-column label="创建时间">
+            <template slot-scope="scope">{{ scope.row.gmtCreate }}</template>
+          </el-table-column>
+          <el-table-column align="right">
+            <template slot="header" slot-scope>
+              <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />
+            </template>
+            <template slot-scope="scope">
+              <p style="text-align:center">
+                <el-button size="mini" icon="el-icon-edit" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+                <el-button size="mini" icon="el-icon-delete" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+              </p>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-col>
+    </el-row>
+    <!-- 分页 -->
     <el-row>
       <el-pagination
         @current-change="handleCurrentChange"
@@ -28,7 +42,7 @@
         :total="towerList.length"
       ></el-pagination>
     </el-row>
-  </div>
+  </el-row>
 </template>
 
 <script>
@@ -71,6 +85,8 @@ export default {
               message: '删除成功!'
             })
           }
+          let index = this.towerList.indexOf(row)
+          this.towerList.splice(index, 1)
         })
       })
     },

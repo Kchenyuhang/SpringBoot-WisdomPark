@@ -43,7 +43,6 @@ export default {
 
 <style scoped lang="scss">
 .container1 {
-  width: 100%;
   padding: 20px 20px;
   .operation {
     text-align: left;
