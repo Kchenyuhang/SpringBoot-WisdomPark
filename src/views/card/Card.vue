@@ -1,5 +1,5 @@
 <template>
-  <div style="width:100%;margin-left:3%">
+  <div style="width:95%">
     <!-- 修改弹出框 -->
     <el-dialog title="编辑一卡通" :visible.sync="updatecenterDialogVisible" width="30%" left>
       <el-form :model="ruleForm" status-icon :rules="rules" label-width="80px">
@@ -104,16 +104,17 @@
     </el-dialog>
 
     <div class="tab-hearder">
-      <el-row style="margin-left:-80%;margin-top:1%">
+      <el-row style="margin-left:-50%;margin-top:1%">
         <el-button size="mini" type="primary" @click="addcenterDialogVisible = true">增加</el-button>
         <el-button size="mini" type="warning" disabled>修改</el-button>
         <el-button size="mini" type="danger" disabled>删除</el-button>
         <el-button type="success" size="mini">导出</el-button>
+        <el-input class="top-input" v-model="input" size="mini" placeholder="请输入内容"></el-input>
       </el-row>
     </div>
 
     <!-- 表格展示 -->
-    <el-table :data="cardList" style="margin-top:2%;width:100%">
+    <el-table :data="cardList" style="margin-top:2%;width:95%;margin-left:5%">
       <el-table-column label="卡号" width="150">
         <template slot-scope="scope">
           <span style="margin-left:-5%">{{ scope.row.cardNumber }}</span>
@@ -244,11 +245,9 @@ export default {
     total: function() {}
   },
   methods: {
-    // //激活状态
-    // onLineStatus: function(row, column) {
-    //   console.log(column)
-    //   return row.status == 1 ? '激活' : row.status == 0 ? '未激活' : 'aaa'
-    // },
+    load() {
+      this.cardList.length += 2
+    },
     // 分页查询所有
     getCardAll() {
       this.axios({
@@ -269,21 +268,7 @@ export default {
           console.log(error)
         })
     },
-    formatDate(value) {
-      let date = new Date(value)
-      let y = date.getFullYear()
-      let MM = date.getMonth() + 1
-      MM = MM < 10 ? '0' + MM : MM
-      let d = date.getDate()
-      d = d < 10 ? '0' + d : d
-      let h = date.getHours()
-      h = h < 10 ? '0' + h : h
-      let m = date.getMinutes()
-      m = m < 10 ? '0' + m : m
-      let s = date.getSeconds()
-      s = s < 10 ? '0' + s : s
-      return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s
-    },
+
     // 当前页展示数据
     handleSizeChange: function(pageSize) {
       this.pageSize = pageSize
@@ -422,13 +407,37 @@ export default {
       })
         .then((res) => {
           this.detailList = res.data.data
+          for (let i = 0; i < this.detailList.length; i++) {
+            this.detailList[i].gmtCreate = this.formatDate(this.detailList[i].gmtCreate)
+          }
         })
         .catch(function(error) {
           console.log(error)
         })
+    },
+    formatDate(value) {
+      let date = new Date(value)
+      let y = date.getFullYear()
+      let MM = date.getMonth() + 1
+      MM = MM < 10 ? '0' + MM : MM
+      let d = date.getDate()
+      d = d < 10 ? '0' + d : d
+      let h = date.getHours()
+      h = h < 10 ? '0' + h : h
+      let m = date.getMinutes()
+      m = m < 10 ? '0' + m : m
+      let s = date.getSeconds()
+      s = s < 10 ? '0' + s : s
+      return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s
     }
   }
 }
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.top-input {
+  width: 200px;
+  height: 30px;
+  margin-left: 50px;
+}
+</style>

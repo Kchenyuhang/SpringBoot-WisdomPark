@@ -1,11 +1,10 @@
 <template>
   <div class="container">
-
     <div class="tab-header">
       <el-row class="header-row">
         <el-input class="input" placeholder="请输入内容" v-model="input" clearable @input="filterSearch"> </el-input>
         <el-button size="medium" type="success">查询</el-button>
-        <el-button size="medium" type="primary" @click="createBookShow=!createBookShow">增加</el-button>
+        <el-button size="medium" type="primary" @click="createBookShow = !createBookShow">增加</el-button>
         <el-button size="medium" type="danger" @click="handleDeleteMul">批量删除</el-button>
       </el-row>
     </div>
@@ -47,7 +46,7 @@
         <el-form-item>
           <el-button type="primary" @click="submitForm('bookCreate')">立即创建</el-button>
           <el-button @click="resetForm('bookCreate')">重置</el-button>
-          <el-button @click="createBookShow=!createBookShow">取消</el-button>
+          <el-button @click="createBookShow = !createBookShow">取消</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -89,32 +88,31 @@
         <el-form-item>
           <el-button type="primary" @click="submitForm('bookUpdate')">立即修改</el-button>
           <el-button @click="resetForm('bookUpdate')">重置</el-button>
-          <el-button @click="bookUpdateShow=!bookUpdateShow">取消</el-button>
+          <el-button @click="bookUpdateShow = !bookUpdateShow">取消</el-button>
         </el-form-item>
       </el-form>
     </div>
     <el-table ref="bookId" :data="bookShow" @selection-change="handleSelectionChange">
-      <el-table-column prop="pkBookId" type="selection" width="55">
-      </el-table-column>
-      <el-table-column prop="pkBookId" label="id" width="100"> </el-table-column>
-      <el-table-column prop="author" label="作者" width="200"> </el-table-column>
+      <el-table-column prop="pkBookId" type="selection" width="50"></el-table-column>
+      <el-table-column prop="pkBookId" label="id" width="50"> </el-table-column>
+      <el-table-column prop="author" label="作者" width="220"> </el-table-column>
       <el-table-column prop="bookName" label="书名" width="200"> </el-table-column>
-      <el-table-column prop="description" label="描述" width="200"> </el-table-column>
-      <el-table-column prop="type" label="类型" width="100"> </el-table-column>
-      <el-table-column prop="bookNumber" label="总数" width="100"> </el-table-column>
-      <el-table-column prop="bookResidueNumber" label="当前库存" width="100"> </el-table-column>
-      <el-table-column prop="status" label="状态" width="100"></el-table-column>
-      <el-table-column prop="gmtCreate" label="创建时间" width="200"> </el-table-column>
-      <el-table-column prop="gmtModified" label="修改时间" width="200"> </el-table-column>
+      <el-table-column prop="description" label="描述" width="180"> </el-table-column>
+      <el-table-column prop="type" label="类型" width="50"> </el-table-column>
+      <el-table-column prop="bookNumber" label="总数" width="50"> </el-table-column>
+      <el-table-column prop="bookResidueNumber" label="库存" width="50"> </el-table-column>
+      <el-table-column prop="status" label="状态" width="50"></el-table-column>
+      <el-table-column prop="gmtCreate" label="创建时间" width="150"> </el-table-column>
+      <el-table-column prop="gmtModified" label="修改时间" width="150"> </el-table-column>
       <el-table-column prop="isDeleted" label="删除标志" width="100"> </el-table-column>
-      <el-table-column label="操作" width="200">
+      <el-table-column label="操作" width="150">
         <template slot-scope="scope">
-          <el-button size="mini" type="warning" @click="handleUpdate(scope.$index,scope.row)">修改</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.$index,scope.row)">删除</el-button>
+          <el-button size="mini" type="warning" @click="handleUpdate(scope.$index, scope.row)">修改</el-button>
+          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <div class="block" style="margin-top:2%">
+    <div style="margin-top:2%">
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
         :page-sizes="[10, 20, 30, 40]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper"
         :total="total">
@@ -243,18 +241,19 @@ export default {
       this.book = res.data.content
       this.bookShow = this.book
       console.log(this.book)
-      for (let i = 0; i < this.book.length; i++) {
-        this.book[i].gmtCreate = this.formatDate(this.book[i].gmtCreate)
-        this.book[i].gmtModified = this.formatDate(this.book[i].gmtModified)
-        if (!this.book[i].status) {
-          this.book[i].status = '启用'
+      for (let i = 0; i < this.bookShow.length; i++) {
+        this.bookShow[i].description = this.bookShow[i].description.substring(0, 10) + '...'
+        this.bookShow[i].gmtCreate = this.formatDate(this.bookShow[i].gmtCreate)
+        this.bookShow[i].gmtModified = this.formatDate(this.bookShow[i].gmtModified)
+        if (!this.bookShow[i].status) {
+          this.bookShow[i].status = '启用'
         } else {
-          this.book[i].status = '禁用'
+          this.bookShow[i].status = '禁用'
         }
-        if (!this.book[i].isDeleted) {
-          this.book[i].isDeleted = '启用'
+        if (!this.bookShow[i].isDeleted) {
+          this.bookShow[i].isDeleted = '启用'
         } else {
-          this.book[i].isDeleted = '禁用'
+          this.bookShow[i].isDeleted = '禁用'
         }
       }
     },
@@ -393,15 +392,17 @@ export default {
 
 <style scoped lang="scss">
 .container {
-  margin-left: 50px;
-  margin-top: 20px;
+  margin-left: 20px;
+  margin-top: 5px;
+  display: flex;
+  flex-direction: column;
 }
 .header-row {
   margin: 20px;
   .input {
     width: 400px;
-    margin-right: 100px;
-    margin-left: -450px;
+    margin-right: 20px;
+    margin-left: -680px;
   }
 }
 .createBook {
