@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="cc-df-between title">
+    <div class="cc-df title">
       <el-button
         size="mini"
         type="success"
@@ -9,7 +9,7 @@
       <el-input
         placeholder="请输入内容"
         v-model="searchInput"
-        class="search-input"
+        class="search-input cc-mleft"
         clearable
         @input="filterSearch"
       >
