@@ -104,6 +104,21 @@
         </template>
       </el-table-column>
     </el-table>
+    <div
+      class="block"
+      style="margin-top:2%"
+    >
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[5, 15, 25,30 ]"
+        :page-size="pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      >
+      </el-pagination>
+    </div>
   </div>
 </template>
 
@@ -113,13 +128,23 @@ export default {
   data() {
     return {
       tableData: [],
+      total: 40,
       currentPage: 1,
-      pageSize: 10
+      pageSize: 5
     }
   },
   components: {},
   created() {
     this.getOrderAll()
+  },
+  watch: {
+    pageSize: function() {
+      this.getOrderAll()
+    },
+    currentPage: function() {
+      this.getOrderAll()
+    },
+    total: function() {}
   },
   mounted() {},
   methods: {
@@ -136,6 +161,7 @@ export default {
     statusChange: function(row, column) {
       return row.status == 1 ? '已支付' : row.status == 0 ? '未支付' : 'aaa'
     },
+    //获取所有订单消息
     getOrderAll() {
       this.axios({
         method: 'post',
@@ -147,10 +173,36 @@ export default {
       })
         .then((res) => {
           this.tableData = res.data.data
+          for (let i = 0; i < this.tableData.length; i++) {
+            this.tableData[i].gmtCreate = this.formatDate(this.tableData[i].gmtCreate)
+          }
         })
         .catch(function(error) {
           console.log(error)
         })
+    },
+    // 当前页展示数据
+    handleSizeChange: function(pageSize) {
+      this.pageSize = pageSize
+    },
+    // 当前页
+    handleCurrentChange: function(currentPage) {
+      this.currentPage = currentPage
+    },
+    formatDate(value) {
+      let date = new Date(value)
+      let y = date.getFullYear()
+      let MM = date.getMonth() + 1
+      MM = MM < 10 ? '0' + MM : MM
+      let d = date.getDate()
+      d = d < 10 ? '0' + d : d
+      let h = date.getHours()
+      h = h < 10 ? '0' + h : h
+      let m = date.getMinutes()
+      m = m < 10 ? '0' + m : m
+      let s = date.getSeconds()
+      s = s < 10 ? '0' + s : s
+      return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s
     }
   },
   computed: {}

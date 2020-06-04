@@ -1,8 +1,8 @@
 <template>
-  <el-container style="">
+  <el-container>
     <!-- 课表上方的 学期、班级、周次信息 -->
     <el-header class="header">
-      <el-form :inline="true" ref="form" :model="form" size="mini">
+      <el-form :inline="true" ref="form" :model="form" size="mini" style="margin-top: 10px">
         <el-form-item>
           <el-select v-model="form.semester" placeholder="学期" @change="changeWeekCount()">
             <el-option v-for="(item, index) in semesterList" :key="index" :value="item.name"></el-option>

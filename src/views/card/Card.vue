@@ -1,5 +1,5 @@
 <template>
-  <div style="width:100%;margin-left:3%">
+  <div style="width:95%">
     <!-- 修改弹出框 -->
     <el-dialog title="编辑一卡通" :visible.sync="updatecenterDialogVisible" width="30%" left>
       <el-form :model="ruleForm" status-icon :rules="rules" label-width="80px">
@@ -37,7 +37,8 @@
         <el-form-item label="活动时间">
           <el-col :span="11">
             <el-form-item prop="date1">
-              <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm1.date1" style="width: 100%;"></el-date-picker>
+              <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm1.date1" style="width: 100%;">
+              </el-date-picker>
             </el-form-item>
           </el-col>
           <el-col class="line" :span="2">-</el-col>
@@ -76,7 +77,8 @@
           <div v-for="(item, index) in detailList" :key="index">
             <el-collapse-item>
               <template slot="title">
-                {{ item.gmtCreate }}<i class="el-icon-s-shop" style="margin-left:15%"></i>{{ item.description }} -{{ item.orderMoney }}
+                {{ item.gmtCreate }}<i class="el-icon-s-shop" style="margin-left:15%"></i>{{ item.description }}
+                -{{ item.orderMoney }}
               </template>
               <div><i class="el-icon-s-shop"></i>{{ item.description }}</div>
               <div>
@@ -102,16 +104,17 @@
     </el-dialog>
 
     <div class="tab-hearder">
-      <el-row style="margin-left:-80%;margin-top:1%">
+      <el-row style="margin-left:-50%;margin-top:1%">
         <el-button size="mini" type="primary" @click="addcenterDialogVisible = true">增加</el-button>
         <el-button size="mini" type="warning" disabled>修改</el-button>
         <el-button size="mini" type="danger" disabled>删除</el-button>
         <el-button type="success" size="mini">导出</el-button>
+        <el-input class="top-input" v-model="input" size="mini" placeholder="请输入内容"></el-input>
       </el-row>
     </div>
 
     <!-- 表格展示 -->
-    <el-table :data="cardList" style="margin-top:2%;width:100%">
+    <el-table :data="cardList" style="margin-top:2%;width:95%;margin-left:5%">
       <el-table-column label="卡号" width="150">
         <template slot-scope="scope">
           <span style="margin-left:-5%">{{ scope.row.cardNumber }}</span>
@@ -132,8 +135,13 @@
           <span>{{ scope.row.cardBalance }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="状态" width="180" :formatter="onLineStatus">
-        <template> </template>
+      <el-table-column label="状态" width="180">
+        <template slot-scope="scope">
+          <el-switch v-model="scope.row.status" active-color="#13ce66" :disabled="scope.row.status == 1"
+            inactive-color="#ff4949" @change="changeSwitchA($event, scope.row, scope.$index)">
+            >
+          </el-switch>
+        </template>
       </el-table-column>
       <el-table-column label="创建时间" width="180">
         <template slot-scope="scope">
@@ -158,15 +166,9 @@
       </span>
     </el-dialog>
     <div class="block" style="margin-top:2%">
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      >
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
+        :page-sizes="[10, 20, 30, 40]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper"
+        :total="total">
       </el-pagination>
     </div>
   </div>
@@ -206,6 +208,7 @@ export default {
       delVisible: false, //删除提示弹框的状态
       value1: '',
       input: '',
+      gmtTime: '',
       msg: '', //记录每一条的信息，便于取id
       ruleForm: {
         pass: '',
@@ -242,10 +245,8 @@ export default {
     total: function() {}
   },
   methods: {
-    //激活状态
-    onLineStatus: function(row, column) {
-      console.log(column)
-      return row.status == 1 ? '激活' : row.status == 0 ? '未激活' : 'aaa'
+    load() {
+      this.cardList.length += 2
     },
     // 分页查询所有
     getCardAll() {
@@ -259,11 +260,15 @@ export default {
       })
         .then((res) => {
           this.cardList = res.data.data
+          for (let i = 0; i < this.cardList.length; i++) {
+            this.cardList[i].gmtCreate = this.formatDate(this.cardList[i].gmtCreate)
+          }
         })
         .catch(function(error) {
           console.log(error)
         })
     },
+
     // 当前页展示数据
     handleSizeChange: function(pageSize) {
       this.pageSize = pageSize
@@ -299,6 +304,29 @@ export default {
         })
       this.delVisible = false //关闭删除提示模态框
     },
+    //激活一卡通
+    changeSwitchA(index, row) {
+      this.idx = index
+      this.msg = row //每一条数据的记录
+      console.log(this.msg.pkCardId)
+      this.axios({
+        method: 'post',
+        url: 'http://localhost:8080/card/statuschange',
+        params: {
+          pk_card_id: this.msg.pkCardId,
+          status: true
+        }
+      })
+        // eslint-disable-next-line no-unused-vars
+        .then((res) => {
+          this.$message.success('激活成功')
+          this.getCardAll()
+        })
+        .catch(function(error) {
+          console.log(error)
+        })
+    },
+
     //编辑
     handleUpdate(index, row) {
       this.idx = index
@@ -379,13 +407,37 @@ export default {
       })
         .then((res) => {
           this.detailList = res.data.data
+          for (let i = 0; i < this.detailList.length; i++) {
+            this.detailList[i].gmtCreate = this.formatDate(this.detailList[i].gmtCreate)
+          }
         })
         .catch(function(error) {
           console.log(error)
         })
+    },
+    formatDate(value) {
+      let date = new Date(value)
+      let y = date.getFullYear()
+      let MM = date.getMonth() + 1
+      MM = MM < 10 ? '0' + MM : MM
+      let d = date.getDate()
+      d = d < 10 ? '0' + d : d
+      let h = date.getHours()
+      h = h < 10 ? '0' + h : h
+      let m = date.getMinutes()
+      m = m < 10 ? '0' + m : m
+      let s = date.getSeconds()
+      s = s < 10 ? '0' + s : s
+      return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s
     }
   }
 }
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.top-input {
+  width: 200px;
+  height: 30px;
+  margin-left: 50px;
+}
+</style>
