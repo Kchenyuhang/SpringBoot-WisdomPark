@@ -114,7 +114,7 @@
     </el-table>
     <div style="margin-top:2%">
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
-        :page-sizes="[10, 20, 30, 40]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper"
+        :page-sizes="[5,7,10,15, 20, 30, 40]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper"
         :total="total">
       </el-pagination>
     </div>
@@ -154,7 +154,7 @@ export default {
       delVisible: false, //删除提示弹框的状态
       currentPage: 1, //当前页
       total: 40, //总记录数
-      pageSize: 10, //页的大小
+      pageSize: 7, //页的大小
       createBookShow: false, //添加书籍的表单的控制变量
       bookUpdateShow: false, //修复书籍的表单的控制变量
       bookCreate: {
@@ -241,7 +241,6 @@ export default {
       this.book = res.data.content //源数据
       this.bookShow = this.book //显示数据
       console.log(this.book)
-      // this.total = this.book.length - 1
       for (let i = 0; i < this.bookShow.length; i++) {
         this.bookShow[i].description = this.bookShow[i].description.substring(0, 10) + '...'
         this.bookShow[i].author = this.bookShow[i].author.substring(0, 10) + '...'
@@ -394,8 +393,7 @@ export default {
 
 <style scoped lang="scss">
 .container {
-  margin-left: 20px;
-  margin-top: 5px;
+  padding-left: 20px;
   display: flex;
   flex-direction: column;
 }
@@ -404,7 +402,7 @@ export default {
   .input {
     width: 400px;
     margin-right: 20px;
-    margin-left: -680px;
+    margin-left: -47%;
   }
 }
 .createBook {
@@ -421,8 +419,8 @@ export default {
   border: solid 1px black;
 }
 .bookFormCreate {
-  width: 600px;
-  height: 750px;
+  width: 500px;
+  height: 650px;
   background-color: white;
   border-radius: 10px;
   padding: 20px;

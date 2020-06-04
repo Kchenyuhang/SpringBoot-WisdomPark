@@ -5,6 +5,7 @@
 </template>
 
 <style lang="scss">
+@import url('../src/assets/css/style.css');
 * {
   padding: 0;
   margin: 0;
