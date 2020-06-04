@@ -93,14 +93,35 @@
             type="text"
             size="small"
           >查看</el-button>
+
           <el-button
             type="text"
             size="small"
           >编辑</el-button>
-          <el-button
-            type="text"
-            size="small"
-          >删除</el-button>
+          <el-popover
+            placement="top"
+            width="160"
+            v-model="visible"
+          >
+            <p>这是一段内容这是一段内容确定删除吗？</p>
+            <div style="text-align: right; margin: 0">
+              <el-button
+                size="mini"
+                type="text"
+                @click="visible = false"
+              >取消</el-button>
+              <el-button
+                type="primary"
+                size="mini"
+                @click="visible = false"
+              >确定</el-button>
+            </div>
+            <el-button
+              slot="reference"
+              type="text"
+              size="small"
+            >删除</el-button>
+          </el-popover>
         </template>
       </el-table-column>
     </el-table>
@@ -112,7 +133,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
-        :page-sizes="[5, 15, 25,30 ]"
+        :page-sizes="[5, 15, 25, 30]"
         :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -128,9 +149,10 @@ export default {
   data() {
     return {
       tableData: [],
-      total: 40,
+      total: 80,
       currentPage: 1,
-      pageSize: 5
+      pageSize: 5,
+      visible: false
     }
   },
   components: {},
