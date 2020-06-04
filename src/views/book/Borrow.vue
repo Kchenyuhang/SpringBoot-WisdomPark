@@ -13,13 +13,13 @@
         <el-form-item label="查询时间范围" required>
           <el-col :span="3">
             <el-form-item prop="timeForm">
-              <el-date-picker type="date" placeholder="起始日期" v-model="timeForm.startTime" style="width: 90%;">
+              <el-date-picker type="date" placeholder="起始日期" v-model="timeForm.startTime" style="width: 95%;">
               </el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="3">
             <el-form-item prop="timeForm">
-              <el-date-picker type="date" placeholder="截止日期" v-model="timeForm.endTime" style="width: 90%;">
+              <el-date-picker type="date" placeholder="截止日期" v-model="timeForm.endTime" style="width: 95%;">
               </el-date-picker>
             </el-form-item>
           </el-col>
