@@ -125,7 +125,7 @@
       width="300px"
       center
     >
-      <div class="del-dialog-cnt">一卡通信息删除不可恢复，是否确定删除？</div>
+      <div class="del-dialog-cnt">挂失信息删除不可恢复，是否确定删除？</div>
       <span
         slot="footer"
         class="dialog-footer"
@@ -217,6 +217,27 @@ export default {
       this.idx = index
       this.msg = row //每一条数据的记录
       this.delVisible = true
+    },
+    // 确定删除
+    deleteRow() {
+      this.axios({
+        method: 'get',
+        url: 'http://localhost:8080/loss/deletion/{pk_card_id}',
+        params: {
+          pk_report_loss_id: this.msg.pkReportLossId
+        }
+      })
+        .then((res) => {
+          if (res.data) {
+            this.getLossAll()
+            this.$message.success('删除成功')
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+          this.$message.error('挂失信息删除失败')
+        })
+      this.delVisible = false //关闭删除提示模态框
     }
   },
   computed: {}
