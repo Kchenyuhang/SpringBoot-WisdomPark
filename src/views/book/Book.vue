@@ -95,16 +95,16 @@
     <el-table ref="bookId" :data="bookShow" @selection-change="handleSelectionChange">
       <el-table-column prop="pkBookId" type="selection" width="50"></el-table-column>
       <el-table-column prop="pkBookId" label="id" width="50"> </el-table-column>
-      <el-table-column prop="author" label="作者" width="220"> </el-table-column>
+      <el-table-column prop="author" label="作者" width="110"> </el-table-column>
       <el-table-column prop="bookName" label="书名" width="200"> </el-table-column>
-      <el-table-column prop="description" label="描述" width="180"> </el-table-column>
+      <el-table-column prop="description" label="描述" width="160"> </el-table-column>
       <el-table-column prop="type" label="类型" width="50"> </el-table-column>
       <el-table-column prop="bookNumber" label="总数" width="50"> </el-table-column>
       <el-table-column prop="bookResidueNumber" label="库存" width="50"> </el-table-column>
       <el-table-column prop="status" label="状态" width="50"></el-table-column>
-      <el-table-column prop="gmtCreate" label="创建时间" width="150"> </el-table-column>
-      <el-table-column prop="gmtModified" label="修改时间" width="150"> </el-table-column>
-      <el-table-column prop="isDeleted" label="删除标志" width="100"> </el-table-column>
+      <el-table-column prop="gmtCreate" label="创建时间" width="130"> </el-table-column>
+      <el-table-column prop="gmtModified" label="修改时间" width="130"> </el-table-column>
+      <el-table-column prop="isDeleted" label="删除标志 " width="100"> </el-table-column>
       <el-table-column label="操作" width="150">
         <template slot-scope="scope">
           <el-button size="mini" type="warning" @click="handleUpdate(scope.$index, scope.row)">修改</el-button>
@@ -238,11 +238,13 @@ export default {
       }
       let res = await API.init('/book/all', data, 'post')
 
-      this.book = res.data.content
-      this.bookShow = this.book
+      this.book = res.data.content //源数据
+      this.bookShow = this.book //显示数据
       console.log(this.book)
+      // this.total = this.book.length - 1
       for (let i = 0; i < this.bookShow.length; i++) {
         this.bookShow[i].description = this.bookShow[i].description.substring(0, 10) + '...'
+        this.bookShow[i].author = this.bookShow[i].author.substring(0, 10) + '...'
         this.bookShow[i].gmtCreate = this.formatDate(this.bookShow[i].gmtCreate)
         this.bookShow[i].gmtModified = this.formatDate(this.bookShow[i].gmtModified)
         if (!this.bookShow[i].status) {
