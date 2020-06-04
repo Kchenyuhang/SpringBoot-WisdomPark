@@ -20,7 +20,7 @@
               </el-tooltip>
               <el-dropdown>
                 <el-avatar :size="50" src="https://empty">
-                  <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png" />
+                  <img :src="user.sysUserAvatar" />
                 </el-avatar>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item><span @click="logout()">退出</span></el-dropdown-item>
@@ -45,11 +45,14 @@ export default {
       menu: {
         name: '主页',
         childName: ''
-      }
+      },
+      user: JSON.parse(localStorage.getItem('user'))
     }
   },
   components: {},
-  created() {},
+  created() {
+    console.log(this.user)
+  },
   mounted() {
     var _this = this
     Bus.$on('menuName', function(menuName) {

@@ -163,25 +163,25 @@ export default {
       this.dialogFormVisible = true
     },
     addRoomInfo(tag) {
-      if(tag == 1){
+      if (tag == 1) {
         this.axios({
-        method: 'post',
-        url: 'http://localhost:8080/room',
-        data: {
-          name: this.room.name,
-          towerId: 1
-        }
-      }).then((res) => {
-        console.log(res)
-        if (res.data.code == 1) {
-          this.$message({
-            type: 'success',
-            message: '新增成功!'
-          })
-          this.dialogFormVisible = false
-        }
-      })
-      }else {
+          method: 'post',
+          url: 'http://localhost:8080/room',
+          data: {
+            name: this.room.name,
+            towerId: 1
+          }
+        }).then((res) => {
+          console.log(res)
+          if (res.data.code == 1) {
+            this.$message({
+              type: 'success',
+              message: '新增成功!'
+            })
+            this.dialogFormVisible = false
+          }
+        })
+      } else {
         this.updateRoom()
       }
     },

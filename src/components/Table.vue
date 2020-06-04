@@ -18,7 +18,7 @@
           </el-table-column>
           <el-table-column align="right">
             <template slot="header" slot-scope>
-              <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />
+              <input type="text" v-model="search" @input="filterSearch()" style="height: 30px; width: 200px" placeholder="输入关键字搜索" />
             </template>
             <template slot-scope="scope">
               <p style="text-align:center">
@@ -106,7 +106,18 @@ export default {
     handleCurrentChange() {
       this.start = this.currentPage * 10 - 10
       this.end = this.currentPage * 10
-    }
+    },
+    //过滤方法
+    //过滤搜索
+    filterSearch() {
+      //数组元素按条件过滤
+      this.towerList = this.towerList.filter((v) => {
+        // console.log(JSON.stringify(v))
+        if (JSON.stringify(v).includes(this.search)) {
+          return v
+        }
+      })
+    },
   },
   computed: {}
 }
