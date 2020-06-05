@@ -3,7 +3,7 @@
     <Nav></Nav>
     <div class="container">
       <Side :menuList="menuList" style="margin-top:10px;"></Side>
-      <router-view style="flex:0 0 85%"/>
+      <router-view style="flex:1 1 auto" />
     </div>
   </el-container>
 </template>
@@ -56,16 +56,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.header {
-  width: 800px;
-  height: 50px;
-  background-color: lightgreen;
-}
-
-.side {
-  background-color: blue;
-}
-
 .container {
   display: flex;
   max-width: 100%;
