@@ -4,8 +4,8 @@
       <el-row class="header-row">
         <el-input class="input" placeholder="请输入内容" v-model="input" clearable @input="filterSearch"> </el-input>
         <el-button size="medium" type="success" @click="searchByTime">根据时间查询</el-button>
-        <el-button size="medium" type="primary">增加</el-button>
-        <el-button size="medium" type="danger">批量删除</el-button>
+        <el-button size="medium" type="primary">书籍，是人类进步的阶梯</el-button>
+        <!-- <el-button size="medium" type="danger">批量删除</el-button> -->
       </el-row>
     </div>
     <div>
@@ -13,22 +13,22 @@
         <el-form-item label="查询时间范围" required>
           <el-col :span="3">
             <el-form-item prop="timeForm">
-              <el-date-picker type="date" placeholder="起始日期" v-model="timeForm.startTime" style="width: 95%;">
+              <el-date-picker type="date" placeholder="起始日期" v-model="timeForm.startTime" style="width: 90%;">
               </el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="3">
             <el-form-item prop="timeForm">
-              <el-date-picker type="date" placeholder="截止日期" v-model="timeForm.endTime" style="width: 95%;">
+              <el-date-picker type="date" placeholder="截止日期" v-model="timeForm.endTime" style="width: 90%;">
               </el-date-picker>
             </el-form-item>
           </el-col>
         </el-form-item>
       </el-form>
     </div>
-    <el-table ref="bookId" :data="borrowShow" @selection-change="handleSelectionChange">
-      <el-table-column prop="pkBorrowId" label="记录ID" width="100"> </el-table-column>
-      <el-table-column prop="borrowBookId" label="图书ID" width="100"> </el-table-column>
+    <el-table ref="bookId" :data="borrowShow" @selection-change="handleSelectionChange" class="borrowTable">
+      <!-- <el-table-column prop="pkBorrowId" label="记录ID" width="100"> </el-table-column> -->
+      <!-- <el-table-column prop="borrowBookId" label="图书ID" width="100"> </el-table-column> -->
       <el-table-column prop="borrowBookName" label="书名" width="200"> </el-table-column>
       <el-table-column prop="borrowUserName" label="借阅人" width="100"> </el-table-column>
       <el-table-column prop="borrowUserPhone" label="联系方式" width="150"> </el-table-column>
@@ -36,12 +36,12 @@
       <el-table-column prop="isDeleted" label="删除标志" width="100"> </el-table-column>
       <el-table-column prop="gmtCreate" label="创建时间" width="130"> </el-table-column>
       <el-table-column prop="gmtModified" label="修改时间" width="130"> </el-table-column>
-      <el-table-column label="操作" width="150">
+      <!-- <el-table-column label="操作" width="150">
         <template slot-scope="scope">
           <el-button size="mini" type="warning" @click="handleUpdate(scope.$index, scope.row)">修改</el-button>
           <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
         </template>
-      </el-table-column>
+      </el-table-column> -->
     </el-table>
     <div style="margin-top:2%">
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
@@ -184,5 +184,8 @@ export default {
 }
 .timeForm {
   margin-left: -2%;
+}
+.borrowTable {
+  padding-left: 20%;
 }
 </style>
