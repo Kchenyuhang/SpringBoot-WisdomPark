@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h1>App版本管理</h1>
   </div>
 </template>
 
