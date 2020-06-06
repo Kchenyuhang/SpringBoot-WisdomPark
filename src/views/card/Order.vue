@@ -1,6 +1,145 @@
 <template>
-  <div>
-    <h1>订单管理</h1>
+  <div style="width:100%;margin-left:5%">
+    <div class="tab-hearder">
+      <el-row style="margin-left:-80%;margin-top:1%">
+        <el-button
+          size="mini"
+          type="primary"
+          @click="addcenterDialogVisible = true"
+        >增加</el-button>
+        <el-button
+          size="mini"
+          type="warning"
+          disabled
+        >修改</el-button>
+        <el-button
+          size="mini"
+          type="danger"
+          disabled
+        >删除</el-button>
+        <el-button
+          type="success"
+          size="mini"
+        >导出</el-button>
+      </el-row>
+
+    </div>
+    <el-table
+      :data="tableData"
+      border
+      style="width: 88%;margin-top:3%"
+    >
+      <el-table-column
+        prop="gmtCreate"
+        fixed
+        label="日期"
+        width="150"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="orderNumber"
+        label="订单号"
+        width="120"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="orderType"
+        label="类型"
+        width="
+        120"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="orderMoney"
+        label="金额"
+        width="
+        120"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="jobNumber"
+        label="卡号"
+        width="
+        120"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="description"
+        label="缴费描述"
+        width="120"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="payMethod"
+        label="支付方式"
+        width="300"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="status"
+        label="状态"
+        width="120"
+        :formatter="statusChange"
+      >
+      </el-table-column>
+      <el-table-column
+        fixed="right"
+        label="操作"
+        width="100"
+      >
+        <template slot-scope="scope">
+          <el-button
+            @click="handleClick(scope.row)"
+            type="text"
+            size="small"
+          >查看</el-button>
+
+          <el-button
+            type="text"
+            size="small"
+          >编辑</el-button>
+          <el-popover
+            placement="top"
+            width="160"
+            v-model="visible"
+          >
+            <p>这是一段内容这是一段内容确定删除吗？</p>
+            <div style="text-align: right; margin: 0">
+              <el-button
+                size="mini"
+                type="text"
+                @click="visible = false"
+              >取消</el-button>
+              <el-button
+                type="primary"
+                size="mini"
+                @click="visible = false"
+              >确定</el-button>
+            </div>
+            <el-button
+              slot="reference"
+              type="text"
+              size="small"
+            >删除</el-button>
+          </el-popover>
+        </template>
+      </el-table-column>
+    </el-table>
+    <div
+      class="block"
+      style="margin-top:2%"
+    >
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[5, 15, 25, 30]"
+        :page-size="pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      >
+      </el-pagination>
+    </div>
   </div>
 </template>
 
@@ -8,12 +147,86 @@
 export default {
   name: 'Order',
   data() {
-    return {}
+    return {
+      tableData: [],
+      total: 80,
+      currentPage: 1,
+      pageSize: 5,
+      visible: false
+    }
   },
   components: {},
-  created() {},
+  created() {
+    this.getOrderAll()
+  },
+  watch: {
+    pageSize: function() {
+      this.getOrderAll()
+    },
+    currentPage: function() {
+      this.getOrderAll()
+    },
+    total: function() {}
+  },
   mounted() {},
-  methods: {},
+  methods: {
+    //时间格式化
+    dateFormat: function(row, column) {
+      var date = row[column.property]
+      if (date == undefined) {
+        return ''
+      }
+      // eslint-disable-next-line no-undef
+      return moment(date).format('YYYY-MM-DD HH:mm:ss')
+    },
+    // eslint-disable-next-line no-unused-vars
+    statusChange: function(row, column) {
+      return row.status == 1 ? '已支付' : row.status == 0 ? '未支付' : 'aaa'
+    },
+    //获取所有订单消息
+    getOrderAll() {
+      this.axios({
+        method: 'post',
+        url: 'http://localhost:8080/order/all',
+        data: {
+          currentPage: this.currentPage,
+          pageSize: this.pageSize
+        }
+      })
+        .then((res) => {
+          this.tableData = res.data.data
+          for (let i = 0; i < this.tableData.length; i++) {
+            this.tableData[i].gmtCreate = this.formatDate(this.tableData[i].gmtCreate)
+          }
+        })
+        .catch(function(error) {
+          console.log(error)
+        })
+    },
+    // 当前页展示数据
+    handleSizeChange: function(pageSize) {
+      this.pageSize = pageSize
+    },
+    // 当前页
+    handleCurrentChange: function(currentPage) {
+      this.currentPage = currentPage
+    },
+    formatDate(value) {
+      let date = new Date(value)
+      let y = date.getFullYear()
+      let MM = date.getMonth() + 1
+      MM = MM < 10 ? '0' + MM : MM
+      let d = date.getDate()
+      d = d < 10 ? '0' + d : d
+      let h = date.getHours()
+      h = h < 10 ? '0' + h : h
+      let m = date.getMinutes()
+      m = m < 10 ? '0' + m : m
+      let s = date.getSeconds()
+      s = s < 10 ? '0' + s : s
+      return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s
+    }
+  },
   computed: {}
 }
 </script>
