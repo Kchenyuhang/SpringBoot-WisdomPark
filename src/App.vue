@@ -1,10 +1,10 @@
 <template>
   <div id="app">
-    <router-view />
+    <router-view class="content" />
   </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import url('../src/assets/css/style.css');
 * {
   padding: 0;
@@ -18,5 +18,10 @@
   text-align: center;
   color: #2c3e50;
   display: flex;
+}
+
+.content { 
+  position: absolute;
+  
 }
 </style>
