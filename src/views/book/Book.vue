@@ -239,8 +239,9 @@ export default {
       let res = await API.init('/book/all', data, 'post')
 
       this.book = res.data.content //源数据
-      this.bookShow = this.book //显示数据
-      console.log(this.book)
+      // this.bookShow = this.book //显示数据   此处不可以这样，这样是引用
+      // this.bookShow = this.book.slice(0)
+      this.bookShow = this.bookShow.concat(JSON.parse(JSON.stringify(this.book))) //拷贝数组
       for (let i = 0; i < this.bookShow.length; i++) {
         this.bookShow[i].description = this.bookShow[i].description.substring(0, 10) + '...'
         this.bookShow[i].author = this.bookShow[i].author.substring(0, 10) + '...'
@@ -257,6 +258,15 @@ export default {
           this.bookShow[i].isDeleted = '禁用'
         }
       }
+      console.log('book' + JSON.stringify(this.book[1]))
+      console.log('bookShow' + JSON.stringify(this.bookShow[1]))
+    },
+    copyArr(arr) {
+      let res = []
+      for (let i = 0; i < arr.length; i++) {
+        res.push(arr[i])
+      }
+      return res
     },
     //过滤搜索
     filterSearch() {
@@ -290,16 +300,21 @@ export default {
     },
     //修改
     handleUpdate(index, row) {
-      this.index = index
-      this.bookUpdate.id = row.pkBookId
-      this.bookUpdate.bookName = row.bookName
-      this.bookUpdate.author = row.author
-      this.bookUpdate.type = row.type
-      this.bookUpdate.description = row.description
-      this.bookUpdate.bookNumber = row.bookNumber
-      this.bookUpdate.status = row.status
-      this.bookUpdate.cover = row.cover
-      this.bookUpdateShow = true
+      for (let i = 0; i < this.book.length; i++) {
+        if (this.book[i].pkBookId === row.pkBookId) {
+          console.log(this.book[i])
+          this.index = index
+          this.bookUpdate.id = this.book[i].pkBookId
+          this.bookUpdate.bookName = this.book[i].bookName
+          this.bookUpdate.author = this.book[i].author
+          this.bookUpdate.type = this.book[i].type
+          this.bookUpdate.description = this.book[i].description
+          this.bookUpdate.bookNumber = this.book[i].bookNumber
+          this.bookUpdate.status = this.book[i].status
+          this.bookUpdate.cover = this.book[i].cover
+          this.bookUpdateShow = true
+        }
+      }
     },
     //单行删除
     handleDelete(index, row) {
