@@ -444,5 +444,6 @@ export default {
 }
 .imgChange {
   cursor: pointer;
+  width: 80px;
 }
 </style>
