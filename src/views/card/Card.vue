@@ -475,7 +475,7 @@ export default {
     // 确定删除
     deleteRow() {
       this.axios({
-        method: 'get',
+        method: 'post',
         url: 'http://localhost:8080/card/deletion/{pk_card_id}',
         params: {
           pk_card_id: this.msg.pkCardId
@@ -525,7 +525,7 @@ export default {
     //修改一卡通信息
     confirmUpdate() {
       this.axios({
-        method: 'put',
+        method: 'post',
         url: 'http://localhost:8080/card/modification',
         data: {
           pkCardId: this.msg.pkCardId,
@@ -588,10 +588,10 @@ export default {
     getDetail() {
       console.log(this.msg.jobNumber)
       this.axios({
-        method: 'get',
+        method: 'post',
         url: 'http://localhost:8080/card/consume',
-        params: {
-          job_number: this.msg.jobNumber
+        data: {
+          field: this.msg.jobNumber
         }
       })
         .then((res) => {
