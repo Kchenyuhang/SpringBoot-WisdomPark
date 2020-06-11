@@ -1,189 +1,61 @@
 <template>
   <div>
     <div class="cc-df title">
-      <el-button
-        size="mini"
-        type="success"
-        @click="handleAdd()"
-      >新增</el-button>
-      <el-input
-        placeholder="请输入内容"
-        v-model="searchInput"
-        class="search-input cc-mleft"
-        clearable
-        @input="filterSearch"
-      >
-      </el-input>
+      <el-button size="mini" type="success" @click="handleAdd()">新增</el-button>
+      <el-input placeholder="请输入内容" v-model="searchInput" class="search-input cc-mleft" clearable @input="filterSearch"> </el-input>
     </div>
     <div>
-      <el-table
-        :data="tableData"
-        style="width: 100%"
-        :default-sort="{prop: 'date', order: 'descending'}"
-      >
-        <el-table-column
-          prop="sys_user_name"
-          label="姓名"
-          sortable
-          width="180"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="role_name"
-          label="角色"
-          sortable
-          width="180"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="sys_user_phone_number"
-          label="手机号"
-          sortable
-          width="180"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="is_enabled"
-          label="状态"
-          sortable
-          width="180"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="gmt_create"
-          label="日期"
-          sortable
-          width="180"
-        >
-        </el-table-column>
-        <el-table-column
-          label="操作"
-          width="250"
-        >
+      <el-table :data="tableData" style="width: 100%" :default-sort="{ prop: 'date', order: 'descending' }">
+        <el-table-column prop="sys_user_name" label="姓名" sortable width="180"> </el-table-column>
+        <el-table-column prop="role_name" label="角色" sortable width="180"> </el-table-column>
+        <el-table-column prop="sys_user_phone_number" label="手机号" sortable width="180"> </el-table-column>
+        <el-table-column prop="is_enabled" label="状态" sortable width="180"> </el-table-column>
+        <el-table-column prop="gmt_create" label="日期" sortable width="180"> </el-table-column>
+        <el-table-column label="操作" width="250">
           <template slot-scope="scope">
-            <el-button
-              size="mini"
-              type="success"
-              @click="handleUpdate(scope.$index, scope.row)"
-            >编辑</el-button>
-            <el-button
-              size="mini"
-              type="danger"
-              @click="handleDelete(scope.$index)"
-            >删除</el-button>
-            <el-button
-              size="mini"
-              type="danger"
-              @click="cleanPassword(scope.$index)"
-            >重置</el-button>
+            <el-button size="mini" type="success" @click="handleUpdate(scope.$index, scope.row)">编辑</el-button>
+            <el-button size="mini" type="danger" @click="handleDelete(scope.$index)">删除</el-button>
+            <el-button size="mini" type="danger" @click="cleanPassword(scope.$index)">重置</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
     <div>
       <!-- 修改弹出框 -->
-      <el-dialog
-        title="修改管理员信息"
-        :visible.sync="isTrue"
-        width="30%"
-        left
-      >
-        <div
-          class="cc-df cc-mltop"
-          id="fileBox"
-          v-if="updatecenterDialogVisible"
-        >
-          <img
-            class="avatar"
-            :src="ruleForm.sysUserAvatar"
-            @click="avatarClick()"
-          />
-          <input
-            type="file"
-            @change="uploadAvatar($event)"
-            ref="file"
-            style="display: none;"
-            id="file"
-          />
+      <el-dialog title="修改管理员信息" :visible.sync="isTrue" width="30%" left>
+        <div class="cc-df cc-mltop" id="fileBox" v-if="updatecenterDialogVisible">
+          <img class="avatar" :src="ruleForm.sysUserAvatar" @click="avatarClick()" />
+          <input type="file" @change="uploadAvatar($event)" ref="file" style="display: none;" id="file" />
         </div>
-        <el-form
-          :model="ruleForm"
-          status-icon
-          label-width="80px"
-        >
-          <el-form-item
-            label="用户名"
-            prop="sysUserName"
-          >
-            <el-input
-              type="name"
-              v-model="ruleForm.sysUserName"
-              autocomplete="off"
-              placeholder="输入用户名"
-            ></el-input>
+        <el-form :model="ruleForm" status-icon label-width="80px">
+          <el-form-item label="用户名" prop="sysUserName">
+            <el-input type="name" v-model="ruleForm.sysUserName" autocomplete="off" placeholder="输入用户名"></el-input>
           </el-form-item>
-          <el-form-item
-            label="手机号"
-            prop="sysUserPhoneNumber"
-          >
-            <el-input
-              type="name"
-              v-model="ruleForm.sysUserPhoneNumber"
-              autocomplete="off"
-              placeholder="输入用手机号"
-            ></el-input>
+          <el-form-item label="手机号" prop="sysUserPhoneNumber">
+            <el-input type="name" v-model="ruleForm.sysUserPhoneNumber" autocomplete="off" placeholder="输入用手机号"></el-input>
           </el-form-item>
-          <el-form-item
-            label="角色信息"
-            prop="roleId"
-          >
-            <el-select
-              v-model="ruleForm.roleId"
-              placeholder="请选择角色信息"
-            >
-              <div
-                v-for="(item,index) in roles"
-                :key="index"
-              >
-                <el-option
-                  :label="item.roleDecoration"
-                  :value="item.pkRoleId"
-                ></el-option>
+          <el-form-item label="角色信息" prop="roleId">
+            <el-select v-model="ruleForm.roleId" placeholder="请选择角色信息">
+              <div v-for="(item, index) in roles" :key="index">
+                <el-option :label="item.roleDecoration" :value="item.pkRoleId"></el-option>
               </div>
             </el-select>
           </el-form-item>
-          <el-form-item
-            label="状态"
-            prop="isEnabled"
-            v-if="updatecenterDialogVisible"
-          >
+          <el-form-item label="状态" prop="isEnabled" v-if="updatecenterDialogVisible">
             <el-radio-group v-model="ruleForm.isEnabled">
               <el-radio label="启用"></el-radio>
               <el-radio label="禁用"></el-radio>
             </el-radio-group>
           </el-form-item>
         </el-form>
-        <span
-          slot="footer"
-          class="dialog-footer"
-        >
+        <span slot="footer" class="dialog-footer">
           <el-button @click="isTrue = false">取 消</el-button>
-          <el-button
-            type="primary"
-            @click="adminUpdate()"
-            v-if="updatecenterDialogVisible"
-          >确 定</el-button>
-          <el-button
-            type="primary"
-            @click="adminAdd()"
-            v-if="addVisble"
-          >确 定</el-button>
+          <el-button type="primary" @click="adminUpdate()" v-if="updatecenterDialogVisible">确 定</el-button>
+          <el-button type="primary" @click="adminAdd()" v-if="addVisble">确 定</el-button>
         </span>
-
       </el-dialog>
     </div>
   </div>
-
 </template>
 
 <script>
@@ -213,7 +85,7 @@ export default {
     }
   },
   methods: {
-    uploadAvatar(event) {
+    /* uploadAvatar(event) {
       const OSS = require('ali-oss')
       let client = new OSS({
         region: 'oss-cn-beijing',
@@ -230,7 +102,7 @@ export default {
         console.log(_this.avatar)
         _this.updateAdminInfo(_this.avatar)
       })
-    },
+    }, */
     updateAdminInfo(url) {
       this.imgDataUrl = url
       this.ruleForm.sysUserAvatar = this.imgDataUrl

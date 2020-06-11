@@ -12,13 +12,10 @@
           <el-input v-model="tower.latitude"></el-input>
         </el-form-item>
         <el-form-item label="类型" prop="type">
-          <el-input v-model="tower.type"></el-input>
-          <!-- <el-dropdown>
-            <el-button type="">选择类型<i class="el-icon-arrow-down el-icon--right"></i> </el-button>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>黄金糕</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown> -->
+          <!-- <el-input v-model="tower.type"></el-input> -->
+          <el-select v-model="towerType" placeholder="请选择">
+            <el-option v-for="item in towerTypes" :key="item" :label="item" :value="item"> </el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -39,8 +36,13 @@ export default {
         name: '',
         longitude: '',
         latitude: '',
-        type: ''
-      }
+        type: '',
+        id: 0
+      },
+      towerType: '',
+      towerTypes: ['教学楼', '宿舍楼'],
+      type: 0,
+      flag: 0,
     }
   },
   components: {},
@@ -51,14 +53,31 @@ export default {
       _this.tower.name = info.name
       _this.tower.longitude = info.longitude
       _this.tower.latitude = info.latitude
-      _this.tower.type = info.type
+      _this.tower.id = info.pkTowerId
+      if(info.type == 1){
+        _this.towerType = '教学楼'
+      }else {
+        _this.towerType = '宿舍楼'
+      }
       _this.dialogFormVisible = true
+      _this.flag = 1
     })
   },
   props: ['dialogFormVisible'],
   methods: {
     createTower() {
-      alert(1)
+      if(this.flag == 0){
+        this.addTowerInfo()
+    }else {
+        this.updateTowerInfo()
+    }
+    },
+    addTowerInfo(){
+      if(this.towerType == '教学楼'){
+        this.type = 1
+      }else {
+        this.type = 2
+      }
       this.axios({
         method: 'post',
         url: 'http://localhost:8080/tower/increase',
@@ -66,7 +85,7 @@ export default {
           name: this.tower.name,
           longitude: this.tower.longitude,
           latitude: this.tower.latitude,
-          type: this.tower.type
+          type: this.type
         }
       }).then((res) => {
         if (res.data.code == 1) {
@@ -75,6 +94,29 @@ export default {
             type: 'success'
           })
           this.dialogFormVisible = false
+          this.$parent.getTowerList()
+        }
+      })
+    },
+    updateTowerInfo(){
+      this.axios({
+        method: 'put',
+        url: 'http://localhost:8080/tower/single',
+        data: {
+          pkTowerId: this.tower.id, 
+          name: this.tower.name,
+          longitude: this.tower.longitude,
+          latitude: this.tower.latitude,
+          type: this.type
+        }
+      }).then((res) => {
+        if (res.data.code == 1) {
+          this.$message({
+            message: '修改成功',
+            type: 'success'
+          })
+          this.dialogFormVisible = false
+          this.$parent.getTowerList()
         }
       })
     }
