@@ -11,9 +11,11 @@
         <el-col>
           <el-input placeholder="请输入密码" v-model="user.password" show-password prefix-icon="el-icon-s-goods"></el-input>
         </el-col>
-        <el-col style="display:flex">
+        <el-col style="display:flex; align-items: center;">
           <el-input style="width: 60%" v-model="vertifyCode" placeholder="请输入内容" prefix-icon="el-icon-s-goods"></el-input>
-          <p style="width:38%">13213</p>
+          <p style="width:38%;display:flex; margin-left: 10px; align-items: center;">
+            <img src="" ref="image" alt="">
+          </p>
         </el-col>
         <el-col style="text-align:left">
           <el-checkbox v-model="checked">记住我</el-checkbox>
@@ -40,9 +42,37 @@ export default {
     }
   },
   components: {},
-  created() {},
+  created() {
+    this.getVerify()
+  },
   mounted() {},
   methods: {
+    getVerify() {
+      //获取当前时间毫秒数作为验证码的key
+      this.currentTime = new Date().getTime()
+      this.axios({
+        method: 'post',
+        url: 'http://localhost:8080/kaptcha/',
+        // 将请求数据转换为form-data格式
+        // data: {
+        //   "field": this.currentTime
+        // },
+        // 设置请求头Content-Type
+        //headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        //后端采用流
+        responseType: 'blob'
+      }).then((res) => {
+        console.log(res)
+        //使用$refs获取网页标签
+        let img = this.$refs.image
+        //const blob = new Blob([res.data], {type: 'image/jpeg'})
+        //将接收到的数据转成地址
+        let url = window.URL.createObjectURL(res.data)
+        //console.log(blob)
+        //赋值给图片标签的src
+        img.src = url
+      })
+    },
     login() {
       this.axios({
         method: 'post',
