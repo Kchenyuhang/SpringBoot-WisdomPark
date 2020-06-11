@@ -1,11 +1,15 @@
 <template>
   <div>
-    <el-menu default-active="1-4-1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" :collapse="isCollapse">
+    <el-menu default-active="1-4-1" background-color="#304156" class="el-menu-vertical-demo sideBar" @open="handleOpen" @close="handleClose" :collapse="isCollapse">
+      <el-menu-item class="menu-title">
+          <i class="el-icon-s-grid" style="font-size: 30px"></i>
+          <span class="logo-title font-white">智慧校园后台</span>
+      </el-menu-item>
       <el-submenu v-for="(item, index) in menuList" :key="index" :index="item.name">
         <template slot="title">
           <p class="row">
-            <i :class="item.icon" style="  flex: 0 0 20%; text-align: left;"></i>
-            <span style="  flex: 0 0 80%; text-align: left;">{{ item.name }}</span>
+            <i :class="item.icon" style="flex: 0 0 20%; text-align: left;"></i>
+            <span style="flex: 0 0 80%; text-align: left;" class="font-white">{{ item.name }}</span>
           </p>
         </template>
         <el-menu-item-group>
@@ -14,6 +18,7 @@
             :key="index1"
             @click="changeChildMenu(item1)"
             :route="item1.path"
+            style="color: white"
             :index="index + '-' + index1"
             >{{ item1.name }}</el-menu-item
           >
@@ -61,12 +66,26 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.container {
-}
-
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   min-width: 200px;
-  min-height: 400px;
+  height: 100%;
+  color: #bfcbd9;
+} 
+
+.logo-title {
+  font-size: 14px;
+  margin-left: 10px;
+  font-weight: 600;
+}
+
+.sideBar {
+  height: 100%;
+}
+
+.menu-title {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .row {
@@ -80,5 +99,9 @@ export default {
 
 a {
   text-decoration: none;
+}
+
+.font-white {
+  color: #bfcbd9;
 }
 </style>
