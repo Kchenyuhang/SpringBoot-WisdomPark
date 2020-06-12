@@ -1,9 +1,9 @@
 <template>
-  <el-container style="display:flex; flex-direction: column;">
-    <Nav></Nav>
-    <div class="container">
-      <Side :menuList="menuList" style="margin-top:10px;"></Side>
-      <router-view style="flex:1 1 auto" />
+  <el-container class="container">
+    <Side :menuList="menuList"></Side>
+    <div style="flex: 1 1 auto">
+      <Nav></Nav>
+      <router-view />
     </div>
   </el-container>
 </template>
@@ -59,6 +59,9 @@ export default {
 .container {
   display: flex;
   max-width: 100%;
+  height: 100%;
+  width: 100%;
+  padding: 0;
 }
 
 .area {
