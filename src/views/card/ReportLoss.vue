@@ -302,10 +302,6 @@ export default {
   width: 200px;
 }
 
-.date-input-search {
-  width: 260px;
-}
-
 .statu-search {
   width: 100px;
 }
