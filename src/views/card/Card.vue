@@ -1,5 +1,5 @@
 <template>
-  <div style="width:95%">
+  <div style="width:100%">
     <!-- 修改弹出框 -->
     <el-dialog
       title="编辑一卡通"
@@ -210,122 +210,183 @@
         <el-button @click="datailcenterDialogVisible = false">取 消</el-button>
       </span>
     </el-dialog>
-
-    <div class="tab-hearder">
-      <el-row style="margin-left:-50%;margin-top:1%">
+    <el-row
+      type="flex"
+      class="ml-20 mt-10"
+    >
+      <el-input
+        v-model="input"
+        placeholder="请输入内容"
+        class="blur-search"
+      ></el-input>
+      <el-date-picker
+        v-model="time"
+        type="daterange"
+        range-separator=":"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期"
+        class="date-input-search ml-10"
+        value-format="yyyy-MM-dd"
+      >
+      </el-date-picker>
+      <el-select
+        v-model="selectValue"
+        placeholder="请选择"
+        class="statu-search ml-10"
+      >
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        > </el-option>
+      </el-select>
+      <el-button
+        type="success"
+        size="mini"
+        @click="search()"
+        class="ml-10"
+        icon="el-icon-search"
+      >搜索</el-button>
+    </el-row>
+    <el-row class="df-jr-ac ml-20 mt-10">
+      <el-col class="tl">
         <el-button
-          size="mini"
           type="primary"
+          icon="el-icon-plus"
+          size="small"
           @click="addcenterDialogVisible = true"
-        >增加</el-button>
-        <el-button
-          size="mini"
-          type="warning"
-          disabled
-        >修改</el-button>
-        <el-button
-          size="mini"
-          type="danger"
-          disabled
-        >删除</el-button>
+        ><span>新增</span></el-button>
         <el-button
           type="success"
-          size="mini"
+          icon="el-icon-edit"
+          size="small"
+        >修改</el-button>
+        <el-button
+          type="danger"
+          icon="el-icon-delete"
+          size="small"
+        >删除</el-button>
+        <el-button
+          type="warning"
+          icon="el-icon-download"
+          size="small"
         >导出</el-button>
-        <el-input
-          class="top-input"
-          v-model="input"
-          size="mini"
-          placeholder="请输入内容"
-        ></el-input>
-      </el-row>
-    </div>
-
+      </el-col>
+      <el-col class="tr mr-20">
+        <el-button
+          icon="el-icon-refresh"
+          size="small"
+        ></el-button>
+      </el-col>
+    </el-row>
     <!-- 表格展示 -->
-    <el-table
-      :data="cardList"
-      style="margin-top:2%;width:95%;margin-left:5%"
-    >
-      <el-table-column
-        label="卡号"
-        width="150"
+    <el-row>
+      <el-col span="1"></el-col>
+      <el-col
+        span="23"
+        class="ml-20 mt-10"
       >
-        <template slot-scope="scope">
-          <span style="margin-left:-5%">{{ scope.row.cardNumber }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="卡密"
-        width="150"
-      >
-        <template slot-scope="scope">
-          <span>{{ scope.row.cardPassword }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="绑定账号"
-        width="150"
-      >
-        <template slot-scope="scope">
-          <span>{{ scope.row.jobNumber }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="余额"
-        width="150"
-      >
-        <template slot-scope="scope">
-          <span>{{ scope.row.cardBalance }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="状态"
-        width="180"
-      >
-        <template slot-scope="scope">
-          <el-switch
-            v-model="scope.row.status"
-            active-color="#13ce66"
-            :disabled="scope.row.status == 1"
-            inactive-color="#ff4949"
-            @change="changeSwitchA($event, scope.row, scope.$index)"
+        <el-table
+          :data="cardList"
+          stripe="true"
+          style="width: 100%;"
+        >
+          <el-table-column
+            type="selection"
+            min-width="10%"
           >
-            >
-          </el-switch>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="创建时间"
-        width="180"
-      >
-        <template slot-scope="scope">
-          <i class="el-icon-time"></i>
-          <span>{{ scope.row.gmtCreate }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="操作"
-        width="250"
-      >
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="success"
-            @click="handleUpdate(scope.$index, scope.row)"
-          >编辑</el-button>
-          <el-button
-            size="mini"
-            type="primary"
-            @click="handleDetail(scope.$index, scope.row)"
-          >流水账单</el-button>
-          <el-button
-            size="mini"
-            type="danger"
-            @click="handleDelete(scope.$index, scope.row)"
-          >删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+          </el-table-column>
+          <el-table-column
+            label="卡号"
+            show-overflow-tooltip
+            min-width="13%"
+          >
+            <template slot-scope="scope">
+              <span style="margin-left:-5%">{{ scope.row.cardNumber }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="卡密"
+            show-overflow-tooltip
+            min-width="13%"
+          >
+            <template slot-scope="scope">
+              <span>{{ scope.row.cardPassword }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="绑定账号"
+            show-overflow-tooltip
+            min-width="15%"
+          >
+            <template slot-scope="scope">
+              <span>{{ scope.row.jobNumber }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="余额"
+            show-overflow-tooltip
+            min-width="13%"
+          >
+            <template slot-scope="scope">
+              <span>{{ scope.row.cardBalance }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="状态"
+            show-overflow-tooltip
+            min-width="15%"
+          >
+            <template slot-scope="scope">
+              <el-switch
+                v-model="scope.row.status"
+                active-color="#13ce66"
+                :disabled="scope.row.status == 1"
+                inactive-color="#ff4949"
+                @change="changeSwitchA($event, scope.row, scope.$index)"
+              >
+                >
+              </el-switch>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="创建时间"
+            show-overflow-tooltip
+            min-width="18%"
+          >
+            <template slot-scope="scope">
+              <i class="el-icon-time"></i>
+              <span>{{ scope.row.gmtCreate }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="操作"
+            show-overflow-tooltip
+            min-width="23%"
+          >
+            <template slot-scope="scope">
+              <el-button
+                size="mini"
+                type="success"
+                @click="handleUpdate(scope.$index, scope.row)"
+              >编辑</el-button>
+              <el-button
+                size="mini"
+                type="primary"
+                @click="handleDetail(scope.$index, scope.row)"
+              >流水账单</el-button>
+              <el-button
+                size="mini"
+                type="danger"
+                @click="handleDelete(scope.$index, scope.row)"
+              >删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+
+      </el-col>
+    </el-row>
     <!-- 删除提示框 -->
     <el-dialog
       title="提示"
@@ -390,7 +451,7 @@ export default {
       detailList: [],
       currentPage: 1,
       total: 40,
-      pageSize: 10,
+      pageSize: 8,
       updatecenterDialogVisible: false,
       addcenterDialogVisible: false,
       datailcenterDialogVisible: false,
@@ -476,9 +537,9 @@ export default {
     deleteRow() {
       this.axios({
         method: 'post',
-        url: 'http://localhost:8080/card/deletion/{pk_card_id}',
-        params: {
-          pk_card_id: this.msg.pkCardId
+        url: 'http://localhost:8080/card/id',
+        data: {
+          field: this.msg.pkCardId
         }
       })
         .then((res) => {
@@ -501,8 +562,8 @@ export default {
       this.axios({
         method: 'post',
         url: 'http://localhost:8080/card/statuschange',
-        params: {
-          pk_card_id: this.msg.pkCardId,
+        data: {
+          field: this.msg.pkCardId,
           status: true
         }
       })
@@ -628,5 +689,28 @@ export default {
   width: 200px;
   height: 30px;
   margin-left: 50px;
+}
+.blur-search {
+  width: 200px;
+}
+
+.date-input-search {
+  width: 260px;
+}
+
+.statu-search {
+  width: 100px;
+}
+
+el-input {
+  height: 30px;
+}
+
+.search-btn {
+  height: 30px;
+  width: 80px;
+}
+.el-input__inner {
+  height: 30px;
 }
 </style>
