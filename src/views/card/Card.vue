@@ -207,6 +207,7 @@
           type="danger"
           icon="el-icon-delete"
           size="small"
+          @click="handleDeleteMul"
         >批量删除</el-button>
         <el-button
           type="warning"
@@ -236,6 +237,7 @@
           <el-table-column
             type="selection"
             min-width="10%"
+            @selection-change="handleSelectionChange"
           >
           </el-table-column>
           <el-table-column
@@ -463,6 +465,10 @@ export default {
       this.msg = row //每一条数据的记录
       this.delVisible = true
     },
+    //批量删除
+    handleDeleteMul() {
+      this.delVisible = true
+    },
     async deleteRow() {
       this.data = { field: this.msg.pkCardId }
       this.url = '/card/id'
@@ -587,11 +593,6 @@ export default {
 .blur-search {
   width: 200px;
 }
-
-.date-input-search {
-  width: 260px;
-}
-
 .statu-search {
   width: 100px;
 }
