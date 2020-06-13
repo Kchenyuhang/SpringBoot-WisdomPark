@@ -1,130 +1,150 @@
+/* eslint-disable prettier/prettier */
 <template>
-  <div style="width:100%;margin-left:5%">
-    <div class="tab-hearder">
-      <el-row style="margin-left:-80%;margin-top:1%">
+  <div style="width:100%">
+    <el-row
+      type="flex"
+      class="ml-20 mt-10"
+    >
+      <el-input
+        v-model="input"
+        placeholder="请输入内容"
+        class="blur-search"
+      ></el-input>
+
+      <el-select
+        v-model="selectValue"
+        placeholder="请选择"
+        class="statu-search ml-10"
+      >
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        > </el-option>
+      </el-select>
+      <el-button
+        type="success"
+        size="mini"
+        @click="search()"
+        class="ml-10"
+        icon="el-icon-search"
+      >搜索</el-button>
+    </el-row>
+    <el-row class="df-jr-ac ml-20 mt-10">
+      <el-col class="tl">
         <el-button
-          size="mini"
           type="primary"
-          @click="addcenterDialogVisible = true"
-        >增加</el-button>
-        <el-button
-          size="mini"
-          type="warning"
-          disabled
-        >修改</el-button>
-        <el-button
-          size="mini"
-          type="danger"
-          disabled
-        >删除</el-button>
+          icon="el-icon-plus"
+          size="small"
+        ><span>新增</span></el-button>
         <el-button
           type="success"
-          size="mini"
+          icon="el-icon-edit"
+          size="small"
+        >修改</el-button>
+        <el-button
+          type="warning"
+          icon="el-icon-download"
+          size="small"
         >导出</el-button>
-      </el-row>
-
-    </div>
-    <el-table
-      :data="tableData"
-      border
-      style="width: 88%;margin-top:3%"
-    >
-      <el-table-column
-        prop="gmtCreate"
-        fixed
-        label="日期"
-        width="150"
+      </el-col>
+      <el-col class="tr mr-20">
+        <el-button
+          icon="el-icon-refresh"
+          size="small"
+        ></el-button>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col span="1"></el-col>
+      <el-col
+        span="23"
+        class="ml-20 mt-10"
       >
-      </el-table-column>
-      <el-table-column
-        prop="orderNumber"
-        label="订单号"
-        width="120"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="orderType"
-        label="类型"
-        width="
+        <el-table
+          :data="tableData"
+          border
+          style="width: 100%"
+        >
+          <el-table-column
+            type="selection"
+            min-width="5%"
+          ></el-table-column>
+          <el-table-column
+            prop="gmtCreate"
+            fixed
+            label="日期"
+            width="180"
+          > </el-table-column>
+          <el-table-column
+            prop="orderNumber"
+            label="订单号"
+            width="120"
+          > </el-table-column>
+          <el-table-column
+            prop="orderType"
+            label="类型"
+            width="
         120"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="orderMoney"
-        label="金额"
-        width="
-        120"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="jobNumber"
-        label="卡号"
-        width="
-        120"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="description"
-        label="缴费描述"
-        width="120"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="payMethod"
-        label="支付方式"
-        width="300"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="status"
-        label="状态"
-        width="120"
-        :formatter="statusChange"
-      >
-      </el-table-column>
-      <el-table-column
-        fixed="right"
-        label="操作"
-        width="100"
-      >
-        <template slot-scope="scope">
-          <el-button
-            @click="handleClick(scope.row)"
-            type="text"
-            size="small"
-          >查看</el-button>
-
-          <el-button
-            type="text"
-            size="small"
-          >编辑</el-button>
-          <el-popover
-            placement="top"
-            width="160"
-            v-model="visible"
           >
-            <p>这是一段内容这是一段内容确定删除吗？</p>
-            <div style="text-align: right; margin: 0">
+          </el-table-column>
+          <el-table-column
+            prop="orderMoney"
+            label="金额"
+            width="
+        100"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="jobNumber"
+            label="卡号"
+            width="
+        120"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="description"
+            label="缴费描述"
+            width="180"
+          > </el-table-column>
+          <el-table-column
+            prop="payMethod"
+            label="支付方式"
+            width="150"
+          > </el-table-column>
+          <el-table-column
+            prop="status"
+            label="状态"
+            width="120"
+            :formatter="statusChange"
+          > </el-table-column>
+          <el-table-column
+            fixed="right"
+            label="操作"
+            width="150"
+          >
+            <template slot-scope="scope">
               <el-button
-                size="mini"
+                @click="handleClick(scope.row)"
                 type="text"
-                @click="visible = false"
-              >取消</el-button>
+                size="small"
+              >查看</el-button>
               <el-button
-                type="primary"
-                size="mini"
-                @click="visible = false"
-              >确定</el-button>
-            </div>
-            <el-button
-              slot="reference"
-              type="text"
-              size="small"
-            >删除</el-button>
-          </el-popover>
-        </template>
-      </el-table-column>
-    </el-table>
+                type="text"
+                size="small"
+              >编辑</el-button>
+              <el-button
+                slot="reference"
+                type="text"
+                size="small"
+                @click="handleDelete(scope.$index, scope.row)"
+              >删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-col>
+    </el-row>
     <div
       class="block"
       style="margin-top:2%"
@@ -133,13 +153,32 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
-        :page-sizes="[5, 15, 25, 30]"
+        :page-sizes="[6, 12, 18, 24]"
         :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
       >
       </el-pagination>
     </div>
+    <!-- 删除提示框 -->
+    <el-dialog
+      title="提示"
+      :visible.sync="delVisible"
+      width="300px"
+      center
+    >
+      <div class="del-dialog-cnt">订单信息删除不可恢复，是否确定删除？</div>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="delVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="deleteRow"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -149,10 +188,11 @@ export default {
   data() {
     return {
       tableData: [],
-      total: 80,
+      total: 72,
       currentPage: 1,
-      pageSize: 5,
-      visible: false
+      pageSize: 6,
+      visible: false,
+      delVisible: false
     }
   },
   components: {},
@@ -170,6 +210,33 @@ export default {
   },
   mounted() {},
   methods: {
+    //单行删除
+    handleDelete(index, row) {
+      this.idx = index
+      this.msg = row //每一条数据的记录
+      this.delVisible = true
+    },
+    // 确定删除
+    deleteRow() {
+      this.axios({
+        method: 'post',
+        url: 'http://localhost:8080/order/id',
+        data: {
+          field: this.msg.pkOrderId
+        }
+      })
+        .then((res) => {
+          if (res.data) {
+            this.getOrderAll()
+            this.$message.success('删除成功')
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+          this.$message.error('订单信息删除失败')
+        })
+      this.delVisible = false //关闭删除提示模态框
+    },
     //时间格式化
     dateFormat: function(row, column) {
       var date = row[column.property]
@@ -224,11 +291,31 @@ export default {
       m = m < 10 ? '0' + m : m
       let s = date.getSeconds()
       s = s < 10 ? '0' + s : s
-      return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s
+      return y + '年' + MM + '月' + d + '日 ' + h + ':' + m + ':' + s
     }
   },
   computed: {}
 }
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.blur-search {
+  width: 200px;
+}
+
+.statu-search {
+  width: 100px;
+}
+
+el-input {
+  height: 30px;
+}
+
+.search-btn {
+  height: 30px;
+  width: 80px;
+}
+.el-input__inner {
+  height: 30px;
+}
+</style>

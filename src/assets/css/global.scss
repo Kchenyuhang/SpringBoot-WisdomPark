@@ -1,7 +1,12 @@
 $red:#f56c6c;
 $blue: #409eff;
-$green: #67c23a;
+$green: #42d885;
 $orange: #ebb563;
+
+* {
+    margin: 0;
+    padding: 0;
+}
 
 //背景颜色
 .bg-red {
@@ -18,6 +23,10 @@ $orange: #ebb563;
 
 .bg-orange {
     background-color: $orange;
+}
+
+.light-font-color {
+    color: #f7fbff;
 }
 
 //字体
@@ -62,6 +71,8 @@ $orange: #ebb563;
 }
 
 //布局
+//水平左对齐
+
 //水平居中，垂直居中
 .df-jc-ac {
     display: flex;

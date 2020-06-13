@@ -7,7 +7,7 @@
       </el-menu-item>
       <el-submenu v-for="(item, index) in menuList" :key="index" :index="item.name">
         <template slot="title">
-          <p class="row">
+          <p class="row" @click="changeMenu(item)">
             <i :class="item.icon" style="flex: 0 0 20%; text-align: left;"></i>
             <span style="flex: 0 0 80%; text-align: left;" class="font-white">{{ item.name }}</span>
           </p>
@@ -16,7 +16,7 @@
           <el-menu-item
             v-for="(item1, index1) in item.subMenus"
             :key="index1"
-            @click="changeChildMenu(item1)"
+            @click="changeChildMenu(item1, item.name)"
             :route="item1.path"
             style="color: white"
             :index="index + '-' + index1"
@@ -52,14 +52,14 @@ export default {
       console.log(key, keyPath)
     },
     changeMenu(item) {
-        this.$router.push(item.path)
-        Bus.$emit('menuName', item.menu)
+        //this.$router.push(item.path)
+        Bus.$emit('menuName', item)
     },
-    changeChildMenu(item1) {
+    changeChildMenu(item1, parentName) {
       if (item1.path != null) {
         this.$router.push(item1.path)
       }
-      Bus.$emit('childMenuName', item1.menu)
+      Bus.$emit('childMenuName', item1, parentName)
     }
   }
 }
@@ -80,6 +80,12 @@ export default {
 
 .sideBar {
   height: 100%;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 10000;
+  overflow: hidden;
 }
 
 .menu-title {

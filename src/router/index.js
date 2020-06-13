@@ -142,9 +142,34 @@ const routes = [
         component: () => import('../views/administration/TimmeTable.vue')
       },
       {
-        path: 'examiination',
-        name: 'Examination',
-        component: () => import('../views/administration/Examination.vue')
+        path: 'comment',
+        name: 'Comment',
+        component: () => import('../views/flea/Comment.vue')
+      },
+      {
+        path: 'goods',
+        name: 'Goods',
+        component: () => import('../views/flea/Goods.vue')
+      },
+      {
+        path: 'user',
+        name: 'User',
+        component: () => import('../views/flea/User.vue')
+      },
+      {
+        path: 'reword',
+        name: 'Reword',
+        component: () => import('../views/flea/Reword.vue')
+      },
+      {
+        path: 'type',
+        name: 'Type',
+        component: () => import('../views/flea/Type.vue')
+      },
+      {
+        path: 'fleaorder',
+        name: 'Order',
+        component: () => import('../views/flea/Order.vue')
       }
     ]
   },

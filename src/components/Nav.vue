@@ -1,10 +1,10 @@
 <template>
   <el-container>
-    <el-header height="80px" style="box-shadow: 0px 3px 5px 0px #ddd;  padding: 0">
+    <el-header class="nav" :class="{nav1: isCollapse}" height="90px" style="box-shadow: 0px 3px 5px 0px #ddd;">
       <el-row class="nav-header">
         <el-col class="nav-header-left">
-          <i class="el-icon-s-fold" style="font-size: 20px" @click="changeSide"></i>
-          <el-breadcrumb separator="/">
+          <i class="el-icon-s-fold side-bar-show" @click="changeSide"></i>
+          <el-breadcrumb class="ml-10" separator="/">
             <el-breadcrumb-item :to="{ path: '/' }">{{ menu.name }}</el-breadcrumb-item>
             <el-breadcrumb-item v-if="menu.childName !== ''">{{ menu.childName }}</el-breadcrumb-item>
           </el-breadcrumb>
@@ -25,11 +25,25 @@
         </el-col>
       </el-row>
       <el-row class="nav-bottom">
-        <el-tag v-for="(tag, index) in tags" @click="jumpTo(tag.path)"  class="nav-bottom-tag" :key="tag.name" :type="''" effect="dark">
-          {{ tag.name }}
-          <span :class="{ changeIcon: index == currentIndex }" @click="deleteTag(tag)" @mouseenter="currentIndex = index" @mouseleave="currentIndex = -1">
-            <img src="@/assets/chahao.png" alt="" style="height: 12px; width:12px" v-show="iconShow" />
-            <img src="@/assets/chahao_white.png" alt="" style="height: 12px; width:12px" v-show="!iconShow" />
+        <el-tag
+          v-for="(tag, index) in tags"
+          @click="jumpTo(tag)"
+          class="nav-bottom-tag ml-10 mt-5"
+          :key="tag.name"
+          :type="''"
+          effect="dark"
+          :class="{ tagBg: tag.name == currentTagName }"
+        >
+          <span>{{ tag.name }}</span>
+          <span
+            class="ml-5 df-jc-ac"
+            :class="{ changeIcon: index == currentIndex }"
+            @click="deleteTag(tag)"
+            @mouseenter="currentIndex = index"
+            @mouseleave="currentIndex = -1"
+          >
+            <img src="@/assets/chahao.png" alt="" style="height: 14px; width:14px" v-if="currentIndex !== index" />
+            <img src="@/assets/chahao_white.png" alt="" style="height: 14px; width:14px" v-if="currentIndex == index" />
           </span>
         </el-tag>
       </el-row>
@@ -50,12 +64,13 @@ export default {
       },
       iconShow: true,
       currentIndex: -1,
-      tags: [
-        { name: '标签一', path: 'card' },
-        { name: '标签二', path: 'card' },
-        { name: '标签三', path: 'tower' }
-      ],
-      user: JSON.parse(localStorage.getItem('user'))
+      tags: [],
+      tag: {
+        name: '',
+        path: ''
+      },
+      user: JSON.parse(localStorage.getItem('user')),
+      currentTagName: ''
     }
   },
   components: {},
@@ -65,10 +80,42 @@ export default {
   mounted() {
     var _this = this
     Bus.$on('menuName', function(menuName) {
-      _this.menu.name = menuName
+      if (menuName.path != '') {
+        let tag = { name: menuName.name, path: menuName.path }
+        _this.currentTagName = tag.name
+        if (
+          !_this.tags.some((item) => {
+            if (item.name == tag.name) {
+              return true
+            }
+          })
+        ) {
+        _this.tags.push(tag)
+        _this.$router.push(tag.path)
+        }
+      }
+      _this.menu.childName = ''
+      _this.menu.name = menuName.name
+      console.log(menuName)
     }),
-      Bus.$on('childMenuName', function(childMenuName) {
-        _this.menu.childName = childMenuName
+      Bus.$on('childMenuName', function(childMenuName, parentName) {
+        //_this.menu.childName = childMenuName
+        let tag = { name: childMenuName.name, path: childMenuName.path }
+        if (
+          !_this.tags.some((item) => {
+            if (item.name == tag.name) {
+              _this.currentTagName = tag.name
+              return true
+            }
+          })
+        ) {
+          _this.currentTagName = _this.tag.name
+          _this.tags.push(tag)
+        }
+        if (parentName == _this.menu.name) {
+          _this.currentTagName = tag.name
+          _this.menu.childName = childMenuName.name
+        }
       })
   },
   methods: {
@@ -90,11 +137,11 @@ export default {
     },
     deleteTag(tag) {
       let index = this.tags.indexOf(tag)
-      alert(index)
       this.tags.splice(index, 1)
     },
-    jumpTo(path) {
-      this.$router.push(path)
+    jumpTo(tag) {
+      this.$router.push(tag.path)
+      this.currentTagName = tag.name
     }
   },
   computed: {}
@@ -102,17 +149,46 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.nav {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 100;
+  padding: 0%;
+  left: 200px;
+  z-index: 100;
+  background-color: white;
+}
+
+.nav1 {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 100;
+  padding: 0%;
+  left: 60px;
+  background-color: white;
+}
+
+.el-header {
+  padding: 0;
+}
+
+.side-bar-show {
+  font-size: 22px;
+}
+
 .nav-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   height: 50px;
-  border-bottom: 2px solid #ddd;
+  padding: 0 10px;
+  border-bottom: 2px solid #f4f4f5;
   &-left {
     text-align: left;
     display: flex;
     align-items: center;
-    margin-left: 20px;
     i {
       margin-right: 15px;
     }
@@ -129,26 +205,26 @@ export default {
 }
 
 .nav-bottom {
-  height: 30px;
+  height: 36px;
   display: flex;
   align-items: center;
-  padding: 0 20px;
   &-tag {
-    height: 26px;
+    display: flex;
+    align-items: center;
+    height: 30px;
     border: 1px solid #ddd;
     margin-right: 5px;
-    line-height: 26px;
     color: black;
     background-color: white;
     .changeIcon {
-      width: 24px;
-      height: 24px;
+      width: 14px;
+      height: 14px;
       border-radius: 50%;
-      background-color: #eee;
-      img {
-        width: 12px;
-        height: 12px;
-      }
+      background-color: #b4bccc;
+      /* img {
+        width: 14px;
+        height: 14px;
+      } */
     }
   }
   //@debugmargin-bottom: 20px;
@@ -163,5 +239,9 @@ export default {
 .header-icon {
   font-size: 30px;
   color: white;
+}
+
+.tagBg {
+  background-color: #42b983;
 }
 </style>
