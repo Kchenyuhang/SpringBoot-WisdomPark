@@ -7,13 +7,15 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import httpAxios from './views/utils/httpAxios'
 import './assets/css/global.scss'
-
+import global from './js/global.js'
+import './assets/css/global.css'
 
 Vue.use(ElementUI)
 
 // 设置默认接口请求路径
 
 Vue.prototype.axios = axios
+Vue.prototype.global = global
 
 Vue.config.productionTip = false
 
