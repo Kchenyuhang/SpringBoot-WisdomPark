@@ -193,7 +193,6 @@
       width="30%"
       left
     >
-
       <el-form
         :model="updateRole"
         status-icon
@@ -405,7 +404,7 @@ el-input {
   width: 80px;
 }
 
->>> .el-input__inner {
+.el-input__inner {
   height: 30px;
 }
 </style>
