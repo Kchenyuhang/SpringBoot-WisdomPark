@@ -3,7 +3,7 @@
     <div class="tab-header">
       <el-row class="header-row">
         <el-input class="input" placeholder="请输入内容" v-model="input" clearable @input="filterSearch"></el-input>
-        <el-button size="medium" type="success">查询</el-button>
+        <el-button size="medium" type="success" @click="findUserByContent">查询</el-button>
       </el-row>
     </div>
     <div class="table">
@@ -39,7 +39,7 @@ export default {
   data() {
     return {
       currentPage: 0,
-      total: 0, //总记录数
+      total: 40, //总记录数
       pageSize: 5,
       userShow: [],
       userAll: [],
@@ -61,7 +61,6 @@ export default {
       }
 
       let data = {
-        //此处需要减一
         currentPage: this.currentPage,
         pageSize: this.pageSize
       }
@@ -72,9 +71,40 @@ export default {
       //需要清除一下原显示
       this.userShow = []
       this.userShow = this.userShow.concat(JSON.parse(JSON.stringify(this.userAll))) //拷贝数组
-      // let len = this.userShow.length
-      // this.total = len
-      // console.log('len' + len)
+      let len = this.userShow.length
+      this.total = len
+      console.log('len' + len)
+      console.log('total' + this.total)
+      for (let i = 0; i < this.userShow.length; i++) {
+        if (!this.userShow[i].isDeleted) {
+          this.userShow[i].isDeleted = '启用'
+        } else {
+          this.userShow[i].isDeleted = '禁用'
+        }
+      }
+    },
+     async findUserByContent() {
+      if (this.currentPage - 1 < 0) {
+        this.currentPage = 0
+      } else {
+        this.currentPage--
+      }
+
+      let data = {
+        content: this.input,
+        currentPage: this.currentPage,
+        pageSize: this.pageSize
+      }
+      console.log(data)
+      let res = await API.init('/flea/user/find', data, 'post')
+      this.userAll = res.data.content
+      console.log(this.userAll)
+      //需要清除一下原显示
+      this.userShow = []
+      this.userShow = this.userShow.concat(JSON.parse(JSON.stringify(this.userAll))) //拷贝数组
+      let len = this.userShow.length
+      this.total = len
+      console.log('len' + len)
       console.log('total' + this.total)
       for (let i = 0; i < this.userShow.length; i++) {
         if (!this.userShow[i].isDeleted) {
@@ -124,8 +154,7 @@ export default {
       this.getAllUser()
     },
     total: function() {
-        console.log('total改变' + this.total)
-      this.getAllUser()
+        // console.log('total改变'  + this.userAll.length)
     }
   }
 }
