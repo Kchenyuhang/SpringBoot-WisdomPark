@@ -8,7 +8,7 @@
       <el-col span="20">
         <!-- 操作按钮 -->
         <el-row type="flex" class="ml-20 mt-10">
-          <el-input v-model="input" placeholder="请输入内容" class="blur-search" v-if="searchShow"></el-input>
+          <el-input v-model="input" prefix-icon="el-icon-search" placeholder="请输入内容" class="blur-search" v-if="searchShow"></el-input>
           <el-date-picker
             v-model="time"
             type="daterange"
@@ -389,7 +389,7 @@ el-input {
 }
 
 >>> .el-input__icon {
-  color: black;
+  color: #ddd;
   margin-bottom: 10px;
 }
 
