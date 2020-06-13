@@ -1,8 +1,11 @@
 <template>
   <el-container class="container">
-    <Side :menuList="menuList"></Side>
-    <div style="flex: 1 1 auto">
+    <Side :menuList="menuList" style="position: relative; top: 0;height: 100%"></Side>
+    <div style="flex: 1 1 auto;" class="body" :class="{ body1: isCollapse }">
       <Nav></Nav>
+      <div style="height: 20px;line-height: 20px;margin-top: 100px; background-color: #f8f8f8; padding-left: 10px" class="tl ">
+        <!-- <span>推荐歌曲</span> -->
+      </div>
       <router-view />
     </div>
   </el-container>
@@ -10,11 +13,13 @@
 <script>
 import Side from '../components/Side'
 import Nav from '../components/Nav'
+import Bus from '../js/bus'
 export default {
   name: 'Index',
   data() {
     return {
-      menuList: []
+      menuList: [],
+      isCollapse: true
     }
   },
   components: {
@@ -24,7 +29,12 @@ export default {
   created() {
     this.getMenuList()
   },
-  mounted() {},
+  mounted() {
+    var _this = this
+    Bus.$on('isCollapse', function(isCollapse) {
+      _this.isCollapse = isCollapse
+    })
+  },
   methods: {
     handleOpen(key, keyPath) {
       console.log(key, keyPath)
@@ -62,6 +72,14 @@ export default {
   height: 100%;
   width: 100%;
   padding: 0;
+}
+
+.body {
+  margin-left: 200px;
+}
+
+.body1 {
+  margin-left: 60px;
 }
 
 .area {
