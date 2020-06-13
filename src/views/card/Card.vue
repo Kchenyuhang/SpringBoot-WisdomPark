@@ -1,5 +1,5 @@
 <template>
-  <div style="width:95%">
+  <div style="width:100%">
     <!-- 修改弹出框 -->
     <el-dialog
       title="编辑一卡通"
@@ -96,57 +96,12 @@
             autocomplete="off"
           ></el-input>
         </el-form-item>
-        <el-form-item label="活动时间">
-          <el-col :span="11">
-            <el-form-item prop="date1">
-              <el-date-picker
-                type="date"
-                placeholder="选择日期"
-                v-model="ruleForm1.date1"
-                style="width: 100%;"
-              ></el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col
-            class="line"
-            :span="2"
-          >-</el-col>
-          <el-col :span="11">
-            <el-form-item prop="date2">
-              <el-time-picker
-                placeholder="创建时间"
-                v-model="ruleForm1.date2"
-                style="width: 100%;"
-              ></el-time-picker>
-            </el-form-item>
-          </el-col>
-        </el-form-item>
-        <el-form-item
-          required=""
-          label="状态"
-          prop="status"
-        >
-          <el-radio-group v-model="ruleForm1.status">
-            <el-radio label="true">激活</el-radio>
-            <el-radio label="false">未激活</el-radio>
-          </el-radio-group>
-        </el-form-item>
         <el-form-item
           required
           label="余额"
           prop="cardbalance1"
         >
           <el-input v-model="ruleForm1.cardbalance1"></el-input>
-        </el-form-item>
-        <el-form-item
-          required=""
-          label="删除标志"
-          prop="isdeleted"
-        >
-          <el-radio-group v-model="ruleForm1.isdeleted">
-            <el-radio label="true">已删除</el-radio>
-            <el-radio label="false">未删除</el-radio>
-          </el-radio-group>
         </el-form-item>
       </el-form>
       <span
@@ -210,122 +165,169 @@
         <el-button @click="datailcenterDialogVisible = false">取 消</el-button>
       </span>
     </el-dialog>
-
-    <div class="tab-hearder">
-      <el-row style="margin-left:-50%;margin-top:1%">
-        <el-button
-          size="mini"
-          type="primary"
-          @click="addcenterDialogVisible = true"
-        >增加</el-button>
-        <el-button
-          size="mini"
-          type="warning"
-          disabled
-        >修改</el-button>
-        <el-button
-          size="mini"
-          type="danger"
-          disabled
-        >删除</el-button>
-        <el-button
-          type="success"
-          size="mini"
-        >导出</el-button>
-        <el-input
-          class="top-input"
-          v-model="input"
-          size="mini"
-          placeholder="请输入内容"
-        ></el-input>
-      </el-row>
-    </div>
-
-    <!-- 表格展示 -->
-    <el-table
-      :data="cardList"
-      style="margin-top:2%;width:95%;margin-left:5%"
+    <el-row
+      type="flex"
+      class="ml-20 mt-10"
     >
-      <el-table-column
-        label="卡号"
-        width="150"
+      <el-input
+        v-model="input"
+        clearable
+        placeholder="请输入内容"
+        class="blur-search"
+        @input="filterSearch()"
+      ></el-input>
+      <el-select
+        v-model="selectValue"
+        placeholder="请选择"
+        class="statu-search ml-10"
       >
-        <template slot-scope="scope">
-          <span style="margin-left:-5%">{{ scope.row.cardNumber }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="卡密"
-        width="150"
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        > </el-option>
+      </el-select>
+      <el-button
+        type="success"
+        size="mini"
+        class="ml-10"
+        icon="el-icon-search"
+      >搜索</el-button>
+    </el-row>
+    <el-row class="df-jr-ac ml-20 mt-10">
+      <el-col class="tl">
+        <el-button
+          type="primary"
+          icon="el-icon-plus"
+          size="small"
+          @click="addcenterDialogVisible = true"
+        ><span>新增</span></el-button>
+        <el-button
+          type="danger"
+          icon="el-icon-delete"
+          size="small"
+        >批量删除</el-button>
+        <el-button
+          type="warning"
+          icon="el-icon-download"
+          size="small"
+        >导出</el-button>
+      </el-col>
+      <el-col class="tr mr-20">
+        <el-button
+          icon="el-icon-refresh"
+          size="small"
+        ></el-button>
+      </el-col>
+    </el-row>
+    <!-- 表格展示 -->
+    <el-row>
+      <el-col span="1"></el-col>
+      <el-col
+        span="23"
+        class="ml-20 mt-10"
       >
-        <template slot-scope="scope">
-          <span>{{ scope.row.cardPassword }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="绑定账号"
-        width="150"
-      >
-        <template slot-scope="scope">
-          <span>{{ scope.row.jobNumber }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="余额"
-        width="150"
-      >
-        <template slot-scope="scope">
-          <span>{{ scope.row.cardBalance }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="状态"
-        width="180"
-      >
-        <template slot-scope="scope">
-          <el-switch
-            v-model="scope.row.status"
-            active-color="#13ce66"
-            :disabled="scope.row.status == 1"
-            inactive-color="#ff4949"
-            @change="changeSwitchA($event, scope.row, scope.$index)"
+        <el-table
+          :data="cardList"
+          stripe="true"
+          style="width: 100%;"
+        >
+          <el-table-column
+            type="selection"
+            min-width="10%"
           >
-            >
-          </el-switch>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="创建时间"
-        width="180"
-      >
-        <template slot-scope="scope">
-          <i class="el-icon-time"></i>
-          <span>{{ scope.row.gmtCreate }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="操作"
-        width="250"
-      >
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="success"
-            @click="handleUpdate(scope.$index, scope.row)"
-          >编辑</el-button>
-          <el-button
-            size="mini"
-            type="primary"
-            @click="handleDetail(scope.$index, scope.row)"
-          >流水账单</el-button>
-          <el-button
-            size="mini"
-            type="danger"
-            @click="handleDelete(scope.$index, scope.row)"
-          >删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+          </el-table-column>
+          <el-table-column
+            label="卡号"
+            show-overflow-tooltip
+            min-width="13%"
+          >
+            <template slot-scope="scope">
+              <span style="margin-left:-5%">{{ scope.row.cardNumber }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="卡密"
+            show-overflow-tooltip
+            min-width="13%"
+          >
+            <template slot-scope="scope">
+              <span>{{ scope.row.cardPassword }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="绑定账号"
+            show-overflow-tooltip
+            min-width="15%"
+          >
+            <template slot-scope="scope">
+              <span>{{ scope.row.jobNumber }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="余额"
+            show-overflow-tooltip
+            min-width="13%"
+          >
+            <template slot-scope="scope">
+              <span>{{ scope.row.cardBalance }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="状态"
+            show-overflow-tooltip
+            min-width="15%"
+          >
+            <template slot-scope="scope">
+              <el-switch
+                v-model="scope.row.status"
+                active-color="#13ce66"
+                :disabled="scope.row.status == 1"
+                inactive-color="#ff4949"
+                @change="changeSwitchA($event, scope.row, scope.$index)"
+              >
+                >
+              </el-switch>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="创建时间"
+            show-overflow-tooltip
+            min-width="18%"
+          >
+            <template slot-scope="scope">
+              <i class="el-icon-time"></i>
+              <span>{{ scope.row.gmtCreate }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="操作"
+            show-overflow-tooltip
+            min-width="23%"
+          >
+            <template slot-scope="scope">
+              <el-button
+                size="mini"
+                type="success"
+                @click="handleUpdate(scope.$index, scope.row)"
+              >编辑</el-button>
+              <el-button
+                size="mini"
+                type="primary"
+                @click="handleDetail(scope.$index, scope.row)"
+              >流水账单</el-button>
+              <el-button
+                size="mini"
+                type="danger"
+                @click="handleDelete(scope.$index, scope.row)"
+              >删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+
+      </el-col>
+    </el-row>
     <!-- 删除提示框 -->
     <el-dialog
       title="提示"
@@ -353,7 +355,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
-        :page-sizes="[10, 20, 30, 40]"
+        :page-sizes="[8, 16, 24, 32, 40]"
         :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -364,6 +366,7 @@
 </template>
 
 <script>
+const API = require('../utils/api')
 export default {
   data() {
     var validatePass = (rule, value, callback) => {
@@ -387,10 +390,11 @@ export default {
     }
     return {
       cardList: [],
+      cardList1: [],
       detailList: [],
       currentPage: 1,
       total: 40,
-      pageSize: 10,
+      pageSize: 8,
       updatecenterDialogVisible: false,
       addcenterDialogVisible: false,
       datailcenterDialogVisible: false,
@@ -409,10 +413,6 @@ export default {
         jobNumber: '',
         cardNumber: '',
         cardPassword: '',
-        date2: '',
-        date1: '',
-        status: '',
-        isdeleted: '',
         cardbalance1: ''
       },
       rules: {
@@ -438,26 +438,17 @@ export default {
       this.cardList.length += 2
     },
     // 分页查询所有
-    getCardAll() {
-      this.axios({
-        method: 'post',
-        url: 'http://localhost:8080/card/list',
-        data: {
-          currentPage: this.currentPage,
-          pageSize: this.pageSize
-        }
-      })
-        .then((res) => {
-          this.cardList = res.data.data
-          for (let i = 0; i < this.cardList.length; i++) {
-            this.cardList[i].gmtCreate = this.formatDate(this.cardList[i].gmtCreate)
-          }
-        })
-        .catch(function(error) {
-          console.log(error)
-        })
+    async getCardAll() {
+      this.data = { currentPage: this.currentPage, pageSize: this.pageSize }
+      this.url = '/card/list'
+      this.result = await API.init(this.url, this.data, 'post')
+      this.cardList = this.result.data
+      console.log(this.cardList.length)
+      this.cardList1 = this.result.data
+      for (let i = 0; i < this.cardList.length; i++) {
+        this.cardList[i].gmtCreate = this.formatDate(this.cardList[i].gmtCreate)
+      }
     },
-
     // 当前页展示数据
     handleSizeChange: function(pageSize) {
       this.pageSize = pageSize
@@ -472,50 +463,28 @@ export default {
       this.msg = row //每一条数据的记录
       this.delVisible = true
     },
-    // 确定删除
-    deleteRow() {
-      this.axios({
-        method: 'get',
-        url: 'http://localhost:8080/card/deletion/{pk_card_id}',
-        params: {
-          pk_card_id: this.msg.pkCardId
-        }
-      })
-        .then((res) => {
-          if (res.data) {
-            this.getCardAll()
-            this.$message.success('删除成功')
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-          this.$message.error('一卡通信息删除失败')
-        })
+    async deleteRow() {
+      this.data = { field: this.msg.pkCardId }
+      this.url = '/card/id'
+      this.result = await API.init(this.url, this.data, 'post')
+      if (this.data) {
+        this.getCardAll()
+        this.$message.success('删除成功')
+      } else {
+        this.$message.error('一卡通信息删除失败')
+      }
       this.delVisible = false //关闭删除提示模态框
     },
-    //激活一卡通
-    changeSwitchA(index, row) {
+    async changeSwitchA(index, row) {
       this.idx = index
       this.msg = row //每一条数据的记录
       console.log(this.msg.pkCardId)
-      this.axios({
-        method: 'post',
-        url: 'http://localhost:8080/card/statuschange',
-        params: {
-          pk_card_id: this.msg.pkCardId,
-          status: true
-        }
-      })
-        // eslint-disable-next-line no-unused-vars
-        .then((res) => {
-          this.$message.success('激活成功')
-          this.getCardAll()
-        })
-        .catch(function(error) {
-          console.log(error)
-        })
+      this.data = { field: this.msg.pkCardId, status: true }
+      this.url = '/card/statuschange'
+      this.result = await API.init(this.url, this.data, 'post')
+      this.$message.success('激活成功')
+      this.getCardAll()
     },
-
     //编辑
     handleUpdate(index, row) {
       this.idx = index
@@ -523,60 +492,43 @@ export default {
       this.updatecenterDialogVisible = true
     },
     //修改一卡通信息
-    confirmUpdate() {
-      this.axios({
-        method: 'put',
-        url: 'http://localhost:8080/card/modification',
-        data: {
-          pkCardId: this.msg.pkCardId,
-          status: this.msg.status,
-          cardPassword: this.ruleForm.checkPass,
-          jobNumber: this.ruleForm.jobnumber,
-          cardBalance: this.ruleForm.balance
-        }
-      })
-        .then((res) => {
-          this.updatecenterDialogVisible = false
-          this.getCardAll()
-          if (res.data.data == null) {
-            this.$message.success('该一卡通未激活，信息修改失败')
-          } else {
-            this.$message.success('信息修改成功')
-          }
-          console.log(res)
-        })
-        .catch(function(error) {
-          console.log(error)
-        })
+    async confirmUpdate() {
+      this.data = {
+        pkCardId: this.msg.pkCardId,
+        status: this.msg.status,
+        cardPassword: this.ruleForm.checkPass,
+        jobNumber: this.ruleForm.jobnumber,
+        cardBalance: this.ruleForm.balance
+      }
+      this.url = '/card/modification'
+      this.result = await API.init(this.url, this.data, 'post')
+      this.updatecenterDialogVisible = false
+      this.getCardAll()
+      if (this.data.data == null) {
+        this.$message.success('该一卡通未激活，信息修改失败')
+      } else {
+        this.$message.success('信息修改成功')
+      }
     },
     //新增一卡通
-    confirmAdd() {
-      this.axios({
-        method: 'post',
-        url: 'http://localhost:8080/card/increase',
-        data: {
-          cardNumber: this.ruleForm1.cardNumber,
-          status: this.ruleForm1.status,
-          cardPassword: this.ruleForm1.cardPassword,
-          jobNumber: this.ruleForm1.jobNumber,
-          cardBalance: this.ruleForm1.cardbalance1,
-          isDeleted: this.ruleForm1.isdeleted,
-          gmtCreate: '2020-05-27 08:36:50'
-        }
-      })
-        .then((res) => {
-          this.addcenterDialogVisible = false
-          this.getCardAll()
-          if (res.data.data == null) {
-            this.$message.success('该一卡通账号已存在，请勿重复新增')
-          } else {
-            this.$message.success('一卡通添加成功')
-          }
-        })
-        .catch(function(error) {
-          console.log(error)
-        })
+    async confirmAdd() {
+      this.data = {
+        cardNumber: this.ruleForm1.cardNumber,
+        cardPassword: this.ruleForm1.cardPassword,
+        jobNumber: this.ruleForm1.jobNumber,
+        cardBalance: this.ruleForm1.cardbalance1
+      }
+      this.url = '/card/modification'
+      this.result = await API.init(this.url, this.data, 'post')
+      this.addcenterDialogVisible = false
+      this.getCardAll()
+      if (this.data.data == null) {
+        this.$message.success('该一卡通账号已存在，请勿重复新增')
+      } else {
+        this.$message.success('一卡通添加成功')
+      }
     },
+
     //明细
     handleDetail(index, row) {
       this.idx = index
@@ -585,24 +537,16 @@ export default {
       this.getDetail()
     },
     //清单明细
-    getDetail() {
-      console.log(this.msg.jobNumber)
-      this.axios({
-        method: 'get',
-        url: 'http://localhost:8080/card/consume',
-        params: {
-          job_number: this.msg.jobNumber
-        }
-      })
-        .then((res) => {
-          this.detailList = res.data.data
-          for (let i = 0; i < this.detailList.length; i++) {
-            this.detailList[i].gmtCreate = this.formatDate(this.detailList[i].gmtCreate)
-          }
-        })
-        .catch(function(error) {
-          console.log(error)
-        })
+    async getDetail() {
+      this.data = {
+        field: this.msg.jobNumber
+      }
+      this.url = '/card/consume'
+      this.result = await API.init(this.url, this.data, 'post')
+      this.detailList = this.result.data
+      for (let i = 0; i < this.detailList.length; i++) {
+        this.detailList[i].gmtCreate = this.formatDate(this.detailList[i].gmtCreate)
+      }
     },
     formatDate(value) {
       let date = new Date(value)
@@ -618,6 +562,17 @@ export default {
       let s = date.getSeconds()
       s = s < 10 ? '0' + s : s
       return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s
+    },
+    //过滤搜索
+    filterSearch() {
+      // 获取输入框的值
+      let search = this.input
+      //数组元素按条件过滤
+      this.cardList = this.cardList1.filter((v) => {
+        if (JSON.stringify(v).includes(search)) {
+          return v
+        }
+      })
     }
   }
 }
@@ -628,5 +583,28 @@ export default {
   width: 200px;
   height: 30px;
   margin-left: 50px;
+}
+.blur-search {
+  width: 200px;
+}
+
+.date-input-search {
+  width: 260px;
+}
+
+.statu-search {
+  width: 100px;
+}
+
+el-input {
+  height: 30px;
+}
+
+.search-btn {
+  height: 30px;
+  width: 80px;
+}
+.el-input__inner {
+  height: 30px;
 }
 </style>
