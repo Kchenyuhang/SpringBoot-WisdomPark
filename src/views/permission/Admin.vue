@@ -170,6 +170,7 @@ export default {
       this.result = await API.init('/admin/deletion/' + this.tableData[index].sys_user_id, this.data, 'delete')
       this.result = await API.init('/admin/all', this.data, 'get')
       this.tableData = this.result.data
+      this.tableData1 = this.result.data
     },
     async selectGuanli() {
       this.data = {}
