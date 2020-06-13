@@ -2,37 +2,94 @@
   <div class="container">
     <div class="tab-header">
       <el-row class="header-row">
-        <el-input class="input" placeholder="请输入内容" v-model="input" clearable @input="filterSearch"> </el-input>
-        <el-button size="medium" type="success">查询</el-button>
-        <el-button size="medium" type="primary" @click="createBookShow = !createBookShow">增加</el-button>
-        <el-button size="medium" type="danger" @click="handleDeleteMul">批量删除</el-button>
+        <el-input
+          class="input"
+          placeholder="请输入内容"
+          v-model="input"
+          clearable
+          @input="filterSearch"
+        > </el-input>
+        <el-button
+          size="medium"
+          type="success"
+        >查询</el-button>
+        <el-button
+          size="medium"
+          type="primary"
+          @click="createBookShow = !createBookShow"
+        >增加</el-button>
+        <el-button
+          size="medium"
+          type="danger"
+          @click="handleDeleteMul"
+        >批量删除</el-button>
       </el-row>
     </div>
-    <div class="createBook" v-if="createBookShow">
-      <el-form :model="bookCreate" :rules="bookCreateRules" ref="bookCreate" label-width="100px" class="bookFormCreate">
-        <el-form-item label="书名" prop="bookName">
+    <div
+      class="createBook"
+      v-if="createBookShow"
+    >
+      <el-form
+        :model="bookCreate"
+        :rules="bookCreateRules"
+        ref="bookCreate"
+        label-width="100px"
+        class="bookFormCreate"
+      >
+        <el-form-item
+          label="书名"
+          prop="bookName"
+        >
           <el-input v-model="bookCreate.bookName"></el-input>
         </el-form-item>
-        <el-form-item label="作者" prop="author">
+        <el-form-item
+          label="作者"
+          prop="author"
+        >
           <el-input v-model="bookCreate.author"></el-input>
         </el-form-item>
 
-        <el-form-item label="类型" prop="type">
+        <el-form-item
+          label="类型"
+          prop="type"
+        >
           <el-input v-model="bookCreate.type"></el-input>
         </el-form-item>
 
-        <el-form-item label="描述" prop="description">
+        <el-form-item
+          label="描述"
+          prop="description"
+        >
           <el-input v-model="bookCreate.description"></el-input>
         </el-form-item>
 
-        <el-form-item label="数量" prop="bookNumber">
-          <el-input type="number" v-model="bookCreate.bookNumber"></el-input>
+        <el-form-item
+          label="数量"
+          prop="bookNumber"
+        >
+          <el-input
+            type="number"
+            v-model="bookCreate.bookNumber"
+          ></el-input>
         </el-form-item>
 
-        <el-form-item label="状态" prop="status">
-          <el-select v-model="bookCreate.status" placeholder="请选择状态" style="width:380px">
-            <el-option label="启用" value="true"></el-option>
-            <el-option label="禁用" value="false"></el-option>
+        <el-form-item
+          label="状态"
+          prop="status"
+        >
+          <el-select
+            v-model="bookCreate.status"
+            placeholder="请选择状态"
+            style="width:380px"
+          >
+            <el-option
+              label="启用"
+              value="true"
+            ></el-option>
+            <el-option
+              label="禁用"
+              value="false"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="封面">
@@ -41,40 +98,89 @@
             <el-button size="small" type="primary">点击上传</el-button>
             <div slot="tip" class="el-upload__tip">只能上传一张jpg/png文件，且不超过500kb</div>
           </el-upload> -->
-          <img :src="bookCreate.cover" @click="selectavatar()" class="imgChange" width="100px" height="100px" />
+          <img
+            :src="bookCreate.cover"
+            @click="selectavatar()"
+            class="imgChange"
+            width="100px"
+            height="100px"
+          />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submitForm('bookCreate')">立即创建</el-button>
+          <el-button
+            type="primary"
+            @click="submitForm('bookCreate')"
+          >立即创建</el-button>
           <el-button @click="resetForm('bookCreate')">重置</el-button>
           <el-button @click="createBookShow = !createBookShow">取消</el-button>
         </el-form-item>
       </el-form>
     </div>
-    <div class="createBook" v-if="bookUpdateShow">
-      <el-form :model="bookUpdate" :rules="bookCreateRules" ref="bookUpdate" label-width="100px" class="bookFormCreate">
-        <el-form-item label="书名" prop="bookName">
+    <div
+      class="createBook"
+      v-if="bookUpdateShow"
+    >
+      <el-form
+        :model="bookUpdate"
+        :rules="bookCreateRules"
+        ref="bookUpdate"
+        label-width="100px"
+        class="bookFormCreate"
+      >
+        <el-form-item
+          label="书名"
+          prop="bookName"
+        >
           <el-input v-model="bookUpdate.bookName"></el-input>
         </el-form-item>
-        <el-form-item label="作者" prop="author">
+        <el-form-item
+          label="作者"
+          prop="author"
+        >
           <el-input v-model="bookUpdate.author"></el-input>
         </el-form-item>
 
-        <el-form-item label="类型" prop="type">
+        <el-form-item
+          label="类型"
+          prop="type"
+        >
           <el-input v-model="bookUpdate.type"></el-input>
         </el-form-item>
 
-        <el-form-item label="描述" prop="description">
+        <el-form-item
+          label="描述"
+          prop="description"
+        >
           <el-input v-model="bookUpdate.description"></el-input>
         </el-form-item>
 
-        <el-form-item label="数量" prop="bookNumber">
-          <el-input type="number" v-model="bookUpdate.bookNumber"></el-input>
+        <el-form-item
+          label="数量"
+          prop="bookNumber"
+        >
+          <el-input
+            type="number"
+            v-model="bookUpdate.bookNumber"
+          ></el-input>
         </el-form-item>
 
-        <el-form-item label="状态" prop="status">
-          <el-select v-model="bookUpdate.status" placeholder="请选择状态" style="width:380px">
-            <el-option label="启用" value="true"></el-option>
-            <el-option label="禁用" value="false"></el-option>
+        <el-form-item
+          label="状态"
+          prop="status"
+        >
+          <el-select
+            v-model="bookUpdate.status"
+            placeholder="请选择状态"
+            style="width:380px"
+          >
+            <el-option
+              label="启用"
+              value="true"
+            ></el-option>
+            <el-option
+              label="禁用"
+              value="false"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="封面">
@@ -83,51 +189,145 @@
             <el-button size="small" type="primary">点击上传</el-button>
             <div slot="tip" class="el-upload__tip">只能上传一张jpg/png文件，且不超过500kb</div>
           </el-upload> -->
-          <img :src="bookUpdate.cover" @click="selectavatar()" class="imgChange" width="100px" height="100px" />
+          <img
+            :src="bookUpdate.cover"
+            @click="selectavatar()"
+            class="imgChange"
+            width="100px"
+            height="100px"
+          />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submitForm('bookUpdate')">立即修改</el-button>
+          <el-button
+            type="primary"
+            @click="submitForm('bookUpdate')"
+          >立即修改</el-button>
           <el-button @click="resetForm('bookUpdate')">重置</el-button>
           <el-button @click="bookUpdateShow = !bookUpdateShow">取消</el-button>
         </el-form-item>
       </el-form>
     </div>
-    <el-table ref="bookId" :data="bookShow" @selection-change="handleSelectionChange">
-      <el-table-column prop="pkBookId" type="selection" width="50"></el-table-column>
-      <el-table-column prop="pkBookId" label="id" width="50"> </el-table-column>
-      <el-table-column prop="author" label="作者" width="110"> </el-table-column>
-      <el-table-column prop="bookName" label="书名" width="200"> </el-table-column>
-      <el-table-column prop="description" label="描述" width="160"> </el-table-column>
-      <el-table-column prop="type" label="类型" width="50"> </el-table-column>
-      <el-table-column prop="bookNumber" label="总数" width="50"> </el-table-column>
-      <el-table-column prop="bookResidueNumber" label="库存" width="50"> </el-table-column>
-      <el-table-column prop="status" label="状态" width="50"></el-table-column>
-      <el-table-column prop="gmtCreate" label="创建时间" width="130"> </el-table-column>
-      <el-table-column prop="gmtModified" label="修改时间" width="130"> </el-table-column>
-      <el-table-column prop="isDeleted" label="删除标志 " width="100"> </el-table-column>
-      <el-table-column label="操作" width="150">
+    <el-table
+      ref="bookId"
+      :data="bookShow"
+      @selection-change="handleSelectionChange"
+    >
+      <el-table-column
+        prop="pkBookId"
+        type="selection"
+        width="50"
+      ></el-table-column>
+      <el-table-column
+        prop="pkBookId"
+        label="id"
+        width="50"
+      > </el-table-column>
+      <el-table-column
+        prop="author"
+        label="作者"
+        width="110"
+      > </el-table-column>
+      <el-table-column
+        prop="bookName"
+        label="书名"
+        width="200"
+      > </el-table-column>
+      <el-table-column
+        prop="description"
+        label="描述"
+        width="160"
+      > </el-table-column>
+      <el-table-column
+        prop="type"
+        label="类型"
+        width="50"
+      > </el-table-column>
+      <el-table-column
+        prop="bookNumber"
+        label="总数"
+        width="50"
+      > </el-table-column>
+      <el-table-column
+        prop="bookResidueNumber"
+        label="库存"
+        width="50"
+      > </el-table-column>
+      <el-table-column
+        prop="status"
+        label="状态"
+        width="50"
+      ></el-table-column>
+      <el-table-column
+        prop="gmtCreate"
+        label="创建时间"
+        width="130"
+      > </el-table-column>
+      <el-table-column
+        prop="gmtModified"
+        label="修改时间"
+        width="130"
+      > </el-table-column>
+      <el-table-column
+        prop="isDeleted"
+        label="删除标志 "
+        width="100"
+      > </el-table-column>
+      <el-table-column
+        label="操作"
+        width="150"
+      >
         <template slot-scope="scope">
-          <el-button size="mini" type="warning" @click="handleUpdate(scope.$index, scope.row)">修改</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          <el-button
+            size="mini"
+            type="warning"
+            @click="handleUpdate(scope.$index, scope.row)"
+          >修改</el-button>
+          <el-button
+            size="mini"
+            type="danger"
+            @click="handleDelete(scope.$index, scope.row)"
+          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <div style="margin-top:2%">
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
-        :page-sizes="[5,7,10,15, 20, 30, 40]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper"
-        :total="total">
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[5,7,10,15, 20, 30, 40]"
+        :page-size="pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      >
       </el-pagination>
     </div>
     <!-- 删除提示框 -->
-    <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
+    <el-dialog
+      title="提示"
+      :visible.sync="delVisible"
+      width="300px"
+      center
+    >
       <div class="del-dialog-cnt">图书信息删除不可恢复，是否确定删除？</div>
-      <span slot="footer" class="dialog-footer">
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="delVisible = false">取 消</el-button>
-        <el-button type="primary" @click="deleteBook">确 定</el-button>
+        <el-button
+          type="primary"
+          @click="deleteBook"
+        >确 定</el-button>
       </span>
     </el-dialog>
     <!-- 设置可以被引用  引用名为file  不可见 -->
-    <input ref="file" v-show="false" type="file" @change="uploadAvatar($event)" />
+    <input
+      ref="file"
+      v-show="false"
+      type="file"
+      @change="uploadAvatar($event)"
+    />
   </div>
 </template>
 
@@ -152,7 +352,7 @@ export default {
       ],
       msg: '',
       delVisible: false, //删除提示弹框的状态
-      currentPage: 1, //当前页
+      currentPage: 0, //当前页
       total: 40, //总记录数
       pageSize: 7, //页的大小
       createBookShow: false, //添加书籍的表单的控制变量

@@ -1,14 +1,42 @@
 <template>
-  <div class="room-container" style="width: 100%">
-    <el-row type="flex" style="width: 100%">
-      <el-col span="4" class="tl">
-        <el-input prefix-icon="el-icon-search" v-model="input" placeholder="请输入内容" class="blur-search mt-10"></el-input>
-        <el-tree :data="towers" :props="defaultProps" @node-click="handleNodeClick" class="mt-20"></el-tree>
+  <div
+    class="room-container"
+    style="width: 100%"
+  >
+    <el-row
+      type="flex"
+      style="width: 100%"
+    >
+      <el-col
+        span="4"
+        class="tl"
+      >
+        <el-input
+          prefix-icon="el-icon-search"
+          v-model="input"
+          placeholder="请输入内容"
+          class="blur-search mt-10"
+        ></el-input>
+        <el-tree
+          :data="towers"
+          :props="defaultProps"
+          @node-click="handleNodeClick"
+          class="mt-20"
+        ></el-tree>
       </el-col>
       <el-col span="20">
         <!-- 操作按钮 -->
-        <el-row type="flex" class="ml-20 mt-10">
-          <el-input v-model="input" prefix-icon="el-icon-search" placeholder="请输入内容" class="blur-search" v-if="searchShow"></el-input>
+        <el-row
+          type="flex"
+          class="ml-20 mt-10"
+        >
+          <el-input
+            v-model="input"
+            prefix-icon="el-icon-search"
+            placeholder="请输入内容"
+            class="blur-search"
+            v-if="searchShow"
+          ></el-input>
           <el-date-picker
             v-model="time"
             type="daterange"
@@ -19,34 +47,83 @@
             value-format="yyyy-MM-dd"
             v-if="searchShow"
           ></el-date-picker>
-          <el-select v-model="selectValue" placeholder="请选择" v-if="searchShow" class="statu-search ml-10">
-            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
+          <el-select
+            v-model="selectValue"
+            placeholder="请选择"
+            v-if="searchShow"
+            class="statu-search ml-10"
+          >
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
           </el-select>
-          <el-button v-if="searchShow" type="success" size="mini" @click="search()" class="ml-10 bg-green" icon="">
-            <i class="el-icon-search" style="color: rgb(247, 251, 255)"></i>
+          <el-button
+            v-if="searchShow"
+            type="success"
+            size="mini"
+            @click="search()"
+            class="ml-10 bg-green"
+            icon=""
+          >
+            <i
+              class="el-icon-search"
+              style="color: rgb(247, 251, 255)"
+            ></i>
             <span class="light-font-color">搜索</span>
           </el-button>
         </el-row>
         <el-row class="df-jr-ac ml-20 mt-10">
           <el-col class="tl">
-            <el-button type="primary" icon="el-icon-plus" @click="dialogFormVisible = true" size="mini">
+            <el-button
+              type="primary"
+              icon="el-icon-plus"
+              @click="dialogFormVisible = true"
+              size="mini"
+            >
               <span class="light-font-color">新增</span>
             </el-button>
-            <el-button type="success" icon="el-icon-edit" size="mini">
+            <el-button
+              type="success"
+              icon="el-icon-edit"
+              size="mini"
+            >
               <span class="light-font-color">修改</span>
             </el-button>
-            <el-button type="danger" icon="el-icon-delete" size="mini">
+            <el-button
+              type="danger"
+              icon="el-icon-delete"
+              size="mini"
+            >
               <span class="light-font-color">删除</span>
             </el-button>
-            <el-button type="warning" icon="el-icon-download" size="mini">
+            <el-button
+              type="warning"
+              icon="el-icon-download"
+              size="mini"
+            >
               <span class="light-font-color">导出</span>
             </el-button>
           </el-col>
           <el-col class="tr mr-20">
-            <el-button size="small" class="search-btn" @click="searchShow = !searchShow" @mouseover="searchOver()">
-              <i class="el-icon-search" style="color: white"></i>
+            <el-button
+              size="small"
+              class="search-btn"
+              @click="searchShow = !searchShow"
+              @mouseover="searchOver()"
+            >
+              <i
+                class="el-icon-search"
+                style="color: white"
+              ></i>
             </el-button>
-            <el-button icon="el-icon-refresh" size="small" @click="flush()"></el-button>
+            <el-button
+              icon="el-icon-refresh"
+              size="small"
+              @click="flush()"
+            ></el-button>
           </el-col>
         </el-row>
         <!-- 表格 -->
@@ -58,29 +135,62 @@
             style="width: 100%"
             @selection-change="handleSelectionChange"
           >
-            <el-table-column type="selection" min-width="5%"></el-table-column>
-            <el-table-column label="楼栋" min-width="10%">
+            <el-table-column
+              type="selection"
+              min-width="5%"
+            ></el-table-column>
+            <el-table-column
+              label="楼栋"
+              min-width="10%"
+            >
               <template slot-scope="scope">{{ scope.row.towerName }}</template>
             </el-table-column>
-            <el-table-column label="单元" min-width="15%">
+            <el-table-column
+              label="单元"
+              min-width="15%"
+            >
               <template slot-scope="scope">{{ scope.row.unitId }}</template>
             </el-table-column>
-            <el-table-column label="房间号" min-width="15%">
+            <el-table-column
+              label="房间号"
+              min-width="15%"
+            >
               <template slot-scope="scope">{{ scope.row.roomName }}</template>
             </el-table-column>
-            <el-table-column label="电费余额" min-width="20%">
+            <el-table-column
+              label="电费余额"
+              min-width="20%"
+            >
               <template slot-scope="scope">{{ scope.row.electricityBalance }}</template>
             </el-table-column>
-            <el-table-column label="创建时间" show-overflow-tooltip min-width="10%">
+            <el-table-column
+              label="创建时间"
+              show-overflow-tooltip
+              min-width="10%"
+            >
               <template slot-scope="scope">{{ scope.row.gmtGreate }}</template>
             </el-table-column>
-            <el-table-column label="操作" align="center" min-width="25%">
+            <el-table-column
+              label="操作"
+              align="center"
+              min-width="25%"
+            >
               <template slot-scope="scope">
                 <p style="text-align:center">
-                  <el-button size="mini" icon="el-icon-edit" type="primary" @click="updateRoomInfo(scope.row)">
+                  <el-button
+                    size="mini"
+                    icon="el-icon-edit"
+                    type="primary"
+                    @click="updateRoomInfo(scope.row)"
+                  >
                     <span class="light-font-color">编辑</span>
                   </el-button>
-                  <el-button size="mini" icon="el-icon-delete" type="danger" @click="handleDelete(scope.row)">
+                  <el-button
+                    size="mini"
+                    icon="el-icon-delete"
+                    type="danger"
+                    @click="handleDelete(scope.row)"
+                  >
                     <span class="light-font-color">删除</span>
                   </el-button>
                 </p>
@@ -102,33 +212,85 @@
           ></el-pagination>
         </el-row>
         <!-- 新增页面 -->
-        <el-dialog :visible.sync="dialogFormVisible" width="400px" center="true">
+        <el-dialog
+          :visible.sync="dialogFormVisible"
+          width="400px"
+          center="true"
+        >
           <h2>新增房间信息</h2>
-          <el-form class="mt-10" :model="room" style="border-radius: 5px">
-            <el-form-item label="楼栋" required :label-width="formLabelWidth">
-              <el-select v-model="room.towerName" placeholder="请选择楼栋">
-                <el-option label="雪松苑" value="shanghai"></el-option>
-                <el-option label="求真楼" value="beijing"></el-option>
+          <el-form
+            class="mt-10"
+            :model="room"
+            style="border-radius: 5px"
+          >
+            <el-form-item
+              label="楼栋"
+              required
+              :label-width="formLabelWidth"
+            >
+              <el-select
+                v-model="room.towerName"
+                placeholder="请选择楼栋"
+              >
+                <el-option
+                  label="雪松苑"
+                  value="shanghai"
+                ></el-option>
+                <el-option
+                  label="求真楼"
+                  value="beijing"
+                ></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item required label="单元" :label-width="formLabelWidth">
-              <el-select v-model="room.towerName" placeholder="请选择活动区域">
-                <el-option label="A4" value="shanghai"></el-option>
-                <el-option label="A5" value="beijing"></el-option>
+            <el-form-item
+              required
+              label="单元"
+              :label-width="formLabelWidth"
+            >
+              <el-select
+                v-model="room.towerName"
+                placeholder="请选择活动区域"
+              >
+                <el-option
+                  label="A4"
+                  value="shanghai"
+                ></el-option>
+                <el-option
+                  label="A5"
+                  value="beijing"
+                ></el-option>
               </el-select>
-              <span style="color: red" class="ml-10">* 仅限宿舍</span>
+              <span
+                style="color: red"
+                class="ml-10"
+              >* 仅限宿舍</span>
             </el-form-item>
-            <el-form-item required label="房间" :label-width="formLabelWidth">
-              <el-input v-model="room.name" autocomplete="off" placeholder="请输入房间号" style="width: 40%"></el-input>
+            <el-form-item
+              required
+              label="房间"
+              :label-width="formLabelWidth"
+            >
+              <el-input
+                v-model="room.name"
+                autocomplete="off"
+                placeholder="请输入房间号"
+                style="width: 40%"
+              ></el-input>
             </el-form-item>
           </el-form>
           <!-- <p class="df-jl-ac">
           <span class="mr-10">房间 </span>
           <el-input v-model="room.name" autocomplete="off" placeholder="请输入房间号" style="width: 40%"></el-input>
           </p> -->
-          <div slot="footer" class="dialog-footer">
+          <div
+            slot="footer"
+            class="dialog-footer"
+          >
             <el-button @click="dialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="addRoomInfo(tag)">确定</el-button>
+            <el-button
+              type="primary"
+              @click="addRoomInfo(tag)"
+            >确定</el-button>
           </div>
         </el-dialog>
       </el-col>
@@ -179,43 +341,6 @@ export default {
         label: 'name'
       },
       dialogFormVisible: false,
-      tableData: [
-        {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-08',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-06',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-07',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }
-      ],
       multipleSelection: [],
       rooms: [],
       room: {
@@ -226,7 +351,6 @@ export default {
       currentPage: 1
     }
   },
-  components: {},
   created() {
     this.getRoom()
   },
@@ -301,7 +425,7 @@ export default {
       })
     },
     //刷新数据
-    flush(){
+    flush() {
       this.getRoom()
     },
     //删除房间信息
@@ -387,7 +511,7 @@ export default {
 el-input {
   height: 30px;
 }
- .el-input__icon {
+.el-input__icon {
   color: #ddd;
   margin-bottom: 10px;
 }
@@ -404,7 +528,7 @@ el-input {
   background-color: #909399;
 }
 
- .el-input__inner {
+.el-input__inner {
   height: 30px;
 }
 
@@ -416,29 +540,23 @@ el-input {
   color: #f7fbff;
 }
 
- .el-icon-delete {
+.el-icon-delete {
   color: #f7fbff;
 }
 
- .el-icon-download {
+.el-icon-download {
   color: #f7fbff;
 }
 
 .el-range-separator {
   margin-bottom: 10px;
 }
-
-/* >>> .el-icon-search {
-  color: #f7fbff;
-} */
-
 .el-input__prefix {
   display: flex;
   align-items: center;
 }
 
- .el-select__caret {
-   margin-top: 5px;
+.el-select__caret {
+  margin-top: 5px;
 }
-
 </style>
