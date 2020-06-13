@@ -103,7 +103,7 @@
         class="ml-20 mt-10"
       >
         <el-table
-          :data="appList"
+          :data="clazzList"
           stripe="true"
           style="width: 100%;"
         >
@@ -213,8 +213,8 @@ const API = require('../utils/api')
 export default {
   data() {
     return {
-      appList: [],
-      appList1: [],
+      clazzList: [],
+      clazzList1: [],
       detailList: [],
       currentPage: 1,
       total: 40,
@@ -230,31 +230,31 @@ export default {
     }
   },
   created() {
-    this.getAppAll()
+    this.getClazzAll()
   },
   watch: {
     pageSize: function() {
-      this.getAppAll()
+      this.getClazzAll()
     },
     currentPage: function() {
-      this.getAppAll()
+      this.getClazzAll()
     },
     total: function() {}
   },
   methods: {
     load() {
-      this.appList.length += 2
+      this.clazzList.length += 2
     },
     // 分页查询所有
-    async getAppAll() {
+    async getClazzAll() {
       this.data = {}
       this.url = '/clazz/all'
       this.result = await API.init(this.url, this.data, 'get')
-      this.appList = this.result.data
-      console.log(this.appList.length)
-      this.appList1 = this.result.data
-      for (let i = 0; i < this.appList.length; i++) {
-        this.appList[i].gmtCreate = this.formatDate(this.appList[i].gmtCreate)
+      this.clazzList = this.result.data
+      console.log(this.clazzList.length)
+      this.clazzList1 = this.result.data
+      for (let i = 0; i < this.clazzList.length; i++) {
+        this.clazzList[i].gmtCreate = this.formatDate(this.clazzList[i].gmtCreate)
       }
     },
     // 当前页展示数据
@@ -280,7 +280,7 @@ export default {
       this.url = '/app/deletion'
       this.result = await API.init(this.url, this.data, 'delete')
       if (this.data) {
-        this.getAppAll()
+        this.getClazzAll()
         this.$message.success('删除成功')
       } else {
         this.$message.error('App版本信息删除失败')
@@ -298,7 +298,7 @@ export default {
       // 获取输入框的值
       let search = this.input
       //数组元素按条件过滤
-      this.appList = this.appList1.filter((v) => {
+      this.clazzList = this.clazzList1.filter((v) => {
         if (JSON.stringify(v).includes(search)) {
           return v
         }

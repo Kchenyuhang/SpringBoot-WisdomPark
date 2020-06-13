@@ -103,7 +103,7 @@
         class="ml-20 mt-10"
       >
         <el-table
-          :data="appList"
+          :data="studentList"
           stripe="true"
           style="width: 100%;"
         >
@@ -218,8 +218,8 @@ const API = require('../utils/api')
 export default {
   data() {
     return {
-      appList: [],
-      appList1: [],
+      studentList: [],
+      studentList1: [],
       detailList: [],
       currentPage: 1,
       total: 40,
@@ -235,27 +235,27 @@ export default {
     }
   },
   created() {
-    this.getAppAll()
+    this.getStudentAll()
   },
   watch: {
     pageSize: function() {
-      this.getAppAll()
+      this.getStudentAll()
     },
     currentPage: function() {
-      this.getAppAll()
+      this.getStudentAll()
     },
     total: function() {}
   },
   methods: {
     // 分页查询所有
-    async getAppAll() {
+    async getStudentAll() {
       this.data = { currentPage: this.currentPage, pageSize: this.pageSize }
       this.url = '/userAccount/all'
       this.result = await API.init(this.url, this.data, 'get')
-      this.appList = this.result.data
-      this.appList1 = this.result.data
-      for (let i = 0; i < this.appList.length; i++) {
-        this.appList[i].gmtCreate = this.formatDate(this.appList[i].gmtCreate)
+      this.studentList = this.result.data
+      this.studentList1 = this.result.data
+      for (let i = 0; i < this.studentList.length; i++) {
+        this.studentList[i].gmtCreate = this.formatDate(this.studentList[i].gmtCreate)
       }
     },
     // 当前页展示数据
@@ -281,7 +281,7 @@ export default {
       this.url = '/app/deletion'
       this.result = await API.init(this.url, this.data, 'delete')
       if (this.data) {
-        this.getAppAll()
+        this.getStudentAll()
         this.$message.success('删除成功')
       } else {
         this.$message.error('App版本信息删除失败')
@@ -299,7 +299,7 @@ export default {
       // 获取输入框的值
       let search = this.input
       //数组元素按条件过滤
-      this.appList = this.appList1.filter((v) => {
+      this.studentList = this.studentList1.filter((v) => {
         if (JSON.stringify(v).includes(search)) {
           return v
         }

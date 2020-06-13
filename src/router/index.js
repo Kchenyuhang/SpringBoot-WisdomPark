@@ -142,6 +142,15 @@ const routes = [
         component: () => import('../views/administration/TimmeTable.vue')
       },
       {
+        path: 'examination',
+        name: 'examination',
+        component: () => import('../views/administration/Examination.vue')
+      },
+
+      /**
+       *
+       */
+      {
         path: 'comment',
         name: 'Comment',
         component: () => import('../views/flea/Comment.vue')

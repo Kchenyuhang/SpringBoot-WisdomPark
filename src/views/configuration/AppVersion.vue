@@ -255,9 +255,6 @@ export default {
     total: function() {}
   },
   methods: {
-    load() {
-      this.appList.length += 2
-    },
     // 分页查询所有
     async getAppAll() {
       this.data = { currentPage: this.currentPage, pageSize: this.pageSize }

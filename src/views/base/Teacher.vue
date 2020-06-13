@@ -103,7 +103,7 @@
         class="ml-20 mt-10"
       >
         <el-table
-          :data="appList"
+          :data="teacherList"
           stripe="true"
           style="width: 100%;"
         >
@@ -218,10 +218,10 @@ const API = require('../utils/api')
 export default {
   data() {
     return {
-      appList: [],
-      appList1: [],
+      teacherList: [],
+      teacherList1: [],
       detailList: [],
-      currentPage: 1,
+      currentPage: 0,
       total: 40,
       pageSize: 9,
       updatecenterDialogVisible: false,
@@ -235,27 +235,29 @@ export default {
     }
   },
   created() {
-    this.getAppAll()
+    this.getTeacherAll()
   },
   watch: {
     pageSize: function() {
-      this.getAppAll()
+      this.getTeacherAll()
     },
     currentPage: function() {
-      this.getAppAll()
+      this.getTeacherAll()
     },
     total: function() {}
   },
   methods: {
     // 分页查询所有
-    async getAppAll() {
+    async getTeacherAll() {
       this.data = { currentPage: this.currentPage, pageSize: this.pageSize }
       this.url = '/userAccount/all'
       this.result = await API.init(this.url, this.data, 'get')
-      this.appList = this.result.data
-      this.appList1 = this.result.data
-      for (let i = 0; i < this.appList.length; i++) {
-        this.appList[i].gmtCreate = this.formatDate(this.appList[i].gmtCreate)
+      this.teacherList = this.result.data
+      console.log(this.teacherList.role)
+
+      this.teacherList1 = this.result.data
+      for (let i = 0; i < this.teacherList.length; i++) {
+        this.teacherList[i].gmtCreate = this.formatDate(this.teacherList[i].gmtCreate)
       }
     },
     // 当前页展示数据
@@ -281,7 +283,7 @@ export default {
       this.url = '/app/deletion'
       this.result = await API.init(this.url, this.data, 'delete')
       if (this.data) {
-        this.getAppAll()
+        this.getTeacherAll()
         this.$message.success('删除成功')
       } else {
         this.$message.error('App版本信息删除失败')
@@ -299,7 +301,7 @@ export default {
       // 获取输入框的值
       let search = this.input
       //数组元素按条件过滤
-      this.appList = this.appList1.filter((v) => {
+      this.teacherList = this.teacherList1.filter((v) => {
         if (JSON.stringify(v).includes(search)) {
           return v
         }
