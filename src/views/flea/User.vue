@@ -124,7 +124,7 @@ export default {
       this.getAllUser()
     },
     total: function() {
-        console.log('total改变' + this.total)
+      console.log('total改变' + this.total)
       this.getAllUser()
     }
   }
