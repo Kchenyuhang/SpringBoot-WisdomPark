@@ -32,7 +32,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import { apiPost } from '../utils/api'
 export default {
