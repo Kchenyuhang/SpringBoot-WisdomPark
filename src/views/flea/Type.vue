@@ -26,10 +26,10 @@
                 >{{ subitem.typeName }}</el-menu-item
               >
             </div>
-            <el-menu-item index="index">添加</el-menu-item>
+            <el-menu-item index="index" :click="addSecondType()">添加</el-menu-item>
           </el-submenu>
 
-          <el-menu-item index="4">
+          <el-menu-item index="4" :click="addFirstType()">
             <i class="el-icon-setting"></i>
             <span slot="title">添加</span>
           </el-menu-item>
@@ -63,7 +63,6 @@
     </el-row>
   </div>
 </template>
-
 <script>
 const API = require('../utils/api.js')
 export default {
@@ -72,6 +71,7 @@ export default {
     return {
       typeMenu: [],
       showTypeId: 0,
+      parentId: 0,
       typeShow: {
         parentId: 0,
         pkFleaTypeId: 0,
@@ -97,12 +97,17 @@ export default {
   methods: {
     async getAllType() {
       let res = await API.init('/flea/type/all', null, 'post')
-      console.log(res)
       this.typeMenu = res.data.types //源数据
       this.changeShowType(this.typeMenu[0].subTypes[0].pkFleaTypeId)
     },
     handleOpen(key, keyPath) {
       console.log(key, keyPath)
+      for (let i = 0; i < this.typeMenu.length; i++) {
+        if (key === this.typeMenu[i].typeName) {
+          this.parentId = this.typeMenu[i].pkFleaTypeId
+          break
+        }
+      }
     },
     handleClose(key, keyPath) {
       console.log(key, keyPath)
@@ -111,7 +116,6 @@ export default {
       this.showTypeId = type
       for (let i = 0; i < this.typeMenu.length; i++) {
         for (let j = 0; j < this.typeMenu[i].subTypes.length; j++) {
-          console.log(this.showTypeId + '--------------' + this.typeMenu[i].subTypes[j].pkFleaTypeId)
           if (this.showTypeId === this.typeMenu[i].subTypes[j].pkFleaTypeId) {
             this.typeShow.parentId = this.typeMenu[i].subTypes[j].parentId
             this.typeShow.pkFleaTypeId = this.typeMenu[i].subTypes[j].pkFleaTypeId
@@ -122,8 +126,6 @@ export default {
           }
         }
       }
-      console.log('要展示的type的id为' + this.showTypeId)
-      console.log('要展示的typeshow' + this.typeShow)
     },
     async deleteTypeById() {
       let data = {
@@ -191,13 +193,13 @@ export default {
       }
     },
     async changeType() {
-      let flag=true
+      let flag = true
       this.$refs['typeShow'].validate((valid) => {
         if (!valid) {
-          flag=false
+          flag = false
         }
       })
-      if (flag&&this.changeTypeCheck()) {
+      if (flag && this.changeTypeCheck()) {
         this.$message.success('修改成功!')
         let data = {
           pkFleaTypeId: this.typeShow.pkFleaTypeId,
@@ -210,7 +212,28 @@ export default {
         }
         await API.init('flea/type/modify', data, 'post')
       }
-
+    },
+    addFirstType() {
+      this.parentId = 0
+      // this.typeShow.typeCoverUrl = ''
+      // this.typeShow.typeName = ''
+      // this.typeShow.typeUrl = ''
+    },
+    addSecondType() {
+      // this.typeShow.typeCoverUrl = ''
+      // this.typeShow.typeName = ''
+      // this.typeShow.typeUrl = ''
+    },
+    async addType() {
+      let date = {
+        //pkFleaTypeId可为任意值，后端不用
+        parentId: this.parentId,
+        typeCoverUrl: this.typeShow.typeCoverUrl,
+        typeName: this.typeShow.typeName,
+        typeUrl: this.typeShow.typeUrl
+      }
+      console.log(date)
+      // await API.init('flea/type/increased', date, 'post')
     }
   }
 }
