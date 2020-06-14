@@ -36,7 +36,7 @@
         </el-menu>
       </el-col>
       <div class="typeShow">
-        <el-form :model="typeShow" ref="typeShow">
+        <el-form :model="typeShow" :rules="typeShowRules" ref="typeShow">
           <el-form-item label="类型名称" prop="typeName">
             <el-input v-model="typeShow.typeName"></el-input>
           </el-form-item>
@@ -49,8 +49,8 @@
         </el-form>
       </div>
       <div class="typeBtn">
-        <el-button size="medium" type="primary" @click="createBookShow = !createBookShow">修改</el-button>
-        <el-button size="medium" type="danger" @click="handleDeleteMul">删除</el-button>
+        <el-button size="medium" type="primary" @click="changeType">修改</el-button>
+        <el-button size="medium" type="danger" @click="deleteTypeById">删除</el-button>
       </div>
       <div class="tab">
         <span>管理的艺术在于沟通的技巧和真诚。</span>
@@ -79,6 +79,11 @@ export default {
         typeCoverUrl: '',
         typeName: '',
         typeUrl: ''
+      },
+      typeShowRules: {
+        typeCoverUrl: [{ required: true, message: '请输入图片', trigger: 'blur' }],
+        typeName: [{ required: true, message: '请输入类型名称', trigger: 'blur' }],
+        typeUrl: [{ required: true, message: '请输入类型地址', trigger: 'blur' }]
       }
     }
   },
@@ -119,6 +124,93 @@ export default {
       }
       console.log('要展示的type的id为' + this.showTypeId)
       console.log('要展示的typeshow' + this.typeShow)
+    },
+    async deleteTypeById() {
+      let data = {
+        pkId: this.showTypeId
+      }
+      alert('要删除的id:' + data)
+      await API.init('flea/type/delete', data, 'post')
+      this.getAllType()
+    },
+    changeTypeCheck() {
+      let nameFlag = true
+      let urlFlag = true
+      for (let i = 0; i < this.typeMenu.length; i++) {
+        for (let j = 0; j < this.typeMenu[i].subTypes.length; j++) {
+          if (this.typeShow.typeName !== this.typeMenu[i].typeName) {
+            if (
+              this.typeShow.typeName === this.typeMenu[i].subTypes[j].typeName &&
+              this.typeShow.pkFleaTypeId !== this.typeMenu[i].subTypes[j].pkFleaTypeId
+            ) {
+              console.log('该二级类型已存在')
+              nameFlag = false
+              break
+            } else {
+              console.log('名称校验成功')
+
+              for (let i = 0; i < this.typeMenu.length; i++) {
+                for (let j = 0; j < this.typeMenu[i].subTypes.length; j++) {
+                  if (this.typeShow.typeUrl !== this.typeMenu[i].typeUrl) {
+                    if (
+                      this.typeShow.typeUrl === this.typeMenu[i].subTypes[j].typeUrl &&
+                      this.typeShow.pkFleaTypeId !== this.typeMenu[i].subTypes[j].pkFleaTypeId
+                    ) {
+                      console.log('该路径已存在')
+                      urlFlag = false
+                      break
+                    } else {
+                      console.log('路径校验成功')
+                    }
+                  } else {
+                    urlFlag = false
+                    console.log('该路径已存在')
+                    break
+                  }
+                }
+              }
+            }
+          } else {
+            nameFlag = false
+            console.log('该一级类型已存在')
+            break
+          }
+        }
+      }
+      if (!nameFlag) {
+        this.$message.error('修改失败，该类型名称重复！')
+      }
+
+      if (!urlFlag) {
+        this.$message.error('修改失败，该类型路径重复！')
+      }
+      if (nameFlag && urlFlag) {
+        return true
+      } else {
+        return false
+      }
+    },
+    async changeType() {
+      let flag=true
+      this.$refs['typeShow'].validate((valid) => {
+        if (!valid) {
+          flag=false
+        }
+      })
+      if (flag&&this.changeTypeCheck()) {
+        this.$message.success('修改成功!')
+        let data = {
+          pkFleaTypeId: this.typeShow.pkFleaTypeId,
+          parentId: this.typeShow.parentId,
+          subTypes: this.subTypes,
+          typeCoverUrl: this.typeShow.typeCoverUrl,
+          typeName: this.typeShow.typeName,
+          typeUrl: this.typeShow.typeUrl,
+          isDeleted: false
+        }
+        await API.init('flea/type/modify', data, 'post')
+      }
+
     }
   }
 }
