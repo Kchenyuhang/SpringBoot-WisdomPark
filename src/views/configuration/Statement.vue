@@ -77,8 +77,7 @@
         class="ml-20 mt-10"
       >
         <el-table
-          ref="multipleTable"
-          :data="tableData"
+          :data="statementList"
           tooltip-effect="dark"
           style="width: 100%;"
           stripe="true"
@@ -92,38 +91,21 @@
             label="声明标题"
             min-width="10%"
           >
-            <template slot-scope="scope">{{ scope.row.name }}</template>
+            <template slot-scope="scope">{{ scope.row.statementTitle }}</template>
           </el-table-column>
           <el-table-column
-            prop="role"
+            prop="statementContent"
             label="声明内容"
             min-width="15%"
           ></el-table-column>
           <el-table-column
-            prop="phoneNumber"
+            prop="statementType"
             label="声明分类"
             show-overflow-tooltip
             min-width="15%"
           > </el-table-column>
           <el-table-column
-            prop="status"
-            label="删除状态"
-            show-overflow-tooltip
-            min-width="15%"
-          >
-            <template slot-scope="scope">
-              <el-switch
-                v-model="scope.row.statu"
-                active-value="1"
-                inactive-value="0"
-                active-color="#13ce66"
-                inactive-color="#ff4949"
-              >
-              </el-switch>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="createTime"
+            prop="gmtCreate"
             label="创建时间"
             show-overflow-tooltip
             min-width="15%"
@@ -140,13 +122,13 @@
                   size="mini"
                   icon="el-icon-edit"
                   type="primary"
-                  @click="handleEdit(scope.row)"
+                  @click="handleEdit(scope.$index.scope.row)"
                 >编辑</el-button>
                 <el-button
                   size="mini"
                   icon="el-icon-delete"
                   type="danger"
-                  @click="handleDelete(scope.row)"
+                  @click="handleDelete(scope.$index, scope.row)"
                 >删除</el-button>
               </p>
             </template>
@@ -154,46 +136,55 @@
         </el-table>
       </el-col>
     </el-row>
+    <!-- 删除提示框 -->
+    <el-dialog
+      title="提示"
+      :visible.sync="delVisible"
+      width="300px"
+      center
+    >
+      <div class="del-dialog-cnt">声明信息删除不可恢复，是否确定删除？</div>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="delVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="deleteRow"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+    <div class="block">
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[8, 16, 24, 32, 40]"
+        :page-size="pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      >
+      </el-pagination>
+    </div>
   </div>
 </template>
 
 <script>
+const API = require('../utils/api')
+
 export default {
   name: 'Permmission',
   data() {
     return {
+      statementList: [],
+      statementList1: [],
+      delVisible: false, //删除提示弹框的状态
       time: '',
+      currentPage: 0,
+      total: 40,
+      pageSize: 8,
       value: true,
-      tableData: [
-        {
-          name: '王小虎',
-          role: '系统管理员',
-          phoneNumber: '14752191369',
-          status: 1,
-          createTime: '2018-10-01'
-        },
-        {
-          name: '李小璐',
-          role: '作业员',
-          phoneNumber: '14752191369',
-          status: 0,
-          createTime: '2018-10-01'
-        },
-        {
-          name: '赵二龙',
-          role: '编辑管理员',
-          phoneNumber: '14752191369',
-          status: 1,
-          createTime: '2018-10-01'
-        },
-        {
-          name: '王小虎',
-          role: '普通管理员',
-          phoneNumber: '14752191369',
-          status: 0,
-          createTime: '2018-10-01'
-        }
-      ],
       options: [
         {
           value: '0',
@@ -205,24 +196,83 @@ export default {
         }
       ],
       selectValue: '',
-      multipleSelection: []
+      multipleSelection: [],
+      input: ''
     }
   },
   components: {},
-  created() {},
+  created() {
+    this.getStatementAll()
+  },
+  watch: {
+    pageSize: function() {
+      this.getStatementAll()
+    },
+    currentPage: function() {
+      this.getStatementAll()
+    },
+    total: function() {}
+  },
   mounted() {},
   methods: {
-    // 编辑
-    handleEdit(row) {
-      console.log(row)
+    // 分页查询所有
+    async getStatementAll() {
+      this.data = { currentPage: this.currentPage, pageSize: this.pageSize }
+      this.url = '/statement/all'
+      this.result = await API.init(this.url, this.data, 'post')
+      this.statementList = this.result.data
+      console.log(this.statementList.length)
+      this.statementList1 = this.result.data
+      for (let i = 0; i < this.statementList.length; i++) {
+        this.statementList[i].gmtCreate = this.formatDate(this.statementList[i].gmtCreate)
+      }
     },
-    //删除方法
-    handleDelete(row) {
-      console.log(row)
+    // 当前页展示数据
+    handleSizeChange: function(pageSize) {
+      this.pageSize = pageSize
     },
-    //搜索
-    search() {
-      alert(this.selectValue)
+    // 当前页
+    handleCurrentChange: function(currentPage) {
+      this.currentPage = currentPage
+    },
+    //单行删除
+    handleDelete(index, row) {
+      this.idx = index
+      this.msg = row //每一条数据的记录
+      this.delVisible = true
+    },
+    //批量删除
+    handleDeleteMul() {
+      this.delVisible = true
+    },
+    async deleteRow() {
+      this.data = { field: this.msg.pkStatementId }
+      this.url = '/statement/deletion'
+      this.result = await API.init(this.url, this.data, 'delete')
+      if (this.data) {
+        this.getStatementAll()
+        this.$message.success('删除成功')
+      } else {
+        this.$message.error('声明信息删除失败')
+      }
+      this.delVisible = false //关闭删除提示模态框
+    },
+    //编辑
+    handleUpdate(index, row) {
+      this.idx = index
+      this.msg = row //每一条数据的记录
+      this.updatecenterDialogVisible = true
+    },
+    //过滤搜索
+    filterSearch() {
+      // 获取输入框的值
+      let search = this.input
+      //数组元素按条件过滤
+      this.statementList = this.statementList1.filter((v) => {
+        if (JSON.stringify(v).includes(search)) {
+          return v
+        }
+      })
     }
   },
   computed: {}
