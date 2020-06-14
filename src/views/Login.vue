@@ -17,9 +17,9 @@
             <img src="" ref="image" alt="">
           </p>
         </el-col>
-        <el-col style="text-align:left">
+        <!-- <el-col style="text-align:left">
           <el-checkbox v-model="checked">记住我</el-checkbox>
-        </el-col>
+        </el-col> -->
         <el-col>
           <el-button type="primary" style="width: 100%;" @click="login()">登录</el-button>
         </el-col>
