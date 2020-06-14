@@ -1,57 +1,243 @@
 <template>
-  <div>
-    <div class="cc-df title">
-      <el-button size="mini" type="success" @click="handleAdd()">新增</el-button>
-      <el-input placeholder="请输入内容" v-model="searchInput" class="search-input cc-mleft" clearable @input="filterSearch"> </el-input>
-    </div>
+  <div style="width:100%">
+    <el-row
+      type="flex"
+      class="ml-20 mt-10"
+    >
+      <el-input
+        v-model="searchInput"
+        clearable
+        placeholder="请输入内容"
+        class="blur-search"
+        @input="filterSearch()"
+      ></el-input>
+      <el-date-picker
+        v-model="time"
+        type="daterange"
+        range-separator=":"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期"
+        class="date-input-search ml-10"
+        value-format="yyyy-MM-dd"
+      >
+      </el-date-picker>
+      <el-select
+        v-model="selectValue"
+        placeholder="请选择"
+        class="statu-search ml-10"
+      >
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        > </el-option>
+      </el-select>
+      <el-button
+        type="success"
+        size="mini"
+        class="ml-10"
+        icon="el-icon-search"
+      >搜索</el-button>
+    </el-row>
+    <el-row class="df-jr-ac ml-20 mt-10">
+      <el-col class="tl">
+        <el-button
+          type="primary"
+          icon="el-icon-plus"
+          size="small"
+          @click="handleAdd()"
+        ><span>新增</span></el-button>
+        <el-button
+          type="danger"
+          icon="el-icon-delete"
+          size="small"
+          @click="handleDeleteMul"
+        >批量删除</el-button>
+        <el-button
+          type="warning"
+          icon="el-icon-download"
+          size="small"
+        >导出</el-button>
+      </el-col>
+      <el-col class="tr mr-20">
+        <el-button
+          icon="el-icon-refresh"
+          size="small"
+        ></el-button>
+      </el-col>
+    </el-row>
     <div>
-      <el-table :data="tableData" style="width: 100%" :default-sort="{ prop: 'date', order: 'descending' }">
-        <el-table-column prop="sys_user_name" label="姓名" sortable width="180"> </el-table-column>
-        <el-table-column prop="role_name" label="角色" sortable width="180"> </el-table-column>
-        <el-table-column prop="sys_user_phone_number" label="手机号" sortable width="180"> </el-table-column>
-        <el-table-column prop="is_enabled" label="状态" sortable width="180"> </el-table-column>
-        <el-table-column prop="gmt_create" label="日期" sortable width="180"> </el-table-column>
-        <el-table-column label="操作" width="250">
-          <template slot-scope="scope">
-            <el-button size="mini" type="success" @click="handleUpdate(scope.$index, scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" @click="handleDelete(scope.$index)">删除</el-button>
-            <el-button size="mini" type="danger" @click="cleanPassword(scope.$index)">重置</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+      <el-row>
+        <el-col span="1"></el-col>
+        <el-col
+          span="23"
+          class="ml-20 mt-10"
+        >
+          <el-table
+            :data="tableData"
+            style="width: 100%"
+            :default-sort="{ prop: 'date', order: 'descending' }"
+          >
+            <el-table-column
+              type="selection"
+              min-width="10%"
+            > </el-table-column>
+
+            <el-table-column
+              prop="sys_user_name"
+              label="姓名"
+              sortable
+              min-width="10%"
+            > </el-table-column>
+            <el-table-column
+              prop="role_name"
+              label="角色"
+              sortable
+              min-width="10%"
+            > </el-table-column>
+            <el-table-column
+              prop="sys_user_phone_number"
+              label="手机号"
+              sortable
+              min-width="10%"
+            > </el-table-column>
+            <el-table-column
+              prop="is_enabled"
+              label="状态"
+              sortable
+              min-width="10%"
+            > </el-table-column>
+            <el-table-column
+              prop="gmt_create"
+              label="日期"
+              sortable
+              min-width="10%"
+            > </el-table-column>
+            <el-table-column
+              label="操作"
+              min-width="20%"
+            >
+              <template slot-scope="scope">
+                <el-button
+                  size="mini"
+                  type="success"
+                  @click="handleUpdate(scope.$index, scope.row)"
+                >编辑</el-button>
+                <el-button
+                  size="mini"
+                  type="danger"
+                  @click="handleDelete(scope.$index)"
+                >删除</el-button>
+                <el-button
+                  size="mini"
+                  type="primary"
+                  @click="cleanPassword(scope.$index)"
+                >重置</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-col>
+      </el-row>
     </div>
     <div>
       <!-- 修改弹出框 -->
-      <el-dialog title="修改管理员信息" :visible.sync="isTrue" width="30%" left>
-        <div class="cc-df cc-mltop" id="fileBox" v-if="updatecenterDialogVisible">
-          <img class="avatar" :src="ruleForm.sysUserAvatar" @click="avatarClick()" />
-          <input type="file" @change="uploadAvatar($event)" ref="file" style="display: none;" id="file" />
+      <el-dialog
+        title="修改管理员信息"
+        :visible.sync="isTrue"
+        width="30%"
+        left
+      >
+        <div
+          class="cc-df cc-mltop"
+          id="fileBox"
+          v-if="updatecenterDialogVisible"
+        >
+          <img
+            class="avatar"
+            :src="ruleForm.sysUserAvatar"
+            @click="avatarClick()"
+          />
+          <input
+            type="file"
+            @change="uploadAvatar($event)"
+            ref="file"
+            style="display: none;"
+            id="file"
+          />
         </div>
-        <el-form :model="ruleForm" status-icon label-width="80px">
-          <el-form-item label="用户名" prop="sysUserName">
-            <el-input type="name" v-model="ruleForm.sysUserName" autocomplete="off" placeholder="输入用户名"></el-input>
+        <el-form
+          :model="ruleForm"
+          status-icon
+          label-width="80px"
+        >
+          <el-form-item
+            label="用户名"
+            prop="sysUserName"
+          >
+            <el-input
+              type="name"
+              v-model="ruleForm.sysUserName"
+              autocomplete="off"
+              placeholder="输入用户名"
+            ></el-input>
           </el-form-item>
-          <el-form-item label="手机号" prop="sysUserPhoneNumber">
-            <el-input type="name" v-model="ruleForm.sysUserPhoneNumber" autocomplete="off" placeholder="输入用手机号"></el-input>
+          <el-form-item
+            label="手机号"
+            prop="sysUserPhoneNumber"
+          >
+            <el-input
+              type="name"
+              v-model="ruleForm.sysUserPhoneNumber"
+              autocomplete="off"
+              placeholder="输入用手机号"
+            ></el-input>
           </el-form-item>
-          <el-form-item label="角色信息" prop="roleId">
-            <el-select v-model="ruleForm.roleId" placeholder="请选择角色信息">
-              <div v-for="(item, index) in roles" :key="index">
-                <el-option :label="item.roleDecoration" :value="item.pkRoleId"></el-option>
+          <el-form-item
+            label="角色信息"
+            prop="roleId"
+          >
+            <el-select
+              v-model="ruleForm.roleId"
+              placeholder="请选择角色信息"
+            >
+              <div
+                v-for="(item, index) in roles"
+                :key="index"
+              >
+                <el-option
+                  :label="item.role_name"
+                  :value="item.pkRoleId"
+                ></el-option>
               </div>
             </el-select>
           </el-form-item>
-          <el-form-item label="状态" prop="isEnabled" v-if="updatecenterDialogVisible">
+          <el-form-item
+            label="状态"
+            prop="isEnabled"
+            v-if="updatecenterDialogVisible"
+          >
             <el-radio-group v-model="ruleForm.isEnabled">
               <el-radio label="启用"></el-radio>
               <el-radio label="禁用"></el-radio>
             </el-radio-group>
           </el-form-item>
         </el-form>
-        <span slot="footer" class="dialog-footer">
+        <span
+          slot="footer"
+          class="dialog-footer"
+        >
           <el-button @click="isTrue = false">取 消</el-button>
-          <el-button type="primary" @click="adminUpdate()" v-if="updatecenterDialogVisible">确 定</el-button>
-          <el-button type="primary" @click="adminAdd()" v-if="addVisble">确 定</el-button>
+          <el-button
+            type="primary"
+            @click="adminUpdate()"
+            v-if="updatecenterDialogVisible"
+          >确 定</el-button>
+          <el-button
+            type="primary"
+            @click="adminAdd()"
+            v-if="addVisble"
+          >确 定</el-button>
         </span>
       </el-dialog>
     </div>
@@ -204,7 +390,7 @@ export default {
       return y + '年' + MM + '月' + d + '日'
     },
     async selectRole() {
-      this.result = await API.init('/role/all', this.data, 'get')
+      this.result = await API.init('/role/all/noPage', this.data, 'post')
       console.log(this.result)
       this.roles = this.result.data
     },
@@ -241,5 +427,31 @@ export default {
   margin-top: -60px;
   margin-left: 35%;
   margin-bottom: 30px;
+}
+.top-input {
+  width: 200px;
+  height: 30px;
+  margin-left: 50px;
+}
+.blur-search {
+  width: 200px;
+}
+.date-input-search {
+  width: 260px;
+}
+.statu-search {
+  width: 100px;
+}
+
+el-input {
+  height: 30px;
+}
+
+.search-btn {
+  height: 30px;
+  width: 80px;
+}
+.el-input__inner {
+  height: 30px;
 }
 </style>

@@ -43,6 +43,7 @@
       class="ml-20 mt-10"
     >
       <el-input
+        size="mini"
         v-model="input"
         clearable
         placeholder="请输入内容"
@@ -50,6 +51,7 @@
         @input="filterSearch()"
       ></el-input>
       <el-select
+        size="mini"
         v-model="selectValue"
         placeholder="请选择"
         class="statu-search ml-10"
@@ -127,7 +129,7 @@
             min-width="12%"
           >
             <template slot-scope="scope">
-              <span>{{ scope.row.cardNumber }}</span>
+              <span>{{ scope.row.jobNumber }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -145,7 +147,7 @@
             min-width="12%"
           >
             <template slot-scope="scope">
-              <span>{{ scope.row.clazzId }}</span>
+              <span>{{ scope.row.name }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -221,7 +223,7 @@ export default {
       teacherList: [],
       teacherList1: [],
       detailList: [],
-      currentPage: 0,
+      currentPage: 1,
       total: 40,
       pageSize: 9,
       updatecenterDialogVisible: false,
@@ -250,8 +252,8 @@ export default {
     // 分页查询所有
     async getTeacherAll() {
       this.data = { currentPage: this.currentPage, pageSize: this.pageSize }
-      this.url = '/userAccount/all'
-      this.result = await API.init(this.url, this.data, 'get')
+      this.url = '/userAccount/teacher'
+      this.result = await API.init(this.url, this.data, 'post')
       this.teacherList = this.result.data
       console.log(this.teacherList.role)
 

@@ -2,31 +2,68 @@
   <el-container>
     <!-- 课表上方的 学期、班级、周次信息 -->
     <el-header class="header">
-      <el-form :inline="true" ref="form" :model="form" size="mini" style="margin-top: 10px">
+      <el-form
+        :inline="true"
+        ref="form"
+        :model="form"
+        size="mini"
+        style="margin-top: 10px"
+      >
         <el-form-item>
-          <el-select v-model="form.semester" placeholder="学期" @change="changeWeekCount()">
-            <el-option v-for="(item, index) in semesterList" :key="index" :value="item.name"></el-option>
+          <el-select
+            v-model="form.semester"
+            placeholder="学期"
+            @change="changeWeekCount()"
+          >
+            <el-option
+              v-for="(item, index) in semesterList"
+              :key="index"
+              :value="item.name"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-select v-model="form.clazz" placeholder="班级" @change="changeClazz()">
-            <el-option v-for="(item, index) in clazzList" :key="index" :value="item.name"></el-option>
+          <el-select
+            v-model="form.clazz"
+            placeholder="班级"
+            @change="changeClazz()"
+          >
+            <el-option
+              v-for="(item, index) in clazzList"
+              :key="index"
+              :value="item.name"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-select v-model="form.week" placeholder="周次" @change="showSchedule()">
-            <el-option v-for="(item, index) in weekList" :key="index" :value="item"></el-option>
+          <el-select
+            v-model="form.week"
+            placeholder="周次"
+            @change="showSchedule()"
+          >
+            <el-option
+              v-for="(item, index) in weekList"
+              :key="index"
+              :value="item"
+            ></el-option>
           </el-select>
         </el-form-item>
       </el-form>
     </el-header>
     <el-main>
       <!-- 课表主界面 -->
-      <table align="center" border="1" cellspacing="0">
+      <table
+        align="center"
+        border="1"
+        cellspacing="0"
+      >
         <thead>
           <tr>
             <th colspan="2"></th>
-            <th v-for="item in weekDuration1.slice(0, 6)" :key="item + 1">周{{ item }}</th>
+            <th
+              v-for="item in weekDuration1.slice(0, 6)"
+              :key="item + 1"
+            >周{{ item }}</th>
             <th>周日</th>
           </tr>
         </thead>
@@ -34,21 +71,35 @@
           <tr>
             <td rowspan="2">上午</td>
             <td>1-2</td>
-            <td v-for="(item, index) in courseList1" :key="index" :style="{ backgroundColor: item.backgroundColor }">
-              <div class="info" v-show="item.isShow">
+            <td
+              v-for="(item, index) in courseList1"
+              :key="index"
+              :style="{ backgroundColor: item.backgroundColor }"
+            >
+              <div
+                class="info"
+                v-show="item.isShow"
+              >
                 <span>{{ item.subjectName }}</span>
                 <span>{{ item.teacherName }}</span>
-                <span>{{ item.roomName }}</span>
+                <span>{{ item.towerName }}{{ item.roomName }}</span>
               </div>
             </td>
           </tr>
           <tr>
             <td>3-4</td>
-            <td v-for="(item, index) in courseList2" :key="index" :style="{ backgroundColor: item.backgroundColor }">
-              <div class="info" v-show="item.isShow">
+            <td
+              v-for="(item, index) in courseList2"
+              :key="index"
+              :style="{ backgroundColor: item.backgroundColor }"
+            >
+              <div
+                class="info"
+                v-show="item.isShow"
+              >
                 <span>{{ item.subjectName }}</span>
                 <span>{{ item.teacherName }}</span>
-                <span>{{ item.roomName }}</span>
+                <span>{{ item.towerName }}{{ item.roomName }}</span>
               </div>
             </td>
           </tr>
@@ -58,21 +109,35 @@
           <tr>
             <td rowspan="2">下午</td>
             <td>5-6</td>
-            <td v-for="(item, index) in courseList3" :key="index" :style="{ backgroundColor: item.backgroundColor }">
-              <div class="info" v-show="item.isShow">
+            <td
+              v-for="(item, index) in courseList3"
+              :key="index"
+              :style="{ backgroundColor: item.backgroundColor }"
+            >
+              <div
+                class="info"
+                v-show="item.isShow"
+              >
                 <span>{{ item.subjectName }}</span>
                 <span>{{ item.teacherName }}</span>
-                <span>{{ item.roomName }}</span>
+                <span>{{ item.towerName }}{{ item.roomName }}</span>
               </div>
             </td>
           </tr>
           <tr>
             <td>7-8</td>
-            <td v-for="(item, index) in courseList4" :key="index" :style="{ backgroundColor: item.backgroundColor }">
-              <div class="info" v-show="item.isShow">
+            <td
+              v-for="(item, index) in courseList4"
+              :key="index"
+              :style="{ backgroundColor: item.backgroundColor }"
+            >
+              <div
+                class="info"
+                v-show="item.isShow"
+              >
                 <span>{{ item.subjectName }}</span>
                 <span>{{ item.teacherName }}</span>
-                <span>{{ item.roomName }}</span>
+                <span>{{ item.towerName }}{{ item.roomName }}</span>
               </div>
             </td>
           </tr>
@@ -82,18 +147,30 @@
           <tr>
             <td>晚间</td>
             <td>9-10</td>
-            <td v-for="(item, index) in courseList5" :key="index" :style="{ backgroundColor: item.backgroundColor }">
-              <div class="info" v-show="item.isShow">
+            <td
+              v-for="(item, index) in courseList5"
+              :key="index"
+              :style="{ backgroundColor: item.backgroundColor }"
+            >
+              <div
+                class="info"
+                v-show="item.isShow"
+              >
                 <span>{{ item.subjectName }}</span>
                 <span>{{ item.teacherName }}</span>
-                <span>{{ item.roomName }}</span>
+                <span>{{ item.towerName }}{{ item.roomName }}</span>
               </div>
             </td>
           </tr>
         </tbody>
       </table>
       <!-- 课表下方的周次表 -->
-      <table style="margin-top: 100px" align="center" border="1" cellspacing="50">
+      <table
+        style="margin-top: 100px"
+        align="center"
+        border="1"
+        cellspacing="50"
+      >
         <caption>
           以上配置应用周次
         </caption>
