@@ -5,21 +5,13 @@
       class="ml-20 mt-10"
     >
       <el-input
+        size="mini"
         v-model="input"
         placeholder="请输入内容"
         class="blur-search"
       ></el-input>
-      <el-date-picker
-        v-model="time"
-        type="daterange"
-        range-separator=":"
-        start-placeholder="开始日期"
-        end-placeholder="结束日期"
-        class="date-input-search ml-10"
-        value-format="yyyy-MM-dd"
-      >
-      </el-date-picker>
       <el-select
+        size="mini"
         v-model="selectValue"
         placeholder="请选择"
         class="statu-search ml-10"
@@ -152,6 +144,21 @@
         </el-table>
       </el-col>
     </el-row>
+    <div
+      class="block"
+      style="margin-top:2%"
+    >
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPageA"
+        :page-sizes="[2, 4, 6, 8, 10]"
+        :page-size="pageSizeA"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      >
+      </el-pagination>
+    </div>
     <!-- 申请挂失弹出框 -->
     <el-dialog
       title="提示"
@@ -200,7 +207,10 @@ export default {
     return {
       tableData: [],
       currentPage: 0,
-      pageSize: 4,
+      pageSize: 1000,
+      pageSizeA: 4,
+      total: '',
+      currentPageA: 0,
       delVisible: false,
       statusVisible: false
     }
@@ -218,6 +228,15 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
+    watch: {
+      pageSizeA: function() {
+        this.getLossAll()
+      },
+      currentPageA: function() {
+        this.getLossAll()
+      },
+      total: function() {}
+    },
     //分页查询
     getLossAll() {
       this.axios({
@@ -230,6 +249,7 @@ export default {
       })
         .then((res) => {
           this.tableData = res.data.data
+          this.total = this.tableData.length
         })
         .catch(function(error) {
           console.log(error)

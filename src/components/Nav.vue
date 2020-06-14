@@ -156,6 +156,7 @@ export default {
   padding: 0%;
   left: 65px;
   z-index: 100;
+  background-color: white;
   transition: left 0.35s;
 }
 

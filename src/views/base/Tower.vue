@@ -27,26 +27,39 @@
       <el-button type="success" size="mini" @click="search()" class="ml-10" icon="el-icon-search">搜索</el-button>
     </el-row>
     <el-row class="df-jr-ac ml-20 mt-10">
-      <el-col class="tl">
-        <el-button type="primary" icon="el-icon-plus" size="small"><span>新增</span></el-button>
-        <el-button type="success" icon="el-icon-edit" size="small">修改</el-button>
-        <el-button type="danger" icon="el-icon-delete" size="small">删除</el-button>
-        <el-button type="warning" icon="el-icon-download" size="small">导出</el-button>
-      </el-col>
-      <el-col class="tr mr-20">
-        <el-button icon="el-icon-refresh" size="small"></el-button>
-      </el-col>
-    </el-row>
+          <el-col class="tl">
+            <el-button type="primary" icon="el-icon-plus" @click="openDialog" size="mini">
+              <span class="light-font-color">新增</span>
+            </el-button>
+            <el-button type="success" icon="el-icon-edit" size="mini">
+              <span class="light-font-color">修改</span>
+            </el-button>
+            <el-button type="danger" icon="el-icon-delete" size="mini">
+              <span class="light-font-color">删除</span>
+            </el-button>
+            <el-button type="warning" icon="el-icon-download" disabled size="mini">
+              <span class="light-font-color">导出</span>
+            </el-button>
+          </el-col>
+          <el-col class="tr mr-20">
+            <el-button size="mini" style="width: 45px" class="search-btn" @click="searchShow = !searchShow" @mouseover="searchOver()">
+              <i class="el-icon-search" style="color: white"></i>
+            </el-button>
+            <el-button icon="el-icon-refresh" size="small" @click="flush()"></el-button>
+          </el-col>
+        </el-row>
     <!-- 表格 -->
     <el-row>
       <el-col span="1"></el-col>
       <el-col span="23" class="ml-20 mt-10">
+        <el-row>
         <el-table
           ref="multipleTable"
-          :data="towerList"
+          :data="towerList.slice(start, end)"
           tooltip-effect="dark"
           style="width: 100%;"
           stripe="true"
+          class="light-small-font"
           @selection-change="handleSelectionChange"
         >
           <el-table-column type="selection" min-width="5%"></el-table-column>
@@ -59,12 +72,30 @@
           <el-table-column label="操作" align="center" show-overflow-tooltip min-width="20%">
             <template slot-scope="scope">
               <p class="tc">
-                <el-button size="mini" icon="el-icon-edit" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-                <el-button size="mini" icon="el-icon-delete" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+                <el-button size="mini" icon="el-icon-edit" type="primary" @click="handleEdit(scope.row)">
+                  <span class="light-font-color">编辑</span>
+                </el-button>
+                <el-button size="mini" icon="el-icon-delete" type="danger" @click="handleDelete(scope.row)">
+                  <span class="light-font-color">删除</span>
+                </el-button>
               </p>
             </template>
           </el-table-column>
         </el-table>
+        </el-row>
+        <el-row class="df-jl-ac mt-10">
+          <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="currentPage"
+            :page-sizes="[8]"
+            :page-size="100"
+            layout="total, prev, pager, next, sizes"
+            :total="towerList.length"
+            @prev-click="prevPage()"
+            @next-click="nextPage()"
+          ></el-pagination>
+        </el-row>
       </el-col>
     </el-row>
   </div>
@@ -78,7 +109,12 @@ export default {
     return {
       towerList: [],
       formShow: false,
-      dialogFormVisible: false
+      dialogFormVisible: false,
+      start: 0,
+      end: 8,
+      pageSize: 8,
+      currentPageSize: 8,
+      currentPage: 1
     }
   },
   components: {},
@@ -98,6 +134,30 @@ export default {
         }
         console.log(res)
       })
+    },
+    //下一页
+    nextPage() {
+      this.currentPage += 1
+      this.start += this.pageSize
+      this.end += this.pageSize
+    },
+    //上一页
+    prevPage() {
+      this.currentPage -= 1
+      this.start -= this.pageSize
+      this.end -= this.pageSize
+    },
+    //改变页的数据条数
+    handleSizeChange(val) {
+      this.start = (this.currentPage - 1) * val
+      this.end = this.currentPage * val
+      this.currentPageSize = val
+    },
+    //选择分页
+    handleCurrentChange(val) {
+      this.currentPage = val
+      this.start = (this.currentPage - 1) * this.currentPageSize
+      this.end = this.currentPage * this.currentPageSize
     },
     // formatDate(value) {
     //   let date = new Date(value)
@@ -148,6 +208,60 @@ el-input {
 
 >>> .el-input__inner {
   height: 30px;
+}
+
+>>> .el-input__icon {
+  color: #ddd;
+  margin-bottom: 10px;
+}
+
+.el-button--success {
+  background-color: #13ce66;
+}
+
+.search-btn {
+  background-color: #f4f4f5;
+}
+
+.search-btn:hover {
+  background-color: #909399;
+}
+
+>>> .el-input__inner {
+  height: 30px;
+}
+
+>>> .el-icon-edit {
+  color: #f7fbff;
+}
+
+>>> .el-icon-plus {
+  color: #f7fbff;
+}
+
+>>> .el-icon-delete {
+  color: #f7fbff;
+}
+
+>>> .el-icon-download {
+  color: #f7fbff;
+}
+
+>>> .el-range-separator {
+  margin-bottom: 10px;
+}
+
+/* >>> .el-icon-search {
+  color: #f7fbff;
+} */
+
+>>> .el-input__prefix {
+  display: flex;
+  align-items: center;
+}
+
+>>> .el-select__caret {
+  margin-top: 5px;
 }
 
 </style>

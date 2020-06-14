@@ -365,6 +365,7 @@ export default {
             message: '新增成功',
             type: 'success'
           })
+          this.getRoles()
           this.dialogFormVisible = false
           this.roles.splice(0, 0, this.roleInfo)
         }
@@ -468,16 +469,6 @@ export default {
 </script>
 
 <style scoped>
-.room-container {
-  padding: 20px 0px;
-}
-
-.demo-ruleForm {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
 
 .blur-search {
   width: 200px;
@@ -492,7 +483,7 @@ export default {
 }
 
 >>> .el-input__icon {
-  color: #ddd;
+  color: #eee;
   margin-bottom: 10px;
 }
 
@@ -576,5 +567,14 @@ export default {
 
 >>> .el-textarea__inner {
   height: 80px;
+}
+
+.search-btn {
+  height: 30px;
+  width: 80px;
+}
+
+.el-input__inner {
+  height: 30px;
 }
 </style>

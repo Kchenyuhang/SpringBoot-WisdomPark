@@ -56,6 +56,7 @@
             :data="rooms.slice(start, end)"
             tooltip-effect="dark"
             style="width: 100%"
+            class="light-small-font"
             @selection-change="handleSelectionChange"
           >
             <el-table-column type="selection" min-width="5%"></el-table-column>
@@ -179,43 +180,6 @@ export default {
         label: 'name'
       },
       dialogFormVisible: false,
-      tableData: [
-        {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-08',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-06',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-07',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }
-      ],
       multipleSelection: [],
       rooms: [],
       room: {
@@ -226,7 +190,6 @@ export default {
       currentPage: 1
     }
   },
-  components: {},
   created() {
     this.getRoom()
   },
@@ -301,7 +264,7 @@ export default {
       })
     },
     //刷新数据
-    flush(){
+    flush() {
       this.getRoom()
     },
     //删除房间信息
@@ -387,6 +350,50 @@ export default {
 el-input {
   height: 30px;
 }
+.el-input__icon {
+  color: #ddd;
+  margin-bottom: 10px;
+}
+
+.el-button--success {
+  background-color: #13ce66;
+}
+
+.search-btn {
+  background-color: #f4f4f5;
+}
+
+.search-btn:hover {
+  background-color: #909399;
+}
+
+.el-input__inner {
+  height: 30px;
+}
+
+.el-icon-edit {
+  color: #f7fbff;
+}
+
+.el-icon-plus {
+  color: #f7fbff;
+}
+
+.el-icon-delete {
+  color: #f7fbff;
+}
+
+.el-icon-download {
+  color: #f7fbff;
+}
+
+.el-range-separator {
+  margin-bottom: 10px;
+}
+.el-input__prefix {
+  display: flex;
+  align-items: center;
+}
 
 >>> .el-input__icon {
   color: #ddd;
@@ -425,7 +432,7 @@ el-input {
   color: #f7fbff;
 }
 
->>>.el-range-separator {
+>>> .el-range-separator {
   margin-bottom: 10px;
 }
 
@@ -438,12 +445,7 @@ el-input {
   align-items: center;
 }
 
- >>>.el-select__caret {
-   margin-top: 5px;
+.el-select__caret {
+  margin-top: 5px;
 }
-
-/* >>> .el-input__suffix-inner {
-  display: flex;
-} */
-
 </style>

@@ -1,285 +1,603 @@
 <template>
-  <div class="container">
-    <div class="tab-header">
-      <el-row class="header-row">
-        <el-input class="input" placeholder="请输入内容" v-model="input" clearable @input="filterSearch"> </el-input>
-        <el-button size="medium" type="success">查询</el-button>
-        <el-button size="medium" type="primary" @click="createBookShow = !createBookShow">增加</el-button>
-        <el-button size="medium" type="danger" @click="handleDeleteMul">批量删除</el-button>
-      </el-row>
-    </div>
-    <div class="createBook" v-if="createBookShow">
-      <el-form :model="bookCreate" :rules="bookCreateRules" ref="bookCreate" label-width="100px" class="bookFormCreate">
-        <el-form-item label="书名" prop="bookName">
-          <el-input v-model="bookCreate.bookName"></el-input>
+  <div style="width:100%">
+    <!-- 修改弹出框 -->
+    <el-dialog
+      title="编辑一卡通"
+      :visible.sync="updatecenterDialogVisible"
+      width="30%"
+      left
+    >
+      <el-form
+        :model="ruleForm"
+        status-icon
+        :rules="rules"
+        label-width="80px"
+      >
+        <el-form-item
+          label="密码"
+          prop="pass"
+        >
+          <el-input
+            type="password"
+            v-model="ruleForm.pass"
+            autocomplete="off"
+            placeholder="123456"
+          ></el-input>
         </el-form-item>
-        <el-form-item label="作者" prop="author">
-          <el-input v-model="bookCreate.author"></el-input>
+        <el-form-item
+          label="确认密码"
+          prop="checkPass"
+        >
+          <el-input
+            type="password"
+            v-model="ruleForm.checkPass"
+            autocomplete="off"
+            placeholder="123456"
+          ></el-input>
         </el-form-item>
-
-        <el-form-item label="类型" prop="type">
-          <el-input v-model="bookCreate.type"></el-input>
+        <el-form-item
+          label="绑定号码"
+          prop="job_number"
+        >
+          <el-input v-model.number="ruleForm.jobnumber"></el-input>
         </el-form-item>
-
-        <el-form-item label="描述" prop="description">
-          <el-input v-model="bookCreate.description"></el-input>
-        </el-form-item>
-
-        <el-form-item label="数量" prop="bookNumber">
-          <el-input type="number" v-model="bookCreate.bookNumber"></el-input>
-        </el-form-item>
-
-        <el-form-item label="状态" prop="status">
-          <el-select v-model="bookCreate.status" placeholder="请选择状态" style="width:380px">
-            <el-option label="启用" value="true"></el-option>
-            <el-option label="禁用" value="false"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="封面">
-          <!-- <el-upload :limit="1" class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/"
-            :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList" list-type="picture">
-            <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传一张jpg/png文件，且不超过500kb</div>
-          </el-upload> -->
-          <img :src="bookCreate.cover" @click="selectavatar()" class="imgChange" width="100px" height="100px" />
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="submitForm('bookCreate')">立即创建</el-button>
-          <el-button @click="resetForm('bookCreate')">重置</el-button>
-          <el-button @click="createBookShow = !createBookShow">取消</el-button>
-        </el-form-item>
-      </el-form>
-    </div>
-    <div class="createBook" v-if="bookUpdateShow">
-      <el-form :model="bookUpdate" :rules="bookCreateRules" ref="bookUpdate" label-width="100px" class="bookFormCreate">
-        <el-form-item label="书名" prop="bookName">
-          <el-input v-model="bookUpdate.bookName"></el-input>
-        </el-form-item>
-        <el-form-item label="作者" prop="author">
-          <el-input v-model="bookUpdate.author"></el-input>
-        </el-form-item>
-
-        <el-form-item label="类型" prop="type">
-          <el-input v-model="bookUpdate.type"></el-input>
-        </el-form-item>
-
-        <el-form-item label="描述" prop="description">
-          <el-input v-model="bookUpdate.description"></el-input>
-        </el-form-item>
-
-        <el-form-item label="数量" prop="bookNumber">
-          <el-input type="number" v-model="bookUpdate.bookNumber"></el-input>
-        </el-form-item>
-
-        <el-form-item label="状态" prop="status">
-          <el-select v-model="bookUpdate.status" placeholder="请选择状态" style="width:380px">
-            <el-option label="启用" value="true"></el-option>
-            <el-option label="禁用" value="false"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="封面">
-          <!-- <el-upload :limit="1" class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/"
-            :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList" list-type="picture">
-            <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传一张jpg/png文件，且不超过500kb</div>
-          </el-upload> -->
-          <img :src="bookUpdate.cover" @click="selectavatar()" class="imgChange" width="100px" height="100px" />
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="submitForm('bookUpdate')">立即修改</el-button>
-          <el-button @click="resetForm('bookUpdate')">重置</el-button>
-          <el-button @click="bookUpdateShow = !bookUpdateShow">取消</el-button>
+        <el-form-item
+          label="余额"
+          prop="balance"
+        >
+          <el-input v-model.number="ruleForm.balance"></el-input>
         </el-form-item>
       </el-form>
-    </div>
-    <el-table ref="bookId" :data="bookShow" @selection-change="handleSelectionChange">
-      <el-table-column prop="pkBookId" type="selection" width="50"></el-table-column>
-      <el-table-column prop="pkBookId" label="id" width="50"> </el-table-column>
-      <el-table-column prop="author" label="作者" width="110"> </el-table-column>
-      <el-table-column prop="bookName" label="书名" width="200"> </el-table-column>
-      <el-table-column prop="description" label="描述" width="160"> </el-table-column>
-      <el-table-column prop="type" label="类型" width="50"> </el-table-column>
-      <el-table-column prop="bookNumber" label="总数" width="50"> </el-table-column>
-      <el-table-column prop="bookResidueNumber" label="库存" width="50"> </el-table-column>
-      <el-table-column prop="status" label="状态" width="50"></el-table-column>
-      <el-table-column prop="gmtCreate" label="创建时间" width="130"> </el-table-column>
-      <el-table-column prop="gmtModified" label="修改时间" width="130"> </el-table-column>
-      <el-table-column prop="isDeleted" label="删除标志 " width="100"> </el-table-column>
-      <el-table-column label="操作" width="150">
-        <template slot-scope="scope">
-          <el-button size="mini" type="warning" @click="handleUpdate(scope.$index, scope.row)">修改</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <div style="margin-top:2%">
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
-        :page-sizes="[5,7,10,15, 20, 30, 40]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper"
-        :total="total">
-      </el-pagination>
-    </div>
-    <!-- 删除提示框 -->
-    <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
-      <div class="del-dialog-cnt">图书信息删除不可恢复，是否确定删除？</div>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="delVisible = false">取 消</el-button>
-        <el-button type="primary" @click="deleteBook">确 定</el-button>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="updatecenterDialogVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="confirmUpdate"
+        >确 定</el-button>
       </span>
     </el-dialog>
-    <!-- 设置可以被引用  引用名为file  不可见 -->
-    <input ref="file" v-show="false" type="file" @change="uploadAvatar($event)" />
+
+    <!-- 增加弹出框 -->
+    <el-dialog
+      title="新增一卡通"
+      :visible.sync="addcenterDialogVisible"
+      width="30%"
+      center
+    >
+      <el-form
+        label-width="80px"
+        :model="ruleForm1"
+      >
+        <el-form-item
+          required
+          label="卡号"
+          prop="cardNumber"
+        >
+          <el-input v-model="ruleForm1.cardNumber"></el-input>
+        </el-form-item>
+        <el-form-item
+          required
+          label="绑定卡号"
+          prop="jobNumber"
+        >
+          <el-input v-model="ruleForm1.jobNumber"></el-input>
+        </el-form-item>
+        <el-form-item
+          required
+          label="卡号密码"
+          prop="cardPassword"
+        >
+          <el-input
+            type="password"
+            v-model="ruleForm1.cardPassword"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          required
+          label="余额"
+          prop="cardbalance1"
+        >
+          <el-input v-model="ruleForm1.cardbalance1"></el-input>
+        </el-form-item>
+      </el-form>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="addcenterDialogVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="confirmAdd"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <!-- 流水明细 -->
+    <el-dialog
+      title="流水查询"
+      :visible.sync="datailcenterDialogVisible"
+      width="30%"
+      left
+    >
+      <el-form
+        status-icon
+        label-width="80px"
+        style="height:400px;overflow:auto"
+      >
+        <el-collapse accordion>
+          <div
+            v-for="(item, index) in detailList"
+            :key="index"
+          >
+            <el-collapse-item>
+              <template slot="title">
+                {{ item.gmtCreate }}<i
+                  class="el-icon-s-shop"
+                  style="margin-left:15%"
+                ></i>{{ item.description }} -{{ item.orderMoney }}
+              </template>
+              <div><i class="el-icon-s-shop"></i>{{ item.description }}</div>
+              <div>
+                <h4>-{{ item.orderMoney }}</h4>
+              </div>
+              <div>交易成功</div>
+              <div>
+                <span style="margin-left:-10%">付款方式</span> <span style="margin-left:25%">{{ item.payMethod }}</span>
+              </div>
+              <div>
+                <span style="margin-left:-10%">交易流水号</span><span style="margin-left:25%">{{ item.orderNumber }}</span>
+              </div>
+              <div>
+                <span style="margin-left:-5%"> 创建时间</span><span style="margin-left:18%">{{ item.gmtCreate }}</span>
+              </div>
+            </el-collapse-item>
+          </div>
+        </el-collapse>
+      </el-form>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="datailcenterDialogVisible = false">取 消</el-button>
+      </span>
+    </el-dialog>
+    <el-row
+      type="flex"
+      class="ml-20 mt-10"
+    >
+      <el-input
+        v-model="input"
+        clearable
+        placeholder="请输入内容"
+        class="blur-search"
+        size="mini"
+        @input="filterSearch()"
+      ></el-input>
+      <el-select
+        size="mini"
+        v-model="selectValue"
+        placeholder="请选择"
+        class="statu-search ml-10"
+      >
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        > </el-option>
+      </el-select>
+      <el-button
+        type="success"
+        size="mini"
+        class="ml-10"
+        icon="el-icon-search"
+      >搜索</el-button>
+    </el-row>
+    <el-row class="df-jr-ac ml-20 mt-10">
+      <el-col class="tl">
+        <el-button
+          type="primary"
+          icon="el-icon-plus"
+          size="small"
+          @click="addcenterDialogVisible = true"
+        ><span>新增</span></el-button>
+        <el-button
+          type="danger"
+          icon="el-icon-delete"
+          size="small"
+          @click="delAll()"
+        >批量删除</el-button>
+        <!-- 删除提示框 -->
+        <el-dialog
+          title="提示"
+          :visible.sync="batchdelVisible"
+          width="300px"
+          center
+        >
+          <div class="del-dialog-cnt">批量删除一卡通信息后不可恢复，是否确定删除？</div>
+          <span
+            slot="footer"
+            class="dialog-footer"
+          >
+            <el-button @click="batchdelVisible = false">取 消</el-button>
+            <el-button
+              type="primary"
+              @click="deleteBatch()"
+            >确 定</el-button>
+          </span>
+        </el-dialog>
+      </el-col>
+      <el-col class="tr mr-20">
+        <el-button
+          icon="el-icon-refresh"
+          size="small"
+        ></el-button>
+      </el-col>
+    </el-row>
+    <!-- 表格展示 -->
+    <el-row>
+      <el-col span="1"></el-col>
+      <el-col
+        span="23"
+        class="ml-20 mt-10"
+      >
+        <el-table
+          :data="bookList"
+          stripe="true"
+          style="width: 100%;"
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column
+            type="selection"
+            min-width="10%"
+          > </el-table-column>
+          <el-table-column
+            label="图书名"
+            show-overflow-tooltip
+            min-width="13%"
+          >
+            <template slot-scope="scope">
+              <span style="margin-left:-5%">{{ scope.row.bookName }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="作者"
+            show-overflow-tooltip
+            min-width="13%"
+          >
+            <template slot-scope="scope">
+              <span>{{ scope.row.author }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="封面"
+            show-overflow-tooltip
+            min-width="15%"
+          >
+            <template slot-scope="scope">
+              <el-popover
+                placement="right"
+                title=""
+                trigger="hover"
+              >
+                <img :src="scope.row.cover" />
+                <img
+                  slot="reference"
+                  :src="scope.row.cover"
+                  :alt="scope.row.cover"
+                  style="max-height: 50px;max-width: 130px"
+                >
+              </el-popover>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="简介"
+            show-overflow-tooltip
+            min-width="13%"
+          >
+            <template slot-scope="scope">
+              <span>{{ scope.row.description }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="状态"
+            show-overflow-tooltip
+            min-width="15%"
+          >
+            <template slot-scope="scope">
+              <el-switch
+                v-model="scope.row.status"
+                active-color="#13ce66"
+                :disabled="scope.row.status == 1"
+                inactive-color="#ff4949"
+                @change="changeSwitchA($event, scope.row, scope.$index)"
+              >
+                >
+              </el-switch>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="创建时间"
+            show-overflow-tooltip
+            min-width="18%"
+          >
+            <template slot-scope="scope">
+              <i class="el-icon-time"></i>
+              <span>{{ scope.row.gmtCreate }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="操作"
+            show-overflow-tooltip
+            min-width="23%"
+          >
+            <template slot-scope="scope">
+              <el-button
+                size="mini"
+                type="success"
+                @click="handleUpdate(scope.$index, scope.row)"
+              >编辑</el-button>
+              <el-button
+                size="mini"
+                type="danger"
+                @click="handleDelete(scope.$index, scope.row)"
+              >删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-col>
+    </el-row>
+    <!-- 删除提示框 -->
+    <el-dialog
+      title="提示"
+      :visible.sync="delVisible"
+      width="300px"
+      center
+    >
+      <div class="del-dialog-cnt">一卡通信息删除不可恢复，是否确定删除？</div>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="delVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="deleteRow"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+    <div
+      class="block"
+      style="margin-top:2%"
+    >
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[8, 16, 24, 32, 40]"
+        :page-size="pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      >
+      </el-pagination>
+    </div>
   </div>
 </template>
 
 <script>
-// import OSS from 'ali-oss'
-const API = require('../utils/api.js')
+const API = require('../utils/api')
 export default {
-  name: 'Book',
   data() {
-    return {
-      input: '',
-      index: '', //根据索引删除元素
-      bookShow: [],
-      book: [],
-      bookId: [],
-      fileList: [
-        {
-          name: 'food.jpeg',
-          url:
-            'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+    var validatePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入密码'))
+      } else {
+        if (this.ruleForm.checkPass !== '') {
+          this.$refs.ruleForm.validateField('checkPass')
         }
-      ],
-      msg: '',
+        callback()
+      }
+    }
+    var validatePass2 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
+      } else if (value !== this.ruleForm.pass) {
+        callback(new Error('两次输入密码不一致!'))
+      } else {
+        callback()
+      }
+    }
+    return {
+      bookList: [],
+      bookList1: [],
+      detailList: [],
+      currentPage: 0,
+      total: 40,
+      pageSize: 8,
+      updatecenterDialogVisible: false,
+      addcenterDialogVisible: false,
+      datailcenterDialogVisible: false,
       delVisible: false, //删除提示弹框的状态
-      currentPage: 1, //当前页
-      total: 40, //总记录数
-      pageSize: 7, //页的大小
-      createBookShow: false, //添加书籍的表单的控制变量
-      bookUpdateShow: false, //修复书籍的表单的控制变量
-      bookCreate: {
-        bookName: '',
-        author: '',
-        type: '',
-        description: '',
-        bookNumber: 0,
-        status: '',
-        cover:
-          'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAARgAAAC0CAMAAAB4+cOfAAAAKlBMVEXw8PDg4ODu7u7h4eHq6urk5OTz8/PZ2dns7Ozd3d3n5+fY2Nj29vbU1NTkhN11AAAFGklEQVR4nO2d63arOAxGfZNv0Pd/3ZFsIAnB0zLjM12jfPsHq6FpVr1rybIx1BgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPwb4iR+ux2TiS6HOThNbqKpvkzCklNjJjpf7DSKzUrMRCNepvUYNqOlz1TpLxRmZJlcpc/Qb7doDk4CIMwaldqnqQimyH/kUqe1JIapH/eLRImkiX9i55XEUhPj5n0exAyAmAEQMwBiBkDMAIgZoFxMNC5nZ/5BeaNaTDSVpLSnel+NZjFc1pd9DSHc/TzNYmo51mdKqTc/T6+YGF6Wre7OCPWKcec1uXvrTmrFtNcvXYYgpvG+jHurytEqJub3hfFwp8toFWPCu5hb6RdiGtX604UkrWLihZhxKEnFU+xLfaxWTH5PvoMV4WioSyw+PNRoFWPM22VJP/hBR48C2eddjVox73XMdYo5X9ilrV+pFWMMvU4JrjsMh9yrQE41LQvrFRPdc5MHV6LlutqZloWjXjHyR39OHpeBdI63/d2Bc5ReMZHLk7ZvoVi6WqmKAy+ihoJiMRJOoRLR9f6oeMpCF3b+k9/8DzNYDI/H4e077hsvusWM3+/sN14+U8xVZQwx11OpDxNzvWd3OBx9iphocs3n5PvtcKRfjIw8p+WEfXvnJ4tpBZ49LSfc2A6sVEw04TBQ6Iint1njh4mJMfuXOeQ2KbiaNX6SmJ5cXlrZ5sym/tyLQjF7cjm10+efDdNaxTwnl1On8Te06BOTf1alfJaYeB1FHy9G7iiYd8+SIjF1VhRpEzMXiIEYiIGYA4gZADEDIGYAxAyAmAEQM+CPiFFx3/UPLi3eFaPihnTZ0CL4KXQzE2+Y+036Vdc5YryiDvPD664/DyQVqbfTN1DN0WIVeeEETP7eevcA7yn/dmPmEo2bwmAXFgAAAHCTx5aHeyOL8nEoOinlWyMz3aleQ7uXP3glE6QzXPt+pVJSrXxI8kiHmPmLJOeEhaK4e31KovxgtEmOddHyvMQT1S+WPPlsk2zXbHce8WuispDgg4hZfBVztVHEiIm+yLEmpWLWUGKt67q2fuD6hhlmpbLuT+plMXldTUqea3+31tLe5It8NySj8HG+ssXuK/kl2VJpkShJ+52z0ZbHm0RM+CqhhrLkSLuY7LKjJbgsz+JRBk8jiVIhG7idNflwbD4r9ugG0aVAiUrlzpLjLoaWnoTaQc1SzANOIcW64Aqtpi812d7WZcu+rELEBI6lJbnVHGJKFlw//nIr5uNl+OEoolT7wM35uCXdVBbf0q/rodT2dcp+xT3H2LJ2VOYYk2uQqFkpGe4STUzLvblw+9cj+cpYtPjoLIed33JM6oNU1ddbGtxwT85xz8jZH6tNHF75GIg5lKh4F7jDONkm3dNyj7iUvm49NOT/Q/TLXrhxl9hPhiU8i1m48c64yk5i7KHkUnt3zItWMTb1/Jm5vt3PmaVwhdLEyF0FIobHrkKBM3FPviykx51TK+boMXax2ymXuGzbxCSKrfEuV+IMU7Y6hkfrXgzq7TE+bY9Tz2UTU3lYjn0W1DqGjEpbFcxzxlXE8Kle52gW88gxIoYH7S9rmpIk56Tkd8tjAsmje5H6b5s8ahaTqFO3HONrr0uCXGEk1xrv6YAHbnbit1pXrxiT8/EI/T5a7+Xa0397Cc//PMa9Pm5S2QWlJ+LFV8O3fPcKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPh7/gLfCkBS+NmGOgAAAABJRU5ErkJggg=='
+      batchdelVisible: false,
+      delarr: [], //存放删除的数据
+      multipleSelection: [],
+      value1: '',
+      input: '',
+      gmtTime: '',
+      msg: '', //记录每一条的信息，便于取id
+      ruleForm: {
+        pass: '',
+        checkPass: '',
+        balance: '',
+        jobnumber: ''
       },
-      bookUpdate: {
-        id: '',
-        bookName: '',
-        author: '',
-        type: '',
-        description: '',
-        bookNumber: 0,
-        status: '',
-        cover: ''
+      ruleForm1: {
+        jobNumber: '',
+        cardNumber: '',
+        cardPassword: '',
+        cardbalance1: ''
       },
-      bookCreateRules: {
-        bookName: [{ required: true, message: '请输入书名', trigger: 'blur' }],
-        author: [{ required: true, message: '请输入作者', trigger: 'blur' }],
-        type: [{ required: true, message: '请输入类型', trigger: 'blur' }],
-        description: [{ required: true, message: '请输入描述', trigger: 'blur' }],
-        bookNumber: [{ required: true, message: '请输入数量', trigger: 'blur' }],
-        status: [{ required: true, message: '请输入状态', trigger: 'blur' }]
+      rules: {
+        pass: [{ validator: validatePass, trigger: 'blur' }],
+        checkPass: [{ validator: validatePass2, trigger: 'blur' }]
       }
     }
   },
-  components: {},
   created() {
-    this.getAllBook()
+    this.getBookAll()
   },
-  mounted() {},
+  watch: {
+    pageSize: function() {
+      this.getBookAll()
+    },
+    currentPage: function() {
+      this.getBookAll()
+    },
+    total: function() {}
+  },
   methods: {
-    handleRemove(file, fileList) {
-      console.log(file, fileList)
+    load() {
+      this.bookList.length += 2
     },
-    handlePreview(file) {
-      console.log(file)
-    },
-    submitForm(formName) {
-      if (formName === 'bookCreate') {
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            alert('添加submit!')
-            let data = this.bookCreate
-            API.init('/book/increased', data, 'post')
-            this.createBookShow = !this.createBookShow
-          } else {
-            console.log('error submit!!')
-            return false
-          }
-        })
-      } else if (formName === 'bookUpdate') {
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            alert('修改submit!')
-            let data = this.bookUpdate
-            data.status = data.status === '启用' ? true : false
-            API.init('/book/updation', data, 'put')
-            this.bookUpdateShow = !this.bookUpdateShow
-          } else {
-            console.log('error submit!!')
-            return false
-          }
-        })
+    // 分页查询所有
+    async getBookAll() {
+      this.data = { currentPage: this.currentPage, pageSize: this.pageSize }
+      this.url = '/book/all'
+      this.result = await API.init(this.url, this.data, 'post')
+      this.bookList = this.result.data
+      console.log(this.result.data)
+      this.bookList1 = this.result.data
+      for (let i = 0; i < this.bookList.length; i++) {
+        this.bookList[i].gmtCreate = this.formatDate(this.bookList[i].gmtCreate)
       }
-      this.getAllBook()
     },
-    resetForm(formName) {
-      this.$refs[formName].resetFields()
+    // 当前页展示数据
+    handleSizeChange: function(pageSize) {
+      this.pageSize = pageSize
     },
-    async getAllBook() {
-      let data = {
-        currentPage: this.currentPage,
-        pageSize: this.pageSize
+    // 当前页
+    handleCurrentChange: function(currentPage) {
+      this.currentPage = currentPage
+    },
+    //单行删除
+    handleDelete(index, row) {
+      this.idx = index
+      this.msg = row //每一条数据的记录
+      this.delVisible = true
+    },
+    async deleteRow() {
+      this.data = { field: this.msg.pkCardId }
+      this.url = '/card/id'
+      this.result = await API.init(this.url, this.data, 'post')
+      if (this.data) {
+        this.getBookAll()
+        this.$message.success('删除成功')
+      } else {
+        this.$message.error('一卡通信息删除失败')
       }
-      let res = await API.init('/book/all', data, 'post')
+      this.delVisible = false //关闭删除提示模态框
+    },
+    //批量删除
+    delAll() {
+      this.batchdelVisible = true //显示删除弹框
+      const length = this.multipleSelection.length
+      for (let i = 0; i < length; i++) {
+        this.delarr.push(this.multipleSelection[i].pkCardId)
+      }
+    },
+    //操作多选
+    handleSelectionChange(val) {
+      this.multipleSelection = val
+    },
+    //批量删除
+    async deleteBatch() {
+      this.data = { ids: String(this.delarr) }
+      this.url = '/card/deletionBath'
+      this.result = await API.init(this.url, this.data, 'post')
+      if (this.data) {
+        this.getBookAll()
+        this.$message.success('批量删除成功')
+      } else {
+        this.$message.error('App版本信息批量删除失败')
+      }
+      this.batchdelVisible = false //关闭删除提示模态框
+    },
+    async changeSwitchA(index, row) {
+      this.idx = index
+      this.msg = row //每一条数据的记录
+      console.log(this.msg.pkCardId)
+      this.data = { field: this.msg.pkCardId, status: true }
+      this.url = '/card/statuschange'
+      this.result = await API.init(this.url, this.data, 'post')
+      this.$message.success('激活成功')
+      this.getBookAll()
+    },
+    //编辑
+    handleUpdate(index, row) {
+      this.idx = index
+      this.msg = row //每一条数据的记录
+      this.updatecenterDialogVisible = true
+    },
+    //修改一卡通信息
+    async confirmUpdate() {
+      this.data = {
+        pkCardId: this.msg.pkCardId,
+        status: this.msg.status,
+        cardPassword: this.ruleForm.checkPass,
+        jobNumber: this.ruleForm.jobnumber,
+        cardBalance: this.ruleForm.balance
+      }
+      this.url = '/card/modification'
+      this.result = await API.init(this.url, this.data, 'post')
+      this.updatecenterDialogVisible = false
+      this.getBookAll()
+      if (this.result.data == null) {
+        this.$message.success('该一卡通未激活，信息修改失败')
+      } else {
+        this.$message.success('信息修改成功')
+      }
+    },
+    //新增一卡通
+    async confirmAdd() {
+      this.data = {
+        cardNumber: this.ruleForm1.cardNumber,
+        cardPassword: this.ruleForm1.cardPassword,
+        jobNumber: this.ruleForm1.jobNumber,
+        cardBalance: this.ruleForm1.cardbalance1
+      }
+      this.url = '/card/increase'
+      this.result = await API.init(this.url, this.data, 'post')
+      this.addcenterDialogVisible = false
+      this.getBookAll()
+      if (this.result.data == null) {
+        this.$message.success('该一卡通账号已存在，请勿重复新增')
+      } else {
+        this.$message.success('一卡通添加成功')
+      }
+    },
 
-      this.book = res.data.content //源数据
-      // this.bookShow = this.book //显示数据   此处不可以这样，这样是引用
-      // this.bookShow = this.book.slice(0)
-      this.bookShow = this.bookShow.concat(JSON.parse(JSON.stringify(this.book))) //拷贝数组
-      for (let i = 0; i < this.bookShow.length; i++) {
-        this.bookShow[i].description = this.bookShow[i].description.substring(0, 10) + '...'
-        this.bookShow[i].author = this.bookShow[i].author.substring(0, 10) + '...'
-        this.bookShow[i].gmtCreate = this.formatDate(this.bookShow[i].gmtCreate)
-        this.bookShow[i].gmtModified = this.formatDate(this.bookShow[i].gmtModified)
-        if (!this.bookShow[i].status) {
-          this.bookShow[i].status = '启用'
-        } else {
-          this.bookShow[i].status = '禁用'
-        }
-        if (!this.bookShow[i].isDeleted) {
-          this.bookShow[i].isDeleted = '启用'
-        } else {
-          this.bookShow[i].isDeleted = '禁用'
-        }
-      }
-      console.log('book' + JSON.stringify(this.book[1]))
-      console.log('bookShow' + JSON.stringify(this.bookShow[1]))
+    //明细
+    handleDetail(index, row) {
+      this.idx = index
+      this.msg = row //每一条数据的记录
+      this.datailcenterDialogVisible = true
+      this.getDetail()
     },
-    copyArr(arr) {
-      let res = []
-      for (let i = 0; i < arr.length; i++) {
-        res.push(arr[i])
+    //清单明细
+    async getDetail() {
+      this.data = {
+        field: this.msg.jobNumber
       }
-      return res
-    },
-    //过滤搜索
-    filterSearch() {
-      // 获取输入框的值
-      let search = this.input
-      //数组元素按条件过滤
-      console.log('输入的关键字的为：' + search)
-      this.bookShow = this.book.filter((v) => {
-        // console.log(JSON.stringify(v))
-        if (JSON.stringify(v).includes(search)) {
-          return v
-        }
-      })
+      this.url = '/card/consume'
+      this.result = await API.init(this.url, this.data, 'post')
+      this.detailList = this.result.data
+      for (let i = 0; i < this.detailList.length; i++) {
+        this.detailList[i].gmtCreate = this.formatDate(this.detailList[i].gmtCreate)
+      }
     },
     formatDate(value) {
       let date = new Date(value)
@@ -288,162 +606,51 @@ export default {
       MM = MM < 10 ? '0' + MM : MM
       let d = date.getDate()
       d = d < 10 ? '0' + d : d
-      return y + '年' + MM + '月' + d + '日'
+      let h = date.getHours()
+      h = h < 10 ? '0' + h : h
+      let m = date.getMinutes()
+      m = m < 10 ? '0' + m : m
+      let s = date.getSeconds()
+      s = s < 10 ? '0' + s : s
+      return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s
     },
-    //当前页展示数据
-    handleSizeChange: function(pageSize) {
-      this.pageSize = pageSize
-    },
-    //当前页
-    handleCurrentChange: function(currentPage) {
-      this.currentPage = currentPage
-    },
-    //修改
-    handleUpdate(index, row) {
-      for (let i = 0; i < this.book.length; i++) {
-        if (this.book[i].pkBookId === row.pkBookId) {
-          console.log(this.book[i])
-          this.index = index
-          this.bookUpdate.id = this.book[i].pkBookId
-          this.bookUpdate.bookName = this.book[i].bookName
-          this.bookUpdate.author = this.book[i].author
-          this.bookUpdate.type = this.book[i].type
-          this.bookUpdate.description = this.book[i].description
-          this.bookUpdate.bookNumber = this.book[i].bookNumber
-          this.bookUpdate.status = this.book[i].status
-          this.bookUpdate.cover = this.book[i].cover
-          this.bookUpdateShow = true
+    //过滤搜索
+    filterSearch() {
+      // 获取输入框的值
+      let search = this.input
+      //数组元素按条件过滤
+      this.bookList = this.bookList1.filter((v) => {
+        if (JSON.stringify(v).includes(search)) {
+          return v
         }
-      }
-    },
-    //单行删除
-    handleDelete(index, row) {
-      this.index = index
-      this.bookId.push(row.pkBookId)
-      this.delVisible = true
-    }, //批量删除
-    handleDeleteMul() {
-      this.delVisible = true
-    },
-    //确定删除
-    async deleteBook() {
-      let data = {
-        ids: String(this.bookId)
-      }
-      API.init('book/deletion/batch', data, 'delete')
-      this.delVisible = false //关闭删除提示模态框
-      //删除book数组中id在bookId的元素，并清空bookId
-      // }
-      for (let i = 0; i < this.bookId.length; i++) {
-        this.book.filter((bok) => {
-          if (bok.pkBookId == this.bookId[i]) {
-            let index = this.book.indexOf(bok)
-            this.book.splice(index, 1)
-            this.bookShow = this.book
-          }
-        })
-      }
-      this.bookId = []
-    },
-    toggleSelection(rows) {
-      if (rows) {
-        rows.forEach((row) => {
-          this.$refs.bookId.toggleRowSelection(row)
-        })
-      } else {
-        this.$refs.bookId.clearSelection()
-      }
-    },
-    handleSelectionChange(val) {
-      let ids = []
-      for (let i = 0; i < val.length; i++) {
-        ids.push(val[i].pkBookId)
-      }
-      this.bookId = ids
+      })
     }
-    //上传图片
-    // selectavatar() {
-    //   this.$refs.file.click()
-    // },
-    // uploadAvatar(event) {
-    //   const OSS = require('ali-oss')
-    //   let client = new OSS({
-    //     region: 'oss-cn-beijing',
-    //     //云账号的AccessKey所有的API访问权限，
-    //     //建议遵循阿里云安全最佳实践没部署在服务器端使用RAM子账号
-    //     accessKeyId: 'LTAI4GD8r7BPa4ik89fSdFws',
-    //     accessKeySecret: 'H5uLKRHHYnndxuHctQjPPBJj5vRWSH',
-    //     bucket: 'nttbucket'
-    //   })
-    //   let timestamp = Date.parse(new Date())
-    //   let imgUrl = 'img/' + timestamp
-    //   alert(imgUrl)
-    //   var file = event.target.files[0] //获取文件流1
-    //   //因为在内部方法中，this无效
-    //   var _this = this
-    //   client.multipartUpload(imgUrl, file).then(function(result) {
-    //     let img = result.res.requestUrls[0].split('?')[0]
-    //     alert('图片地址***' + img)
-    //     _this.bookCreate.cover = img
-    //     //地址改变，但没有远程存储，所以找不到文件
-    //     //要先存储
-    //     alert('图片地址' + _this.bookCreate.coverr)
-    //   })
-    // }
-  },
-  computed: {},
-  watch: {
-    pageSize: function() {
-      console.log('pageSize改变' + this.pageSize)
-      this.getAllBook()
-    },
-    currentPage: function() {
-      console.log('currentPage改变' + this.currentPage)
-      this.getAllBook()
-    },
-    total: function() {}
   }
 }
 </script>
 
 <style scoped lang="scss">
-.container {
-  padding-left: 20px;
-  display: flex;
-  flex-direction: column;
+.top-input {
+  width: 200px;
+  height: 30px;
+  margin-left: 50px;
 }
-.header-row {
-  margin: 20px;
-  .input {
-    width: 400px;
-    margin-right: 20px;
-    margin-left: -47%;
-  }
+.blur-search {
+  width: 200px;
 }
-.createBook {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  background: rgba(0, 0, 0, 0.5);
-  border: solid 1px black;
+.statu-search {
+  width: 100px;
 }
-.bookFormCreate {
-  width: 500px;
-  height: 650px;
-  background-color: white;
-  border-radius: 10px;
-  padding: 20px;
-  padding-top: 50px;
-  padding-right: 100px;
+
+el-input {
+  height: 30px;
 }
-.imgChange {
-  cursor: pointer;
+
+.search-btn {
+  height: 30px;
   width: 80px;
+}
+.el-input__inner {
+  height: 30px;
 }
 </style>

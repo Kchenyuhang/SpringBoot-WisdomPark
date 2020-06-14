@@ -49,7 +49,7 @@
             </el-button>
           </el-col>
           <el-col class="tr mr-20">
-            <el-button size="small" class="search-btn" @click="searchShow = !searchShow" @mouseover="searchOver()">
+            <el-button size="mini" style="width: 45px" class="search-btn" @click="searchShow = !searchShow" @mouseover="searchOver()">
               <i class="el-icon-search" style="color: white"></i>
             </el-button>
             <el-button icon="el-icon-refresh" size="small" @click="flush()"></el-button>
@@ -524,5 +524,31 @@ export default {
 >>> .el-form-item__label {
   color: #606266;
   font-weight: 600;
+}
+.top-input {
+  width: 200px;
+  height: 30px;
+  margin-left: 50px;
+}
+.blur-search {
+  width: 200px;
+}
+.date-input-search {
+  width: 260px;
+}
+.statu-search {
+  width: 100px;
+}
+
+el-input {
+  height: 30px;
+}
+
+.search-btn {
+  height: 30px;
+  width: 80px;
+}
+.el-input__inner {
+  height: 30px;
 }
 </style>
