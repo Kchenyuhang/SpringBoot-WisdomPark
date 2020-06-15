@@ -77,6 +77,7 @@ export default {
       // console.log('len' + len)
       console.log('total' + this.total)
       for (let i = 0; i < this.rewardShow.length; i++) {
+        this.rewardShow[i].createTime = this.formatDate(this.rewardShow[i].createTime)
         if (!this.rewardShow[i].isDeleted) {
           this.rewardShow[i].isDeleted = '发布中'
         } else {
@@ -103,6 +104,15 @@ export default {
         ids.push(val[i].pkFleaRewardId)
       }
       this.rewardId = ids
+    },
+    formatDate(value) {
+      let date = new Date(value)
+      let y = date.getFullYear()
+      let MM = date.getMonth() + 1
+      MM = MM < 10 ? '0' + MM : MM
+      let d = date.getDate()
+      d = d < 10 ? '0' + d : d
+      return y + '年' + MM + '月' + d + '日'
     },
     //当前页展示数据
     handleSizeChange: function(pageSize) {
