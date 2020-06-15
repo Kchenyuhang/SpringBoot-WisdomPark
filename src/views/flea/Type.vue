@@ -27,7 +27,7 @@
               >
             </div>
             <el-menu-item index="index" :click="addSecondType">添加</el-menu-item>
-          </el-submenu>
+          </el-submenu> 
 
           <el-menu-item index="4" :click="addFirstType">
             <i class="el-icon-setting"></i>
@@ -218,13 +218,11 @@ export default {
       // this.typeShow.typeCoverUrl = ''  
       // this.typeShow.typeName = ''
       // this.typeShow.typeUrl = ''
-      console.log(this.parentId)
     },
     addSecondType() {
       // this.typeShow.typeCoverUrl = ''
       // this.typeShow.typeName = ''
       // this.typeShow.typeUrl = ''
-      console.log(this.parentId)
     },
     async addType() {
       let date = {
