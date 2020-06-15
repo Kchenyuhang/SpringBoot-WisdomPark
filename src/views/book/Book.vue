@@ -315,9 +315,7 @@
             min-width="15%"
           >
             <template slot-scope="scope">
-              <<<<<<<
-                HEAD
-                <el-popover
+              <el-popover
                 placement="right"
                 trigger="hover"
               >
@@ -327,7 +325,7 @@
                   :src="scope.row.cover"
                   style="max-height: 50px;max-width: 130px"
                 >
-                </el-popover>
+              </el-popover>
             </template>
           </el-table-column>
           <el-table-column
@@ -399,39 +397,28 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-dialog
-          title="提示"
-          :visible.sync="delVisible"
-          width="300px"
-          center
-        >
-          <div class="del-dialog-cnt">一卡通信息删除不可恢复，是否确定删除？</div>
-          <span
-            slot="footer"
-            class="dialog-footer"
-          >
-            <el-button @click="delVisible = false">取 消</el-button>
-            <el-button
-              type="primary"
-              @click="deleteRow"
-            >确 定</el-button>
-          </span>
-        </el-dialog>
-        <div
-          class="block"
-          style="margin-top:2%"
-        >
-          <el-pagination
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="currentPage"
-            :page-sizes="[8, 16, 24, 32, 40]"
-            :page-size="pageSize"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="total"
-          >
-          </el-pagination>
-        </div>
+        <el-button @click="delVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="deleteRow"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+    <div
+      class="block"
+      style="margin-top:2%"
+    >
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[8, 16, 24, 32, 40]"
+        :page-size="pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      >
+      </el-pagination>
+    </div>
   </div>
 </template>
 <script src="https://gosspublic.alicdn.com/aliyun-oss-sdk.min.js"></script>
@@ -576,7 +563,7 @@ export default {
         this.getBookAll()
         this.$message.success('批量删除成功')
       } else {
-        this.$message.error('App版本信息批量删除失败')
+        this.$message.error('图书信息批量删除失败')
       }
       this.batchdelVisible = false //关闭删除提示模态框
     },
