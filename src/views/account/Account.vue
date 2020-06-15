@@ -5,11 +5,13 @@
       class="ml-20 mt-10"
     >
       <el-input
+        size="mini"
         v-model="input"
         placeholder="请输入内容"
         class="blur-search"
       ></el-input>
       <el-date-picker
+        size="mini"
         v-model="time"
         type="daterange"
         range-separator=":"
@@ -20,6 +22,7 @@
       >
       </el-date-picker>
       <el-select
+        size="mini"
         v-model="selectValue"
         placeholder="请选择"
         class="statu-search ml-10"
@@ -78,7 +81,7 @@
       >
         <el-table
           ref="multipleTable"
-          :data="userAccounts"
+          :data="userAccountList"
           tooltip-effect="dark"
           style="width: 100%;"
           stripe="true"
@@ -118,7 +121,7 @@
           >
             <template slot-scope="scope">
               <el-switch
-                v-model="scope.row.statu"
+                v-model="scope.row.status"
                 active-value="1"
                 inactive-value="0"
                 active-color="#13ce66"
@@ -169,37 +172,8 @@ export default {
     return {
       time: '',
       value: true,
-      userAccounts: [],
-      tableData: [
-        {
-          name: '王小虎',
-          role: '系统管理员',
-          phoneNumber: '14752191369',
-          status: 1,
-          createTime: '2018-10-01'
-        },
-        {
-          name: '李小璐',
-          role: '作业员',
-          phoneNumber: '14752191369',
-          status: 0,
-          createTime: '2018-10-01'
-        },
-        {
-          name: '赵二龙',
-          role: '编辑管理员',
-          phoneNumber: '14752191369',
-          status: 1,
-          createTime: '2018-10-01'
-        },
-        {
-          name: '王小虎',
-          role: '普通管理员',
-          phoneNumber: '14752191369',
-          status: 0,
-          createTime: '2018-10-01'
-        }
-      ],
+      userAccountList: [],
+      userAccountList1: [],
       options: [
         {
           value: '0',
@@ -212,15 +186,13 @@ export default {
       ],
       selectValue: '',
       multipleSelection: [],
-      pageDto: {
-        currentPage: 0,
-        pageSize: 10
-      }
+      currentPage: 0,
+      pageSize: 10
     }
   },
   components: {},
   created() {
-    this.getSemesterAll()
+    this.getuserAccount()
   },
   mounted() {},
   methods: {
@@ -236,13 +208,41 @@ export default {
     search() {
       alert(this.selectValue)
     },
-    async getSemesterAll() {
-      this.userAccounts = (await API.init('/userAccount/all', this.pageDto, 'get')).data.content
-      for (let i = 0, len = this.userAccounts.length; i < len; i++) {
-        let time = this.userAccounts[i].gmtCreate
-        this.userAccounts[i].gmtCreate = this.global.formatDate(time)
+    async getuserAccount() {
+      this.data = { currentPage: this.currentPage, pageSize: this.pageSize }
+      this.url = '/userAccount/all'
+      this.result = await API.init(this.url, this.data, 'get')
+      this.userAccountList = this.result.data
+      this.userAccountList1 = this.result.data
+      for (let i = 0; i < this.userAccountList.length; i++) {
+        this.userAccountList[i].gmtCreate = this.formatDate(this.userAccountList[i].gmtCreate)
       }
-      console.log(this.userAccounts)
+    },
+    formatDate(value) {
+      let date = new Date(value)
+      let y = date.getFullYear()
+      let MM = date.getMonth() + 1
+      MM = MM < 10 ? '0' + MM : MM
+      let d = date.getDate()
+      d = d < 10 ? '0' + d : d
+      let h = date.getHours()
+      h = h < 10 ? '0' + h : h
+      let m = date.getMinutes()
+      m = m < 10 ? '0' + m : m
+      let s = date.getSeconds()
+      s = s < 10 ? '0' + s : s
+      return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s
+    },
+    //过滤搜索
+    filterSearch() {
+      // 获取输入框的值
+      let search = this.input
+      //数组元素按条件过滤
+      this.cardList = this.cardList1.filter((v) => {
+        if (JSON.stringify(v).includes(search)) {
+          return v
+        }
+      })
     }
   },
   computed: {}
