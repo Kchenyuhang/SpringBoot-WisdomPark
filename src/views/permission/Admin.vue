@@ -523,7 +523,7 @@ export default {
       }).then(() => {
         this.axios({
           method: 'post',
-          url: 'http://localhost:8080/sysUser/deletion/phoneNumber',
+          url: 'http://localhost:8081/sysUser/deletion/phoneNumber',
           data: {
             field: item.sys_user_phone_number
           }

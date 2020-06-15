@@ -206,7 +206,7 @@ export default {
       }).then(() => {
         this.axios({
           method: 'post',
-          url: 'http://localhost:8080/statement/deletion',
+          url: 'http://localhost:8081/statement/deletion',
           data: {
             pkId: item.pkStatementId
           }
@@ -239,7 +239,7 @@ export default {
         }
         this.axios({
           method: 'post',
-          url: 'http://localhost:8080/statement/deletionBath',
+          url: 'http://localhost:8081/statement/deletionBath',
           data: {
             ids: JSON.stringify(ids)
           }

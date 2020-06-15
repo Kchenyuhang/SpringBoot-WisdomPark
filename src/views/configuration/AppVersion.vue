@@ -304,7 +304,7 @@ export default {
       }).then(() => {
         this.axios({
           method: 'post',
-          url: 'http://localhost:8080/app/deletion',
+          url: 'http://localhost:8081/app/deletion',
           data: {
             pkId: item.pkAppVersionId
           }
@@ -337,7 +337,7 @@ export default {
         this.url = '/app/deletionBath'
         this.axios({
           method: 'post',
-          url: 'http://localhost:8080/app/deletion',
+          url: 'http://localhost:8081/app/deletion',
           data: {
             ids: data
           }

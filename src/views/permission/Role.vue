@@ -234,7 +234,7 @@ export default {
       }).then(() => {
         this.axios({
           method: 'post',
-          url: 'http://localhost:8080/sysUser/single/id',
+          url: 'http://localhost:8081/sysUser/single/id',
           data: {
             field: item.sys_user_id,
             status: item.is_enabled
@@ -356,7 +356,7 @@ export default {
       }).then(() => {
         this.axios({
           method: 'post',
-          url: 'http://localhost:8080/role/deletion/id',
+          url: 'http://localhost:8081/role/deletion/id',
           data: {
             field: item.pkRoleId
           }
