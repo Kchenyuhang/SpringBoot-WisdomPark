@@ -1,6 +1,7 @@
 import axios from 'axios'
 
-axios.defaults.baseURL = 'http://localhost:8080'
+axios.defaults.baseURL = 'http://localhost:8081'
+// axios.defaults.baseURL = 'http://120.26.177.51:8081'
 
 //全局请求拦截
 axios.interceptors.request.use((config) => {
