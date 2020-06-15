@@ -52,7 +52,8 @@ export default {
       this.currentTime = new Date().getTime()
       this.axios({
         method: 'post',
-        url: 'http://localhost:8080/kaptcha/',
+        // url: 'http://120.26.177.51:8081/kaptcha',
+        url: 'http://localhost:8081/kaptcha',
         // 将请求数据转换为form-data格式
         // data: {
         //   "field": this.currentTime
@@ -76,7 +77,8 @@ export default {
     login() {
       this.axios({
         method: 'post',
-        url: 'http://localhost:8080/sysUser/login',
+        // url: 'http://120.26.177.51:8081/sysUser/login',
+        url: 'http://localhost:8081/sysUser/login',
         data: {
           account: this.user.account,
           password: this.user.password,
