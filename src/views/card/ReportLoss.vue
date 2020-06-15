@@ -5,11 +5,13 @@
       class="ml-20 mt-10"
     >
       <el-input
+        size="mini"
         v-model="input"
         placeholder="请输入内容"
         class="blur-search"
       ></el-input>
       <el-select
+        size="mini"
         v-model="selectValue"
         placeholder="请选择"
         class="statu-search ml-10"

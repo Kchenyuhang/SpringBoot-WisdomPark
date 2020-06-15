@@ -1,6 +1,6 @@
 <template>
   <el-container>
-    <el-header class="nav" :class="{nav1: isCollapse}" height="90px" style="box-shadow: 0px 3px 5px 0px #ddd;">
+    <el-header class="nav" :class="{ nav1: !isCollapse }" height="90px" style="box-shadow: 0px 3px 5px 0px #ddd;">
       <el-row class="nav-header">
         <el-col class="nav-header-left">
           <i class="el-icon-s-fold side-bar-show" @click="changeSide"></i>
@@ -90,8 +90,8 @@ export default {
             }
           })
         ) {
-        _this.tags.push(tag)
-        _this.$router.push(tag.path)
+          _this.tags.push(tag)
+          _this.$router.push(tag.path)
         }
       }
       _this.menu.childName = ''
@@ -153,21 +153,15 @@ export default {
   position: fixed;
   top: 0;
   right: 0;
-  z-index: 100;
   padding: 0%;
-  left: 200px;
+  left: 65px;
   z-index: 100;
   background-color: white;
+  transition: left 0.35s;
 }
 
 .nav1 {
-  position: fixed;
-  top: 0;
-  right: 0;
-  z-index: 100;
-  padding: 0%;
-  left: 60px;
-  background-color: white;
+  left: 200px;
 }
 
 .el-header {

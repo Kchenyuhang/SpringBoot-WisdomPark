@@ -43,6 +43,7 @@
       class="ml-20 mt-10"
     >
       <el-input
+        size="mini"
         v-model="input"
         clearable
         placeholder="请输入内容"
@@ -50,6 +51,7 @@
         @input="filterSearch()"
       ></el-input>
       <el-select
+        size="mini"
         v-model="selectValue"
         placeholder="请选择"
         class="statu-search ml-10"
@@ -80,13 +82,27 @@
           type="danger"
           icon="el-icon-delete"
           size="small"
-          @click="handleDeleteMul"
+          @click="delAll()"
         >批量删除</el-button>
-        <el-button
-          type="warning"
-          icon="el-icon-download"
-          size="small"
-        >导出</el-button>
+        <!-- 删除提示框 -->
+        <el-dialog
+          title="提示"
+          :visible.sync="batchdelVisible"
+          width="300px"
+          center
+        >
+          <div class="del-dialog-cnt">批量删除App版本后不可恢复，是否确定删除？</div>
+          <span
+            slot="footer"
+            class="dialog-footer"
+          >
+            <el-button @click="batchdelVisible = false">取 消</el-button>
+            <el-button
+              type="primary"
+              @click="deleteBatch()"
+            >确 定</el-button>
+          </span>
+        </el-dialog>
       </el-col>
       <el-col class="tr mr-20">
         <el-button
@@ -106,11 +122,11 @@
           :data="appList"
           stripe="true"
           style="width: 100%;"
+          @selection-change="handleSelectionChange"
         >
           <el-table-column
             type="selection"
             min-width="10%"
-            @selection-change="handleSelectionChange"
           > </el-table-column>
           <el-table-column
             label="客户端类型"
@@ -191,7 +207,7 @@
       width="300px"
       center
     >
-      <div class="del-dialog-cnt">一卡通信息删除不可恢复，是否确定删除？</div>
+      <div class="del-dialog-cnt">删除App版本号后不可恢复，是否确定删除？</div>
       <span
         slot="footer"
         class="dialog-footer"
@@ -229,17 +245,20 @@ export default {
       appList: [],
       appList1: [],
       detailList: [],
-      currentPage: 1,
+      currentPage: 0,
       total: 40,
       pageSize: 8,
       updatecenterDialogVisible: false,
       addcenterDialogVisible: false,
       datailcenterDialogVisible: false,
       delVisible: false, //删除提示弹框的状态
+      batchdelVisible: false, //批量删除提示弹框的状态
       value1: '',
       input: '',
       gmtTime: '',
-      msg: '' //记录每一条的信息，便于取id
+      msg: '',
+      delarr: [], //存放删除的数据
+      multipleSelection: []
     }
   },
   created() {
@@ -261,7 +280,6 @@ export default {
       this.url = '/app/all'
       this.result = await API.init(this.url, this.data, 'post')
       this.appList = this.result.data
-      console.log(this.appList.length)
       this.appList1 = this.result.data
       for (let i = 0; i < this.appList.length; i++) {
         this.appList[i].gmtCreate = this.formatDate(this.appList[i].gmtCreate)
@@ -282,9 +300,18 @@ export default {
       this.delVisible = true
     },
     //批量删除
-    handleDeleteMul() {
-      this.delVisible = true
+    delAll() {
+      this.batchdelVisible = true //显示删除弹框
+      const length = this.multipleSelection.length
+      for (let i = 0; i < length; i++) {
+        this.delarr.push(this.multipleSelection[i].pkAppVersionId)
+      }
     },
+    //操作多选
+    handleSelectionChange(val) {
+      this.multipleSelection = val
+    },
+    //单个删除
     async deleteRow() {
       this.data = { field: this.msg.pkAppVersionId }
       this.url = '/app/deletion'
@@ -296,6 +323,19 @@ export default {
         this.$message.error('App版本信息删除失败')
       }
       this.delVisible = false //关闭删除提示模态框
+    },
+    //批量删除
+    async deleteBatch() {
+      this.data = { ids: String(this.delarr) }
+      this.url = '/app/deletionBath'
+      this.result = await API.init(this.url, this.data, 'post')
+      if (this.data) {
+        this.getAppAll()
+        this.$message.success('批量删除成功')
+      } else {
+        this.$message.error('App版本信息批量删除失败')
+      }
+      this.batchdelVisible = false //关闭删除提示模态框
     },
     //编辑
     handleUpdate(index, row) {
