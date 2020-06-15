@@ -26,10 +26,10 @@
                 >{{ subitem.typeName }}</el-menu-item
               >
             </div>
-            <el-menu-item index="index" :click="addSecondType()">添加</el-menu-item>
+            <el-menu-item index="index" :click="addSecondType">添加</el-menu-item>
           </el-submenu>
 
-          <el-menu-item index="4" :click="addFirstType()">
+          <el-menu-item index="4" :click="addFirstType">
             <i class="el-icon-setting"></i>
             <span slot="title">添加</span>
           </el-menu-item>
@@ -215,14 +215,16 @@ export default {
     },
     addFirstType() {
       this.parentId = 0
-      // this.typeShow.typeCoverUrl = ''
+      // this.typeShow.typeCoverUrl = ''  
       // this.typeShow.typeName = ''
       // this.typeShow.typeUrl = ''
+      console.log(this.parentId)
     },
     addSecondType() {
       // this.typeShow.typeCoverUrl = ''
       // this.typeShow.typeName = ''
       // this.typeShow.typeUrl = ''
+      console.log(this.parentId)
     },
     async addType() {
       let date = {
