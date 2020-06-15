@@ -1,381 +1,467 @@
 <template>
-  <div style="width: 100%">
-    <el-row
-      type="flex"
-      class="ml-20 mt-10"
-    >
-      <el-input
-        v-model="searchInput"
-        placeholder="请输入内容"
-        class="blur-search"
-        clearable
-        @input="filterSearch"
-      ></el-input>
-      <el-date-picker
-        v-model="time"
-        type="daterange"
-        range-separator=":"
-        start-placeholder="开始日期"
-        end-placeholder="结束日期"
-        class="date-input-search ml-10"
-        value-format="yyyy-MM-dd"
-      >
-      </el-date-picker>
-      <el-select
-        v-model="selectValue"
-        placeholder="请选择"
-        class="statu-search ml-10"
-      >
-        <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        > </el-option>
-      </el-select>
-      <el-button
-        type="success"
-        size="mini"
-        @click="search()"
-        class="ml-10"
-        icon="el-icon-search"
-      >搜索</el-button>
-    </el-row>
-    <el-row class="df-jr-ac ml-20 mt-10">
-      <el-col class="tl">
-        <el-button
-          type="primary"
-          icon="el-icon-plus"
-          size="small"
-          @click="dialogFormVisible = true"
-        ><span>新增</span></el-button>
-        <el-button
-          type="success"
-          icon="el-icon-edit"
-          size="small"
-        >修改</el-button>
-        <el-button
-          type="danger"
-          icon="el-icon-delete"
-          size="small"
-        >删除</el-button>
-        <el-button
-          type="warning"
-          icon="el-icon-download"
-          size="small"
-        >导出</el-button>
-      </el-col>
-      <el-col class="tr mr-20">
-        <el-button
-          icon="el-icon-refresh"
-          size="small"
-        ></el-button>
-      </el-col>
-    </el-row>
-    <!-- 表格 -->
-    <el-row>
-      <el-col span="1"></el-col>
-      <el-col
-        span="23"
-        class="ml-20 mt-10"
-      >
-        <el-table
-          ref="multipleTable"
-          :data="roleList"
-          tooltip-effect="dark"
-          style="width: 100%;"
-          stripe="true"
-          @selection-change="handleSelectionChange"
-        >
-          <el-table-column
-            type="selection"
-            min-width="5%"
-          ></el-table-column>
-          <el-table-column
-            prop="roleName"
-            label="角色名"
-            min-width="20%"
-          > </el-table-column>
-          <el-table-column
-            prop="roleDecoration"
-            label="角色简介"
-            min-width="20%"
-          ></el-table-column>
-
-          <el-table-column
-            prop="gmtCreate"
-            label="创建时间"
-            show-overflow-tooltip
-            min-width="15%"
-          > </el-table-column>
-          <el-table-column
-            label="操作"
-            align="center"
-            show-overflow-tooltip
-            min-width="45%"
+  <div class="room-container" style="width: 100%">
+    <el-row type="flex" style="width: 100%">
+      <!-- <el-col span="4" class="tl">
+        <el-input prefix-icon="el-icon-search" v-model="input" placeholder="请输入内容" class="blur-search mt-10"></el-input>
+        <el-tree :data="towers" :props="defaultProps" @node-click="handleNodeClick" class="mt-20"></el-tree>
+      </el-col> -->
+      <el-col span="15" class="mr-20">
+        <!-- 操作按钮 -->
+        <el-row type="flex" class="ml-20 mt-10">
+          <el-input
+            v-model="blurSearch"
+            prefix-icon="el-icon-search"
+            placeholder="请输入内容"
+            class="blur-search"
+            v-if="searchShow"
+          ></el-input>
+          <!-- <el-date-picker
+            v-model="time"
+            type="daterange"
+            range-separator=":"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            class="date-input-search ml-10"
+            value-format="yyyy-MM-dd"
+            v-if="searchShow"
+          ></el-date-picker> -->
+          <!-- <el-select v-model="searchs.statu" placeholder="请选择" v-if="searchShow" class="statu-search ml-10">
+            <el-option v-for="item in status" :key="item.value" :label="item.label" :value="item.value"></el-option>
+          </el-select> -->
+          <el-button v-if="searchShow" type="success" size="mini" @click="search()" class="ml-10 bg-green" icon="">
+            <i class="el-icon-search" style="color: rgb(247, 251, 255)"></i>
+            <span class="light-font-color">搜索</span>
+          </el-button>
+        </el-row>
+        <el-row class="df-jr-ac ml-20 mt-10">
+          <el-col class="tl">
+            <el-button type="primary" icon="el-icon-plus" @click="openDialog" size="mini">
+              <span class="light-font-color">新增</span>
+            </el-button>
+            <el-button type="success" icon="el-icon-edit" size="mini">
+              <span class="light-font-color">修改</span>
+            </el-button>
+            <el-button type="danger" icon="el-icon-delete" size="mini">
+              <span class="light-font-color">删除</span>
+            </el-button>
+            <el-button type="warning" icon="el-icon-download" disabled size="mini">
+              <span class="light-font-color">导出</span>
+            </el-button>
+          </el-col>
+          <el-col class="tr mr-20">
+            <el-button size="small" class="search-btn" @click="searchShow = !searchShow" @mouseover="searchOver()">
+              <i class="el-icon-search" style="color: white"></i>
+            </el-button>
+            <el-button icon="el-icon-refresh" size="small" @click="flush()"></el-button>
+          </el-col>
+        </el-row>
+        <!-- 表格 -->
+        <el-row style="border: 1px solid #e6ebf5" class="mt-20  ml-20">
+          <p class="tl fw mt-10 " style="border-bottom: 1px solid #e6ebf5; padding-bottom: 10px">
+            <span class="ml-10">角色列表 </span>
+          </p>
+          <el-table
+            ref="multipleTable"
+            :data="roleInfos.slice(start, end)"
+            tooltip-effect="dark"
+            style="width: 100%; "
+            @selection-change="handleSelectionChange"
+            :header-cell-style="getRowClass"
+            class="light-small-font p-a-20"
+            @row-click="getRoleMenus"
           >
-            <template slot-scope="scope">
-              <p class="tc">
-                <el-button
-                  size="mini"
-                  icon="el-icon-edit"
-                  type="primary"
-                  @click="handleEdit(scope.$index, scope.row)"
-                >编辑</el-button>
-                <el-button
-                  size="mini"
-                  icon="el-icon-delete"
-                  type="danger"
-                  @click="handleDelete(scope.row)"
-                >删除</el-button>
-              </p>
-            </template>
-          </el-table-column>
-        </el-table>
+            <el-table-column type="selection" min-width="5%"></el-table-column>
+            <el-table-column label="角色名" min-width="15%">
+              <template slot-scope="scope">{{ scope.row.roleName }}</template>
+            </el-table-column>
+            <el-table-column label="角色描述" min-width="15%">
+              <template slot-scope="scope">{{ scope.row.roleDescription.slice(1, 10) }}</template>
+            </el-table-column>
+            <el-table-column label="创建时间" show-overflow-tooltip min-width="10%">
+              <template slot-scope="scope">{{ scope.row.gmtCreate }}</template>
+            </el-table-column>
+            <el-table-column label="操作" align="center" min-width="20%">
+              <template slot-scope="scope">
+                <p style="text-align:center">
+                  <el-button size="mini" icon="el-icon-edit" type="primary" @click="updaeRoleInfo(scope.row)"> </el-button>
+                  <el-button size="mini" icon="el-icon-delete" type="danger" @click="handleDelete(scope.row)"> </el-button>
+                </p>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-row>
+        <el-row class="df-jl-ac mt-10  ml-20">
+          <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="currentPage"
+            :page-sizes="[5, 10]"
+            :page-size="100"
+            layout="total, prev, pager, next, sizes"
+            :total="roleInfos.length"
+            @prev-click="prevPage()"
+            @next-click="nextPage()"
+          ></el-pagination>
+        </el-row>
+        <!-- 新增页面 -->
+        <div class="dialog" v-if="dialogFormVisible">
+          <el-form class="mt-10 dialog-form dc-jc-ac" :model="roleInfo" style="padding: 0px 20px;">
+            <p style="width: 90%;" class="dark-large-font tl">{{ msg }}角色</p>
+            <el-form-item required label="角色名" class="mt-20" :label-width="formLabelWidth" style="width: 90%;">
+              <el-input v-model="roleInfo.roleName" autocomplete="off" placeholder="请输入角色名" style="width: 80%"></el-input>
+            </el-form-item>
+            <el-form-item label="角色描述" style="width:90%">
+              <el-input
+                type="textarea"
+                placeholder="请输入内容"
+                style="width: 80%;"
+                v-model="roleInfo.roleDescription"
+                maxlength="60"
+                show-word-limit
+              >
+              </el-input>
+            </el-form-item>
+            <p class="mt-20 tr" style="width: 90%">
+              <el-button @click="dialogFormVisible = false" size="small">取 消</el-button>
+              <el-button type="primary" @click="addRoleInfo(tag)" size="small">确定</el-button>
+            </p>
+          </el-form>
+          <!-- <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="addRoomInfo(tag)">确定</el-button>
+          </div> -->
+        </div>
       </el-col>
+      <!-- 菜单分配 -->
+      <el-col span="7" style="border: 1px solid #e6ebf5">
+        <p class="dark-large-font fw tl df-jr-ac" style="border-bottom: 1px solid #e6ebf5; height: 50px">
+          <span class="ml-10">分配权限</span>
+          <el-button @click="getCheckedNode" type="primary" size="mini" class="mr-20" >
+            <span class="" style="color:#eee">保存</span>
+          </el-button>
+        </p>
+        <el-tree :data="menus"
+        ref="tree"
+        class="mt-20"
+         show-checkbox node-key="pk_menu_id" :default-checked-keys="roleMenus" :props="defaultProps1"> </el-tree>
+      </el-col>
+      
     </el-row>
-
-    <div
-      class="block"
-      style="margin-top:2%"
-    >
-      <el-pagination
-        @current-change="handleCurrentChange"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      > </el-pagination>
-    </div>
-    <!-- 新增角色弹出框 -->
-    <el-dialog
-      title="新增系统角色"
-      :visible.sync="dialogFormVisible"
-      width="30%"
-      center
-    >
-      <el-form :model="formRole">
-        <el-form-item
-          label="角色名称"
-          prop="roleName"
-          :label-width="formLabelWidth"
-        >
-          <el-input
-            v-model="formRole.roleName"
-            autocomplete="off"
-          ></el-input>
-        </el-form-item>
-        <el-form-item
-          label="角色简介"
-          prop="roleDecoration"
-          :label-width="formLabelWidth"
-        >
-          <el-input
-            v-model="formRole.roleDecoration"
-            autocomplete="off"
-          ></el-input>
-        </el-form-item>
-      </el-form>
-      <div
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="confirmAdd"
-        >确 定</el-button>
-      </div>
-    </el-dialog>
-
-    <!-- 修改弹出框 -->
-    <el-dialog
-      title="修改管理员信息"
-      :visible.sync="isTrue"
-      width="30%"
-      left
-    >
-      <el-form
-        :model="updateRole"
-        status-icon
-        label-width="80px"
-      >
-        <el-form-item
-          label="角色名"
-          prop="roleName"
-        >
-          <el-input
-            type="name"
-            v-model="updateRole.roleName"
-            autocomplete="off"
-            placeholder="输入角色名"
-          ></el-input>
-        </el-form-item>
-        <el-form-item
-          label="角色简介"
-          prop="roleDecoration"
-        >
-          <el-input
-            type="name"
-            v-model="updateRole.roleDecoration"
-            autocomplete="off"
-            placeholder="输入用角色简介"
-          ></el-input>
-        </el-form-item>
-        <el-form-item
-          label="删除状态"
-          prop="isDeleted"
-        >
-          <el-radio-group v-model="updateRole.isDeleted">
-            <el-radio :label="false">启用</el-radio>
-            <el-radio :label="true">删除</el-radio>
-          </el-radio-group>
-        </el-form-item>
-      </el-form>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button @click="isTrue = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="adminUpdate()"
-        >确 定</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-const API = require('../utils/api')
+const API = require('../utils/api.js')
 export default {
-  name: 'Permmission',
+  name: 'Room',
   data() {
     return {
-      time: '',
-      currentPage: 0,
-      pageSize: 10,
-      total: 40,
-      roleList: [],
-      roleList1: [],
-      addcenterDialogVisible: false,
-      value: true,
-      searchInput: '',
+      status: [
+        { value: 'false', label: '禁用' },
+        { value: 'true', label: '激活' }
+      ],
+      searchs: {
+        statu: ''
+      },
+      roles: [],
       selectValue: '',
-      multipleSelection: [],
-      dialogTableVisible: false,
+      checkedNode: '',
+      start: 0,
+      radio: true,
+      blurSearch: '',
+      time: '',
+      end: 5,
+      searchShow: true,
+      iconColor: '#fefcf8',
+      pageSize: 5,
+      currentPageSize: 5,
+      defaultProps: {
+        children: 'children',
+        label: 'name'
+      },
+      roleMenus: [],
       dialogFormVisible: false,
-      formRole: {
+      multipleSelection: [],
+      roleInfos: [],
+      roleInfo: {
         roleName: '',
-        roleDecoration: ''
+        roleDescription: '',
+        pkRoleId: -1
       },
-      updateRole: {
-        pkRoleId: null,
-        roleName: null,
-        roleDecoration: null,
-        isDeleted: false
+      tag: 1,
+      currentPage: 1,
+      msg: '新增',
+      roleName: '',
+      textarea: '',
+      data: [
+        {
+          id: 1,
+          label: '一级 1',
+          children: [
+            {
+              id: 4,
+              label: '二级 1-1',
+              children: [
+                {
+                  id: 9,
+                  label: '三级 1-1-1'
+                },
+                {
+                  id: 10,
+                  label: '三级 1-1-2'
+                }
+              ]
+            }
+          ]
+        },
+        {
+          id: 2,
+          label: '一级 2',
+          children: [
+            {
+              id: 5,
+              label: '二级 2-1'
+            },
+            {
+              id: 6,
+              label: '二级 2-2'
+            }
+          ]
+        },
+        {
+          id: 3,
+          label: '一级 3',
+          children: [
+            {
+              id: 7,
+              label: '二级 3-1'
+            },
+            {
+              id: 8,
+              label: '二级 3-2'
+            }
+          ]
+        }
+      ],
+      menus: [],
+      defaultProps1: {
+        children: 'subMenus',
+        label: 'name'
       },
-      formLabelWidth: '120px',
-      isTrue: false
+      roleId: -1
     }
   },
   components: {},
   created() {
-    this.getAllRole()
+    this.getRoles()
+    this.getAllMenus()
   },
   mounted() {},
-  watch: {
-    pageSize: function() {
-      this.getAllRole()
-    },
-    currentPage: function() {
-      this.getAllRole()
-    },
-    total: function() {}
-  },
   methods: {
-    async adminUpdate() {
-      this.result = await API.init('/role/modification', this.updateRole, 'put')
-      console.log(this.result)
-      this.getAllRole()
-      this.isTrue = false
-    },
-    // 编辑
-    handleEdit(index, row) {
-      this.updateRole.pkRoleId = row.pkRoleId
-      this.updateRole.roleName = row.roleName
-      this.updateRole.roleDecoration = row.roleDecoration
-      this.updateRole.isDeleted = row.isDeleted
-      this.isTrue = true
-    },
-    //删除方法
-    async handleDelete(row) {
-      console.log(row.pkRoleId)
-      this.data = {}
-      this.result = await API.init('/role/deletion/' + row.pkRoleId, this.data, 'delete')
-      this.data1 = {
-        currentPage: this.currentPage,
-        pageSize: this.pageSize
+    //获取所有角色信息
+    async getRoles() {
+      this.roles = (await API.init('/role/all', null, 'post')).data
+      for (let i = 0, len = this.roles.length; i < len; i++) {
+        this.roles[i].gmtCreate = this.global.formatDate(this.roles[i].gmtCreate)
       }
-      this.result1 = await API.init('/role/all', this.data1, 'post')
-      this.roleList = this.result1.data
-      this.roleList1 = this.result1.data
+      this.roleInfos = this.roles
+    },
+    /* 打开遮罩层 */
+    openDialog() {
+      this.dialogFormVisible = true
+      this.tag = 1
+      this.msg = ' 新增 '
+      this.roleInfo.roleName = ''
+      this.roleInfo.roleDescription = ''
+    },
+
+    //改变用户状态
+    async changeEnabled(item) {
+      this.$confirm('此操作将修改该用户账号状态, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.axios({
+          method: 'post',
+          url: 'http://localhost:8080/sysUser/single/id',
+          data: {
+            field: item.sys_user_id,
+            status: item.is_enabled
+          }
+        }).then((res) => {
+          if (res.data.code == 1) {
+            this.$message({
+              message: '修改成功',
+              type: 'success'
+            })
+          }
+        })
+      })
     },
     //搜索
     search() {
-      alert(this.selectValue)
-    },
-    // 当前页展示数据
-    handleSizeChange: function(pageSize) {
-      this.pageSize = pageSize
-    },
-    // 当前页
-    handleCurrentChange: function(currentPage) {
-      this.currentPage = currentPage - 1
-      this.getAllRole()
-    },
-    //获取所有角色信息
-    async getAllRole() {
-      console.log(this.currentPage)
-      this.data = {
-        currentPage: this.currentPage,
-        pageSize: this.pageSize
-      }
-      this.result = await API.init('/role/all', this.data, 'post')
-      this.roleList = this.result.data
-      this.roleList1 = this.result.data
-      console.log(this.roleList)
-      for (let i = 0; i < this.roleList.length; i++) {
-        this.roleList[i].gmtCreate = this.formatDate(this.roleList[i].gmtCreate)
-      }
-    },
-    formatDate(value) {
-      let date = new Date(value)
-      let y = date.getFullYear()
-      let MM = date.getMonth() + 1
-      MM = MM < 10 ? '0' + MM : MM
-      let d = date.getDate()
-      d = d < 10 ? '0' + d : d
-      return y + '年' + MM + '月' + d + '日'
-    }, //过滤搜索
-    filterSearch() {
-      // 获取输入框的值
-      let search = this.searchInput
-      //数组元素按条件过滤
-      console.log('输入的关键字的为：' + search)
-      this.roleList = this.roleList1.filter((v) => {
-        // console.log(JSON.stringify(v))
-        if (JSON.stringify(v).includes(search)) {
-          return v
+      this.roleInfos = this.roles.filter((role) => {
+        if (role.roleName.indexOf(this.blurSearch) != -1 || role.roleDescription.indexOf(this.blurSearch) != -1) {
+          return role
         }
       })
     },
-    async confirmAdd() {
-      this.data = {
-        roleName: this.formRole.roleName,
-        roleDecoration: this.formRole.roleDecoration
+    //获取选中的节点数据
+    async getCheckedNode(){
+      let keys = this.$refs.tree.getCheckedKeys();
+      let add = keys.filter(key => {
+        if(this.roleMenus.indexOf(key) == -1){
+          return key
+        }
+      })
+      console.log(add)
+
+      let doubleFieldDto = {
+        firstField: JSON.stringify(add),
+        secondField: this.roleId
       }
-      this.result = await API.init('/role/increase', this.data, 'post')
-      this.getAllRole()
-      this.dialogFormVisible = false
+      let result = await API.init('/role/assign/menus', doubleFieldDto, 'post')
+      if(result.code == 1){
+        this.$message({
+              message: '新增成功',
+              type: 'success'
+            })
+      }
+    },
+    //获取指定角色的所有权限
+    async getRoleMenus(row) {
+      this.getAllMenus()
+      let roleMenus = []
+      let dto = {
+        field: row.pkRoleId
+      }
+      this.roleId = row.pkRoleId
+      let menus = (await API.init('/role/menus', dto, 'post')).data
+      console.log(menus)
+      for (let i = 0, len = menus.length; i < len; i++) {
+        let parentMenu = menus[i]
+        roleMenus.push(parentMenu.pkMenuId)
+        if (parentMenu.subMenus == null) {
+          console.log(parentMenu)
+        }else {
+          for (let j = 0, len1 = parentMenu.subMenus.length; j < len1; j++) {
+            let subMenus = parentMenu.subMenus[j]
+            roleMenus.push(subMenus.pkMenuId)
+          }
+        }
+        this.roleMenus = roleMenus
+      }
+    },
+    async getAllMenus() {
+      this.menus = (await API.init('/menu/list', null, 'post')).data
+    },
+    //新增角色消息
+    async addRoleInfo(tag) {
+      if (tag == 1) {
+        let result = await API.init('/role/increase', this.roleInfo, 'post')
+        if (result.code == 1) {
+          this.$message({
+            message: '新增成功',
+            type: 'success'
+          })
+          this.getRoles()
+          this.dialogFormVisible = false
+          this.roles.splice(0, 0, this.roleInfo)
+        }
+      } else {
+        let result = await API.init('/role/modification', this.roleInfo, 'post')
+        if (result.code == 1) {
+          let roleInfo = this.roles.filter((role) => {
+            if (role.pkRoleId == this.roleInfo.pkRoleId) {
+              return role
+            }
+          })
+          this.dialogFormVisible = false
+          this.$message({
+            message: '修改成功',
+            type: 'success'
+          })
+          //修改用户信息
+          let index = this.roles.indexOf(roleInfo[0])
+          this.roles.splice(index, 1, this.roleInfo)
+        }
+      }
+    },
+    /* 修改room信息 */
+    updaeRoleInfo(row) {
+      this.msg = '修改'
+      this.roleInfo.roleName = row.roleName
+      this.roleInfo.roleDescription = row.roleDescription
+      this.roleInfo.pkRoleId = row.pkRoleId
+      this.dialogFormVisible = true
+      this.tag = 2
+    },
+    //删除房间信息
+    async handleDelete(item) {
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.axios({
+          method: 'post',
+          url: 'http://localhost:8080/role/deletion/id',
+          data: {
+            field: item.pkRoleId
+          }
+        }).then((res) => {
+          if (res.data.code == 1) {
+            this.$message({
+              message: '删除成功',
+              type: 'success'
+            })
+            let index = this.roles.indexOf(item)
+            this.roles.splice(index, 1)
+          }
+        })
+      })
+    },
+    //刷新数据
+    flush() {
+      this.getRoom()
+    },
+    //el-table行内样式回调函数
+    getRowClass({ rowIndex }) {
+      if (rowIndex === 0) {
+        return 'color: #ddd;font-size: 12px; font-weight: 500'
+      } else {
+        return ''
+      }
+    },
+    //下一页
+    nextPage() {
+      this.currentPage += 1
+      this.start += this.pageSize
+      this.end += this.pageSize
+    },
+    //选取单选框
+    handleSelectionChange() {},
+    //上一页
+    prevPage() {
+      this.currentPage -= 1
+      this.start -= this.pageSize
+      this.end -= this.pageSize
+    },
+    //改变页的数据条数
+    handleSizeChange(val) {
+      this.start = (this.currentPage - 1) * val
+      this.end = this.currentPage * val
+      this.currentPageSize = val
+    },
+    //选择分页
+    handleCurrentChange(val) {
+      this.currentPage = val
+      this.start = (this.currentPage - 1) * this.currentPageSize
+      this.end = this.currentPage * this.currentPageSize
+    },
+    searchOver() {
+      this.iconColor = '#f1f1df'
     }
   },
   computed: {}
@@ -383,6 +469,7 @@ export default {
 </script>
 
 <style scoped>
+
 .blur-search {
   width: 200px;
 }
@@ -395,8 +482,91 @@ export default {
   width: 100px;
 }
 
-el-input {
+>>> .el-input__icon {
+  color: #eee;
+  margin-bottom: 10px;
+}
+
+.el-button--success {
+  background-color: #13ce66;
+}
+
+.search-btn {
+  background-color: #f4f4f5;
+}
+
+.search-btn:hover {
+  background-color: #909399;
+}
+
+>>> .el-input__inner {
   height: 30px;
+}
+
+>>> .el-icon-edit {
+  color: #f7fbff;
+}
+
+>>> .el-icon-plus {
+  color: #f7fbff;
+}
+
+>>> .el-icon-delete {
+  color: #f7fbff;
+}
+
+>>> .el-icon-download {
+  color: #f7fbff;
+}
+
+>>> .el-range-separator {
+  margin-bottom: 10px;
+}
+
+/* >>> .el-icon-search {
+  color: #f7fbff;
+} */
+
+>>> .el-input__prefix {
+  display: flex;
+  align-items: center;
+}
+
+>>> .el-select__caret {
+  margin-top: 5px;
+}
+
+/* >>> .el-input__suffix-inner {
+  display: flex;
+} */
+
+.dialog-form {
+  border-radius: 5px;
+  background-color: white;
+  width: 500px;
+  height: 400px;
+}
+
+.dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+>>> .el-form-item__label {
+  color: #606266;
+  font-weight: 600;
+}
+
+>>> .el-textarea__inner {
+  height: 80px;
 }
 
 .search-btn {

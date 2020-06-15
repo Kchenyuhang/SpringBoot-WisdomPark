@@ -6,23 +6,11 @@
       class="ml-20 mt-10"
     >
       <el-input
+        size="mini"
         v-model="input"
         placeholder="请输入内容"
         class="blur-search"
       ></el-input>
-
-      <el-select
-        v-model="selectValue"
-        placeholder="请选择"
-        class="statu-search ml-10"
-      >
-        <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        > </el-option>
-      </el-select>
       <el-button
         type="success"
         size="mini"
@@ -42,7 +30,7 @@
           type="success"
           icon="el-icon-edit"
           size="small"
-        >修改</el-button>
+        >批量删除</el-button>
         <el-button
           type="warning"
           icon="el-icon-download"
@@ -75,54 +63,51 @@
             prop="gmtCreate"
             fixed
             label="日期"
-            width="180"
+            min-width="17%"
           > </el-table-column>
           <el-table-column
             prop="orderNumber"
             label="订单号"
-            width="120"
+            min-width="10%"
           > </el-table-column>
           <el-table-column
             prop="orderType"
             label="类型"
-            width="
-        120"
+            min-width="15%"
           >
           </el-table-column>
           <el-table-column
             prop="orderMoney"
             label="金额"
-            width="
-        100"
+            min-width="10%"
           >
           </el-table-column>
           <el-table-column
             prop="jobNumber"
             label="卡号"
-            width="
-        120"
+            min-width="10%"
           >
           </el-table-column>
           <el-table-column
             prop="description"
             label="缴费描述"
-            width="180"
+            min-width="10%"
           > </el-table-column>
           <el-table-column
             prop="payMethod"
             label="支付方式"
-            width="150"
+            min-width="13%"
           > </el-table-column>
           <el-table-column
             prop="status"
             label="状态"
-            width="120"
+            min-width="10%"
             :formatter="statusChange"
           > </el-table-column>
           <el-table-column
             fixed="right"
             label="操作"
-            width="150"
+            min-width="12%"
           >
             <template slot-scope="scope">
               <el-button

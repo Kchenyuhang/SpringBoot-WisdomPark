@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-menu default-active="1-4-1" background-color="#304156" class="el-menu-vertical-demo sideBar" @open="handleOpen" @close="handleClose" :collapse="isCollapse">
+    <el-menu default-active="1-4-1" unique-opened background-color="#304156" class="el-menu-vertical-demo sideBar" @open="handleOpen" @close="handleClose" :collapse="isCollapse">
       <el-menu-item class="menu-title">
           <i class="el-icon-s-grid" style="font-size: 30px"></i>
           <span class="logo-title font-white">智慧校园后台</span>
@@ -84,7 +84,6 @@ export default {
   top: 0;
   bottom: 0;
   left: 0;
-  z-index: 10000;
   overflow: hidden;
 }
 

@@ -174,9 +174,11 @@
         clearable
         placeholder="请输入内容"
         class="blur-search"
+        size="mini"
         @input="filterSearch()"
       ></el-input>
       <el-select
+        size="mini"
         v-model="selectValue"
         placeholder="请选择"
         class="statu-search ml-10"
@@ -207,8 +209,27 @@
           type="danger"
           icon="el-icon-delete"
           size="small"
-          @click="handleDeleteMul"
+          @click="delAll()"
         >批量删除</el-button>
+        <!-- 删除提示框 -->
+        <el-dialog
+          title="提示"
+          :visible.sync="batchdelVisible"
+          width="300px"
+          center
+        >
+          <div class="del-dialog-cnt">批量删除一卡通信息后不可恢复，是否确定删除？</div>
+          <span
+            slot="footer"
+            class="dialog-footer"
+          >
+            <el-button @click="batchdelVisible = false">取 消</el-button>
+            <el-button
+              type="primary"
+              @click="deleteBatch()"
+            >确 定</el-button>
+          </span>
+        </el-dialog>
         <el-button
           type="warning"
           icon="el-icon-download"
@@ -233,13 +254,12 @@
           :data="cardList"
           stripe="true"
           style="width: 100%;"
+          @selection-change="handleSelectionChange"
         >
           <el-table-column
             type="selection"
             min-width="10%"
-            @selection-change="handleSelectionChange"
-          >
-          </el-table-column>
+          > </el-table-column>
           <el-table-column
             label="卡号"
             show-overflow-tooltip
@@ -327,7 +347,6 @@
             </template>
           </el-table-column>
         </el-table>
-
       </el-col>
     </el-row>
     <!-- 删除提示框 -->
@@ -394,13 +413,16 @@ export default {
       cardList: [],
       cardList1: [],
       detailList: [],
-      currentPage: 1,
+      currentPage: 0,
       total: 40,
       pageSize: 8,
       updatecenterDialogVisible: false,
       addcenterDialogVisible: false,
       datailcenterDialogVisible: false,
       delVisible: false, //删除提示弹框的状态
+      batchdelVisible: false,
+      delarr: [], //存放删除的数据
+      multipleSelection: [],
       value1: '',
       input: '',
       gmtTime: '',
@@ -465,10 +487,6 @@ export default {
       this.msg = row //每一条数据的记录
       this.delVisible = true
     },
-    //批量删除
-    handleDeleteMul() {
-      this.delVisible = true
-    },
     async deleteRow() {
       this.data = { field: this.msg.pkCardId }
       this.url = '/card/id'
@@ -480,6 +498,31 @@ export default {
         this.$message.error('一卡通信息删除失败')
       }
       this.delVisible = false //关闭删除提示模态框
+    },
+    //批量删除
+    delAll() {
+      this.batchdelVisible = true //显示删除弹框
+      const length = this.multipleSelection.length
+      for (let i = 0; i < length; i++) {
+        this.delarr.push(this.multipleSelection[i].pkCardId)
+      }
+    },
+    //操作多选
+    handleSelectionChange(val) {
+      this.multipleSelection = val
+    },
+    //批量删除
+    async deleteBatch() {
+      this.data = { ids: String(this.delarr) }
+      this.url = '/card/deletionBath'
+      this.result = await API.init(this.url, this.data, 'post')
+      if (this.data) {
+        this.getCardAll()
+        this.$message.success('批量删除成功')
+      } else {
+        this.$message.error('App版本信息批量删除失败')
+      }
+      this.batchdelVisible = false //关闭删除提示模态框
     },
     async changeSwitchA(index, row) {
       this.idx = index
@@ -510,7 +553,7 @@ export default {
       this.result = await API.init(this.url, this.data, 'post')
       this.updatecenterDialogVisible = false
       this.getCardAll()
-      if (this.data.data == null) {
+      if (this.result.data == null) {
         this.$message.success('该一卡通未激活，信息修改失败')
       } else {
         this.$message.success('信息修改成功')
@@ -524,11 +567,11 @@ export default {
         jobNumber: this.ruleForm1.jobNumber,
         cardBalance: this.ruleForm1.cardbalance1
       }
-      this.url = '/card/modification'
+      this.url = '/card/increase'
       this.result = await API.init(this.url, this.data, 'post')
       this.addcenterDialogVisible = false
       this.getCardAll()
-      if (this.data.data == null) {
+      if (this.result.data == null) {
         this.$message.success('该一卡通账号已存在，请勿重复新增')
       } else {
         this.$message.success('一卡通添加成功')
