@@ -1,6 +1,8 @@
 <template>
   <div style="width: 100%">
-    <el-row
+    <<<<<<<
+      HEAD
+      <el-row
       type="flex"
       class="ml-20 mt-10"
     >
@@ -10,157 +12,183 @@
         placeholder="请输入内容"
         class="blur-search"
       ></el-input>
-      <el-date-picker
-        size="mini"
-        v-model="time"
-        type="daterange"
-        range-separator=":"
-        start-placeholder="开始日期"
-        end-placeholder="结束日期"
-        class="date-input-search ml-10"
-        value-format="yyyy-MM-dd"
-      >
-      </el-date-picker>
-      <el-select
-        size="mini"
-        v-model="selectValue"
-        placeholder="请选择"
-        class="statu-search ml-10"
-      >
-        <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        > </el-option>
-      </el-select>
-      <el-button
-        type="success"
-        size="mini"
-        @click="search()"
-        class="ml-10"
-        icon="el-icon-search"
-      >搜索</el-button>
-    </el-row>
-    <el-row class="df-jr-ac ml-20 mt-10">
-      <el-col class="tl">
-        <el-button
-          type="primary"
-          icon="el-icon-plus"
-          size="small"
-        ><span>新增</span></el-button>
-        <el-button
-          type="success"
-          icon="el-icon-edit"
-          size="small"
-        >修改</el-button>
-        <el-button
-          type="danger"
-          icon="el-icon-delete"
-          size="small"
-        >删除</el-button>
-        <el-button
-          type="warning"
-          icon="el-icon-download"
-          size="small"
-        >导出</el-button>
-      </el-col>
-      <el-col class="tr mr-20">
-        <el-button
-          icon="el-icon-refresh"
-          size="small"
-        ></el-button>
-      </el-col>
-    </el-row>
-    <!-- 表格 -->
-    <el-row>
-      <el-col span="1"></el-col>
-      <el-col
-        span="23"
+      =======
+      <el-row
+        type="flex"
         class="ml-20 mt-10"
       >
-        <el-table
-          ref="multipleTable"
-          :data="userAccountList"
-          tooltip-effect="dark"
-          style="width: 100%;"
-          stripe="true"
-          @selection-change="handleSelectionChange"
+        <el-input
+          v-model="input"
+          placeholder="请输入内容"
+          class="blur-search"
+        ></el-input>
+        >>>>>>> aa22e0df213b7deae6f468d97e582e5de029b6fd
+        <el-date-picker
+          size="mini"
+          v-model="time"
+          type="daterange"
+          range-separator=":"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          class="date-input-search ml-10"
+          value-format="yyyy-MM-dd"
         >
-          <el-table-column
-            type="selection"
-            min-width="5%"
-          ></el-table-column>
-          <el-table-column
-            label="账号"
-            min-width="10%"
+        </el-date-picker>
+        <<<<<<<
+          HEAD
+          <el-select
+          size="mini"
+          v-model="selectValue"
+          placeholder="请选择"
+          class="statu-search ml-10"
+        >
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          > </el-option>
+          =======
+          <el-select
+            v-model="selectValue"
+            placeholder="请选择"
+            class="statu-search ml-10"
           >
-            <template slot-scope="scope">{{ scope.row.userAccount }}</template>
-          </el-table-column>
-          <el-table-column
-            prop="nickname"
-            label="昵称"
-            min-width="15%"
-          ></el-table-column>
-          <el-table-column
-            prop="role"
-            label="角色"
-            min-width="15%"
-          ></el-table-column>
-          <el-table-column
-            prop="phoneNumber"
-            label="手机号"
-            show-overflow-tooltip
-            min-width="15%"
-          > </el-table-column>
-          <el-table-column
-            prop="status"
-            label="状态"
-            show-overflow-tooltip
-            min-width="15%"
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            > </el-option>
+            >>>>>>> aa22e0df213b7deae6f468d97e582e5de029b6fd
+          </el-select>
+          <el-button
+            type="success"
+            size="mini"
+            @click="search()"
+            class="ml-10"
+            icon="el-icon-search"
+          >搜索</el-button>
+      </el-row>
+      <el-row class="df-jr-ac ml-20 mt-10">
+        <el-col class="tl">
+          <el-button
+            type="primary"
+            icon="el-icon-plus"
+            size="small"
+          ><span>新增</span></el-button>
+          <el-button
+            type="success"
+            icon="el-icon-edit"
+            size="small"
+          >修改</el-button>
+          <el-button
+            type="danger"
+            icon="el-icon-delete"
+            size="small"
+          >删除</el-button>
+          <el-button
+            type="warning"
+            icon="el-icon-download"
+            size="small"
+          >导出</el-button>
+        </el-col>
+        <el-col class="tr mr-20">
+          <el-button
+            icon="el-icon-refresh"
+            size="small"
+          ></el-button>
+        </el-col>
+      </el-row>
+      <!-- 表格 -->
+      <el-row>
+        <el-col span="1"></el-col>
+        <el-col
+          span="23"
+          class="ml-20 mt-10"
+        >
+          <el-table
+            ref="multipleTable"
+            :data="userAccountList"
+            tooltip-effect="dark"
+            style="width: 100%;"
+            stripe="true"
+            @selection-change="handleSelectionChange"
           >
-            <template slot-scope="scope">
-              <el-switch
-                v-model="scope.row.status"
-                active-value="1"
-                inactive-value="0"
-                active-color="#13ce66"
-                inactive-color="#ff4949"
-              > </el-switch>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="gmtCreate"
-            label="创建时间"
-            show-overflow-tooltip
-            min-width="15%"
-          > </el-table-column>
-          <el-table-column
-            label="操作"
-            align="center"
-            show-overflow-tooltip
-            min-width="20%"
-          >
-            <template slot-scope="scope">
-              <p class="tc">
-                <el-button
-                  size="mini"
-                  icon="el-icon-edit"
-                  type="primary"
-                  @click="handleEdit(scope.row)"
-                >编辑</el-button>
-                <el-button
-                  size="mini"
-                  icon="el-icon-delete"
-                  type="danger"
-                  @click="handleDelete(scope.row)"
-                >删除</el-button>
-              </p>
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-col>
-    </el-row>
+            <el-table-column
+              type="selection"
+              min-width="5%"
+            ></el-table-column>
+            <el-table-column
+              label="账号"
+              min-width="10%"
+            >
+              <template slot-scope="scope">{{ scope.row.userAccount }}</template>
+            </el-table-column>
+            <el-table-column
+              prop="nickname"
+              label="昵称"
+              min-width="15%"
+            ></el-table-column>
+            <el-table-column
+              prop="role"
+              label="角色"
+              min-width="15%"
+            ></el-table-column>
+            <el-table-column
+              prop="phoneNumber"
+              label="手机号"
+              show-overflow-tooltip
+              min-width="15%"
+            > </el-table-column>
+            <el-table-column
+              prop="status"
+              label="状态"
+              show-overflow-tooltip
+              min-width="15%"
+            >
+              <template slot-scope="scope">
+                <el-switch
+                  v-model="scope.row.status"
+                  active-value="1"
+                  inactive-value="0"
+                  active-color="#13ce66"
+                  inactive-color="#ff4949"
+                > </el-switch>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="gmtCreate"
+              label="创建时间"
+              show-overflow-tooltip
+              min-width="15%"
+            > </el-table-column>
+            <el-table-column
+              label="操作"
+              align="center"
+              show-overflow-tooltip
+              min-width="20%"
+            >
+              <template slot-scope="scope">
+                <p class="tc">
+                  <el-button
+                    size="mini"
+                    icon="el-icon-edit"
+                    type="primary"
+                    @click="handleEdit(scope.row)"
+                  >编辑</el-button>
+                  <el-button
+                    size="mini"
+                    icon="el-icon-delete"
+                    type="danger"
+                    @click="handleDelete(scope.row)"
+                  >删除</el-button>
+                </p>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-col>
+      </el-row>
   </div>
 </template>
 

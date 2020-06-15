@@ -185,6 +185,7 @@
           prop="bookResidueNumber"
         >
           <el-input v-model="ruleForm1.bookResidueNumber"></el-input>
+
         </el-form-item>
       </el-form>
       <span
@@ -222,6 +223,7 @@
           :label="item.label"
           :value="item.value"
         > </el-option>
+
       </el-select>
       <el-button
         type="success"
@@ -256,6 +258,7 @@
             slot="footer"
             class="dialog-footer"
           >
+
             <el-button @click="batchdelVisible = false">取 消</el-button>
             <el-button
               type="primary"
@@ -312,7 +315,9 @@
             min-width="15%"
           >
             <template slot-scope="scope">
-              <el-popover
+              <<<<<<<
+                HEAD
+                <el-popover
                 placement="right"
                 trigger="hover"
               >
@@ -322,7 +327,7 @@
                   :src="scope.row.cover"
                   style="max-height: 50px;max-width: 130px"
                 >
-              </el-popover>
+                </el-popover>
             </template>
           </el-table-column>
           <el-table-column
@@ -349,6 +354,7 @@
             min-width="15%"
             :formatter="statusChange"
           >
+
           </el-table-column>
           <el-table-column
             label="创建时间"
@@ -393,28 +399,39 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="delVisible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="deleteRow"
-        >确 定</el-button>
-      </span>
-    </el-dialog>
-    <div
-      class="block"
-      style="margin-top:2%"
-    >
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="[8, 16, 24, 32, 40]"
-        :page-size="pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      >
-      </el-pagination>
-    </div>
+        <el-dialog
+          title="提示"
+          :visible.sync="delVisible"
+          width="300px"
+          center
+        >
+          <div class="del-dialog-cnt">一卡通信息删除不可恢复，是否确定删除？</div>
+          <span
+            slot="footer"
+            class="dialog-footer"
+          >
+            <el-button @click="delVisible = false">取 消</el-button>
+            <el-button
+              type="primary"
+              @click="deleteRow"
+            >确 定</el-button>
+          </span>
+        </el-dialog>
+        <div
+          class="block"
+          style="margin-top:2%"
+        >
+          <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="currentPage"
+            :page-sizes="[8, 16, 24, 32, 40]"
+            :page-size="pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total"
+          >
+          </el-pagination>
+        </div>
   </div>
 </template>
 <script src="https://gosspublic.alicdn.com/aliyun-oss-sdk.min.js"></script>
