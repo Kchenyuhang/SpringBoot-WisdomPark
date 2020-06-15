@@ -5,18 +5,24 @@
         <el-input class="input" placeholder="请输入内容" v-model="input" clearable @input="filterSearch"></el-input>
         <!-- <el-button size="medium" type="success">查询</el-button> -->
       </el-row>
+      <br />
+      <el-col class="tl">
+        <el-button type="danger" icon="el-icon-delete" size="small" class="del">批量删除</el-button>
+      </el-col>
     </div>
     <div class="table">
       <el-table ref="orderId" :data="orderShow" @selection-change="handleSelectionChange">
-        <el-table-column prop="pkFleaOrderId" type="selection" width="50"></el-table-column>
-        <el-table-column prop="pkFleaOrderId" label="订单编号 " width="100%"> </el-table-column>
-        <el-table-column prop="goodsName" label="商品名 " width="100%"> </el-table-column>
+        <el-table-column prop="pkFleaOrderId" type="selection" width="50%"></el-table-column>
+        <el-table-column prop="pkFleaOrderId" label="订单编号 " width="130%"> </el-table-column>
+        <el-table-column prop="goodsName" label="商品名 " width="180%"> </el-table-column>
         <el-table-column prop="goodsMark" label="商品标签 " width="150%"> </el-table-column>
         <el-table-column prop="goodsSeller" label="卖方 " width="150%"> </el-table-column>
         <el-table-column prop="goodsBuyer" label="买方" width="150%"> </el-table-column>
-        <el-table-column prop="goodsDescription" label="商品信息" width="150%"> </el-table-column>
-        <el-table-column prop="orderCreateTime" label="订单创建时间" width="150%"> </el-table-column>
-        <el-table-column prop="isDeleted" label="删除标志 " width="100%"> </el-table-column>
+        <el-table-column prop="goodsDescription" label="商品信息" width="250%"> </el-table-column>
+        <el-table-column prop="orderCreateTime" label="订单创建时间" width="200%"> </el-table-column>
+        <el-table-column label="操作" width="150%">
+          <el-button type="danger" icon="el-icon-delete" size="small">删除</el-button>
+        </el-table-column>
       </el-table>
     </div>
     <div style="margin-top:2%">
@@ -80,11 +86,6 @@ export default {
       console.log('total' + this.total)
       for (let i = 0; i < this.orderShow.length; i++) {
         this.orderShow[i].orderCreateTime = this.formatDate(this.orderShow[i].orderCreateTime)
-        if (!this.orderShow[i].isDeleted) {
-          this.orderShow[i].isDeleted = '已创建'
-        } else {
-          this.orderShow[i].isDeleted = '已删除'
-        }
       }
     },
     //过滤搜索
@@ -154,10 +155,14 @@ export default {
   .input {
     width: 400px;
     margin-right: 20px;
-    margin-left: -30%;
+    margin-left: -70%;
   }
 }
 .table {
-  padding-left: 18%;
+  padding-left: 10px;
+}
+.del {
+  background-color: red;
+  color: aliceblue;
 }
 </style>

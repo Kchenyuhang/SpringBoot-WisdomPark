@@ -3,19 +3,25 @@
     <div class="tab-header">
       <el-row class="header-row">
         <el-input class="input" placeholder="请输入内容" v-model="input" clearable @input="filterSearch"></el-input>
-        <el-button size="medium" type="success">查询</el-button>
+        <!-- <el-button size="medium" type="success">查询</el-button> -->
       </el-row>
+      <br />
+      <el-col class="tl">
+        <el-button type="danger" icon="el-icon-delete" size="small" class="del">批量删除</el-button>
+      </el-col>
     </div>
     <div class="table">
       <el-table ref="rewardId" :data="rewardShow" @selection-change="handleSelectionChange">
-        <el-table-column prop="pkFleaRewardId" type="selection" width="50"></el-table-column>
-        <el-table-column prop="title" label="标题 " width="100%"> </el-table-column>
-        <el-table-column prop="description" label="描述 " width="100%"> </el-table-column>
+        <el-table-column prop="pkFleaRewardId" type="selection" width="50%"></el-table-column>
+        <el-table-column prop="title" label="标题 " width="200%"> </el-table-column>
+        <el-table-column prop="description" label="描述 " width="250%"> </el-table-column>
         <el-table-column prop="nickname" label="发布人昵称 " width="150%"> </el-table-column>
         <el-table-column prop="sex" label="性别" width="100%"> </el-table-column>
         <el-table-column prop="username" label="发布人姓名" width="150%"> </el-table-column>
-        <el-table-column prop="createTime" label="发布时间" width="150%"> </el-table-column>
-        <el-table-column prop="isDeleted" label="删除标志 " width="100%"> </el-table-column>
+        <el-table-column prop="createTime" label="发布时间" width="200%"> </el-table-column>
+        <el-table-column label="操作" width="150%">
+          <el-button type="danger" icon="el-icon-delete" size="small">删除</el-button>
+        </el-table-column>
       </el-table>
     </div>
     <div style="margin-top:2%">
@@ -78,11 +84,6 @@ export default {
       console.log('total' + this.total)
       for (let i = 0; i < this.rewardShow.length; i++) {
         this.rewardShow[i].createTime = this.formatDate(this.rewardShow[i].createTime)
-        if (!this.rewardShow[i].isDeleted) {
-          this.rewardShow[i].isDeleted = '发布中'
-        } else {
-          this.rewardShow[i].isDeleted = '已删除'
-        }
       }
     },
     //过滤搜索
@@ -152,10 +153,14 @@ export default {
   .input {
     width: 400px;
     margin-right: 20px;
-    margin-left: -30%;
+    margin-left: -70%;
   }
 }
 .table {
-  padding-left: 18%;
+  padding-left: 10px;
+}
+.del {
+  background-color: red;
+  color: aliceblue;
 }
 </style>
