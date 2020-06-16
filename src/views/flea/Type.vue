@@ -58,11 +58,19 @@
       </div>
 
       <div class="tab">
+        <br>
         <span>管理的艺术在于沟通的技巧和真诚。</span>
+        <br>
+        <br>
         <el-divider content-position="left"><i class="el-icon-place"></i></el-divider>
-        <span></span>
+        <br>
+        <br>
         <el-divider><i class="el-icon-monitor"></i></el-divider>
+        <br>
+        <br>
         <span>夫为治有体，上下不可相侵!</span>
+        <br>
+        <br>
         <el-divider content-position="right">易之思之</el-divider>
       </div>
     </el-row>
@@ -294,7 +302,7 @@ export default {
   display: inline-block;
   float: left;
   width: 27%;
-  margin-top: 5%;
-  margin-left: -1%;
+  margin-top: 4%;
+  margin-left: -5%;
 }
 </style>

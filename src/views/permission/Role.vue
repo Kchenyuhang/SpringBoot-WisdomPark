@@ -136,16 +136,21 @@
       <el-col span="7" style="border: 1px solid #e6ebf5">
         <p class="dark-large-font fw tl df-jr-ac" style="border-bottom: 1px solid #e6ebf5; height: 50px">
           <span class="ml-10">分配权限</span>
-          <el-button @click="getCheckedNode" type="primary" size="mini" class="mr-20" >
+          <el-button @click="getCheckedNode" type="primary" size="mini" class="mr-20">
             <span class="" style="color:#eee">保存</span>
           </el-button>
         </p>
-        <el-tree :data="menus"
-        ref="tree"
-        class="mt-20"
-         show-checkbox node-key="pk_menu_id" :default-checked-keys="roleMenus" :props="defaultProps1"> </el-tree>
+        <el-tree
+          :data="menus"
+          ref="tree"
+          class="mt-20"
+          show-checkbox
+          node-key="pk_menu_id"
+          :default-checked-keys="roleMenus"
+          :props="defaultProps1"
+        >
+        </el-tree>
       </el-col>
-      
     </el-row>
   </div>
 </template>
@@ -282,14 +287,20 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.axios({
-          method: 'post',
-          url: 'http://localhost:8080/sysUser/single/id',
-          data: {
+        let data={
             field: item.sys_user_id,
             status: item.is_enabled
           }
-        }).then((res) => {
+        let res = API.init('/sysUser/single/id',data,'post')
+
+        // this.axios({
+        //   method: 'post',
+        //   url: 'http://localhost:8080/sysUser/single/id',
+        //   data: {
+        //     field: item.sys_user_id,
+        //     status: item.is_enabled
+        //   }
+        // }).then((res) => {
           if (res.data.code == 1) {
             this.$message({
               message: '修改成功',
@@ -297,7 +308,7 @@ export default {
             })
           }
         })
-      })
+      // })
     },
     //搜索
     search() {
@@ -308,10 +319,10 @@ export default {
       })
     },
     //获取选中的节点数据
-    async getCheckedNode(){
-      let keys = this.$refs.tree.getCheckedKeys();
-      let add = keys.filter(key => {
-        if(this.roleMenus.indexOf(key) == -1){
+    async getCheckedNode() {
+      let keys = this.$refs.tree.getCheckedKeys()
+      let add = keys.filter((key) => {
+        if (this.roleMenus.indexOf(key) == -1) {
           return key
         }
       })
@@ -322,11 +333,11 @@ export default {
         secondField: this.roleId
       }
       let result = await API.init('/role/assign/menus', doubleFieldDto, 'post')
-      if(result.code == 1){
+      if (result.code == 1) {
         this.$message({
-              message: '新增成功',
-              type: 'success'
-            })
+          message: '新增成功',
+          type: 'success'
+        })
       }
     },
     //获取指定角色的所有权限
@@ -344,7 +355,7 @@ export default {
         roleMenus.push(parentMenu.pkMenuId)
         if (parentMenu.subMenus == null) {
           console.log(parentMenu)
-        }else {
+        } else {
           for (let j = 0, len1 = parentMenu.subMenus.length; j < len1; j++) {
             let subMenus = parentMenu.subMenus[j]
             roleMenus.push(subMenus.pkMenuId)
@@ -469,7 +480,6 @@ export default {
 </script>
 
 <style scoped>
-
 .blur-search {
   width: 200px;
 }
