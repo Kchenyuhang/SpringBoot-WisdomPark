@@ -236,22 +236,27 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.axios({
-          method: 'post',
-          url: 'http://localhost:8080/sysUser/single/id',
-          data: {
-            field: item.sys_user_id,
-            status: item.is_enabled
-          }
-        }).then((res) => {
-          if (res.data.code == 1) {
-            this.$message({
-              message: '修改成功',
-              type: 'success'
-            })
-          }
-        })
+        let data = {
+          field: item.sys_user_id,
+          status: item.is_enabled
+        }
+        let res = API.init('/sysUser/single/id', data, 'post')
+        // this.axios({
+        //   method: 'post',
+        //   url: 'http://localhost:8080/sysUser/single/id',
+        //   data: {
+        //     field: item.sys_user_id,
+        //     status: item.is_enabled
+        //   }
+        // }).then((res) => {
+        if (res.data.code == 1) {
+          this.$message({
+            message: '修改成功',
+            type: 'success'
+          })
+        }
       })
+      // })
     },
     //搜索
     search() {
@@ -354,23 +359,28 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.axios({
-          method: 'post',
-          url: 'http://localhost:8081/sysUser/deletion/phoneNumber',
-          data: {
-            field: item.sys_user_phone_number
-          }
-        }).then((res) => {
-          if (res.data.code == 1) {
-            this.$message({
-              message: '删除成功',
-              type: 'success'
-            })
-            let index = this.admins.indexOf(item)
-            this.admins.splice(index, 1)
-          }
-        })
+        let data = {
+          field: item.sys_user_phone_number
+        }
+        let res = API.init('/sysUser/deletion/phoneNumber', data, 'post')
+        // this.axios({
+        //   method: 'post',
+        //   url: 'http://localhost:8080/sysUser/deletion/phoneNumber',
+        //   data: {
+        //     field: item.sys_user_phone_number
+        //   }
+        // }).then((res) => {
+        if (res.data.code == 1) {
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          })
+          let index = this.admins.indexOf(item)
+          this.admins.splice(index, 1)
+        }
+
       })
+      // })
     },
     //刷新数据
     flush() {

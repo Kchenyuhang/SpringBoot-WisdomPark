@@ -1,13 +1,25 @@
 <template>
-  <div class="room-container" style="width: 100%">
-    <el-row type="flex" style="width: 100%">
+  <div
+    class="room-container"
+    style="width: 100%"
+  >
+    <el-row
+      type="flex"
+      style="width: 100%"
+    >
       <!-- <el-col span="4" class="tl">
         <el-input prefix-icon="el-icon-search" v-model="input" placeholder="请输入内容" class="blur-search mt-10"></el-input>
         <el-tree :data="towers" :props="defaultProps" @node-click="handleNodeClick" class="mt-20"></el-tree>
       </el-col> -->
-      <el-col span="15" class="mr-20">
+      <el-col
+        span="15"
+        class="mr-20"
+      >
         <!-- 操作按钮 -->
-        <el-row type="flex" class="ml-20 mt-10">
+        <el-row
+          type="flex"
+          class="ml-20 mt-10"
+        >
           <el-input
             v-model="blurSearch"
             prefix-icon="el-icon-search"
@@ -28,23 +40,51 @@
           <!-- <el-select v-model="searchs.statu" placeholder="请选择" v-if="searchShow" class="statu-search ml-10">
             <el-option v-for="item in status" :key="item.value" :label="item.label" :value="item.value"></el-option>
           </el-select> -->
-          <el-button v-if="searchShow" type="success" size="mini" @click="search()" class="ml-10 bg-green" icon="">
-            <i class="el-icon-search" style="color: rgb(247, 251, 255)"></i>
+          <el-button
+            v-if="searchShow"
+            type="success"
+            size="mini"
+            @click="search()"
+            class="ml-10 bg-green"
+            icon=""
+          >
+            <i
+              class="el-icon-search"
+              style="color: rgb(247, 251, 255)"
+            ></i>
             <span class="light-font-color">搜索</span>
           </el-button>
         </el-row>
         <el-row class="df-jr-ac ml-20 mt-10">
           <el-col class="tl">
-            <el-button type="primary" icon="el-icon-plus" @click="openDialog" size="mini">
+            <el-button
+              type="primary"
+              icon="el-icon-plus"
+              @click="openDialog"
+              size="mini"
+            >
               <span class="light-font-color">新增</span>
             </el-button>
-            <el-button type="success" icon="el-icon-edit" size="mini">
+            <el-button
+              type="success"
+              icon="el-icon-edit"
+              size="mini"
+            >
               <span class="light-font-color">修改</span>
             </el-button>
-            <el-button type="danger" icon="el-icon-delete" size="mini">
+            <el-button
+              type="danger"
+              icon="el-icon-delete"
+              size="mini"
+            >
               <span class="light-font-color">删除</span>
             </el-button>
-            <el-button type="warning" icon="el-icon-download" disabled size="mini">
+            <el-button
+              type="warning"
+              icon="el-icon-download"
+              disabled
+              size="mini"
+            >
               <span class="light-font-color">导出</span>
             </el-button>
           </el-col>
@@ -52,12 +92,22 @@
             <el-button size="small" class="search-btn" style="width: 40px" @click="searchShow = !searchShow" @mouseover="searchOver()">
               <i class="el-icon-search" style="color: white"></i>
             </el-button>
-            <el-button icon="el-icon-refresh" size="small" @click="flush()"></el-button>
+            <el-button
+              icon="el-icon-refresh"
+              size="small"
+              @click="flush()"
+            ></el-button>
           </el-col>
         </el-row>
         <!-- 表格 -->
-        <el-row style="border: 1px solid #e6ebf5" class="mt-20  ml-20">
-          <p class="tl fw mt-10 " style="border-bottom: 1px solid #e6ebf5; padding-bottom: 10px">
+        <el-row
+          style="border: 1px solid #e6ebf5"
+          class="mt-20  ml-20"
+        >
+          <p
+            class="tl fw mt-10 "
+            style="border-bottom: 1px solid #e6ebf5; padding-bottom: 10px"
+          >
             <span class="ml-10">角色列表 </span>
           </p>
           <el-table
@@ -70,21 +120,45 @@
             class="light-small-font p-a-20"
             @row-click="getRoleMenus"
           >
-            <el-table-column type="selection" min-width="5%"></el-table-column>
-            <el-table-column label="角色名" min-width="15%">
+            <el-table-column
+              type="selection"
+              min-width="5%"
+            ></el-table-column>
+            <el-table-column
+              label="角色名"
+              min-width="15%"
+            >
               <template slot-scope="scope">{{ scope.row.roleName }}</template>
             </el-table-column>
             <el-table-column label="角色描述" min-width="15%">
               <template slot-scope="scope">{{ scope.row.roleDescription }}</template>
             </el-table-column>
-            <el-table-column label="创建时间" show-overflow-tooltip min-width="10%">
+            <el-table-column
+              label="创建时间"
+              show-overflow-tooltip
+              min-width="10%"
+            >
               <template slot-scope="scope">{{ scope.row.gmtCreate }}</template>
             </el-table-column>
-            <el-table-column label="操作" align="center" min-width="20%">
+            <el-table-column
+              label="操作"
+              align="center"
+              min-width="20%"
+            >
               <template slot-scope="scope">
                 <p style="text-align:center">
-                  <el-button size="mini" icon="el-icon-edit" type="primary" @click="updaeRoleInfo(scope.row)"> </el-button>
-                  <el-button size="mini" icon="el-icon-delete" type="danger" @click="handleDelete(scope.row)"> </el-button>
+                  <el-button
+                    size="mini"
+                    icon="el-icon-edit"
+                    type="primary"
+                    @click="updaeRoleInfo(scope.row)"
+                  > </el-button>
+                  <el-button
+                    size="mini"
+                    icon="el-icon-delete"
+                    type="danger"
+                    @click="handleDelete(scope.row)"
+                  > </el-button>
                 </p>
               </template>
             </el-table-column>
@@ -104,13 +178,37 @@
           ></el-pagination>
         </el-row>
         <!-- 新增页面 -->
-        <div class="dialog" v-if="dialogFormVisible">
-          <el-form class="mt-10 dialog-form dc-jc-ac" :model="roleInfo" style="padding: 0px 20px;">
-            <p style="width: 90%;" class="dark-large-font tl">{{ msg }}角色</p>
-            <el-form-item required label="角色名" class="mt-20" :label-width="formLabelWidth" style="width: 90%;">
-              <el-input v-model="roleInfo.roleName" autocomplete="off" placeholder="请输入角色名" style="width: 80%"></el-input>
+        <div
+          class="dialog"
+          v-if="dialogFormVisible"
+        >
+          <el-form
+            class="mt-10 dialog-form dc-jc-ac"
+            :model="roleInfo"
+            style="padding: 0px 20px;"
+          >
+            <p
+              style="width: 90%;"
+              class="dark-large-font tl"
+            >{{ msg }}角色</p>
+            <el-form-item
+              required
+              label="角色名"
+              class="mt-20"
+              :label-width="formLabelWidth"
+              style="width: 90%;"
+            >
+              <el-input
+                v-model="roleInfo.roleName"
+                autocomplete="off"
+                placeholder="请输入角色名"
+                style="width: 80%"
+              ></el-input>
             </el-form-item>
-            <el-form-item label="角色描述" style="width:90%">
+            <el-form-item
+              label="角色描述"
+              style="width:90%"
+            >
               <el-input
                 type="textarea"
                 placeholder="请输入内容"
@@ -121,9 +219,19 @@
               >
               </el-input>
             </el-form-item>
-            <p class="mt-20 tr" style="width: 90%">
-              <el-button @click="dialogFormVisible = false" size="small">取 消</el-button>
-              <el-button type="primary" @click="addRoleInfo(tag)" size="small">确定</el-button>
+            <p
+              class="mt-20 tr"
+              style="width: 90%"
+            >
+              <el-button
+                @click="dialogFormVisible = false"
+                size="small"
+              >取 消</el-button>
+              <el-button
+                type="primary"
+                @click="addRoleInfo(tag)"
+                size="small"
+              >确定</el-button>
             </p>
           </el-form>
           <!-- <div slot="footer" class="dialog-footer">
@@ -238,22 +346,29 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.axios({
-          method: 'post',
-          url: 'http://localhost:8081/sysUser/single/id',
-          data: {
-            field: item.sys_user_id,
-            status: item.is_enabled
-          }
-        }).then((res) => {
-          if (res.data.code == 1) {
-            this.$message({
-              message: '修改成功',
-              type: 'success'
-            })
-          }
-        })
+        let data = {
+          field: item.sys_user_id,
+          status: item.is_enabled
+        }
+
+        let res = API.init('/sysUser/single/id', data, 'post')
+
+        // this.axios({
+        //   method: 'post',
+        //   url: 'http://localhost:8080/sysUser/single/id',
+        //   data: {
+        //     field: item.sys_user_id,
+        //     status: item.is_enabled
+        //   }
+        // }).then((res) => {
+        if (res.data.code == 1) {
+          this.$message({
+            message: '修改成功',
+            type: 'success'
+          })
+        }
       })
+      // })
     },
     //搜索
     search() {
@@ -263,7 +378,6 @@ export default {
         }
       })
     },
-    //获取选中的节点数据, 分配权限
     async getCheckedNode() {
       let keys = this.$refs.tree.getCheckedKeys()
       let add = keys.filter((key) => {

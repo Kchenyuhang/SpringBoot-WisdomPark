@@ -44,7 +44,7 @@
             <el-input v-model="typeShow.typeUrl"></el-input>
           </el-form-item>
           <el-form-item label="类型图标" prop="typeUrl">
-            <img :src="typeShow.typeCoverUrl" style="width:300px;" />
+            <img :src="typeShow.typeCoverUrl" style="width:300px;" class="avatar" @click="selectavatar()" />
           </el-form-item>
         </el-form>
       </div>
@@ -58,14 +58,24 @@
       </div>
 
       <div class="tab">
+        <br />
         <span>管理的艺术在于沟通的技巧和真诚。</span>
+        <br />
+        <br />
         <el-divider content-position="left"><i class="el-icon-place"></i></el-divider>
-        <span></span>
+        <br />
+        <br />
         <el-divider><i class="el-icon-monitor"></i></el-divider>
+        <br />
+        <br />
         <span>夫为治有体，上下不可相侵!</span>
+        <br />
+        <br />
         <el-divider content-position="right">易之思之</el-divider>
       </div>
     </el-row>
+    <!-- 设置可以被引用  引用名为file  不可见 -->
+    <input ref="file" v-show="false" type="file" @change="uploadAvatar($event)" />
   </div>
 </template>
 <script>
@@ -242,8 +252,7 @@ export default {
       this.resetAddType()
     },
     resetAddType() {
-      // 图片不可修改，此处先不变
-      // this.typeShow.typeCoverUrl = ''
+      this.typeShow.typeCoverUrl = ''
       this.typeShow.typeName = ''
       this.typeShow.typeUrl = ''
     },
@@ -263,6 +272,29 @@ export default {
       } else {
         this.$message.error('添加失败')
       }
+    },
+    selectavatar() {
+      this.$refs.file.click()
+    },
+    uploadAvatar(event) {
+      const OSS = require('ali-oss')
+      let client = new OSS({
+        region: 'oss-cn-beijing',
+        //云账号的AccessKey所有的API访问权限，
+        //建议遵循阿里云安全最佳实践没部署在服务器端使用RAM子账号
+        accessKeyId: 'LTAI4GD8r7BPa4ik89fSdFws',
+        accessKeySecret: 'H5uLKRHHYnndxuHctQjPPBJj5vRWSH',
+        bucket: 'nttbucket'
+      })
+      let timestamp = Date.parse(new Date())
+      let imgUrl = 'img/' + timestamp
+      var file = event.target.files[0] //获取文件流
+      //因为在内部方法中，this无效
+      var _this = this
+      client.multipartUpload(imgUrl, file).then(function(result) {
+        let img = result.res.requestUrls[0].split('?')[0]
+        _this.typeShow.typeCoverUrl = img
+      })
     }
   }
 }
@@ -294,7 +326,10 @@ export default {
   display: inline-block;
   float: left;
   width: 27%;
-  margin-top: 5%;
-  margin-left: -1%;
+  margin-top: 4%;
+  margin-left: -5%;
+}
+.avatar {
+  cursor: pointer;
 }
 </style>

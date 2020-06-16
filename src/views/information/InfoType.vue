@@ -26,6 +26,23 @@
       width="30%"
       center
     >
+      <el-form
+        :model="ruleForm"
+        status-icon
+        label-width="80px"
+      >
+        <el-form-item
+          label="分类名"
+          prop="name"
+        >
+          <el-input
+            type="text"
+            v-model="ruleForm.name"
+            autocomplete="off"
+            placeholder="请输入新增的分类名"
+          ></el-input>
+        </el-form-item>
+      </el-form>
       <span
         slot="footer"
         class="dialog-footer"
@@ -195,6 +212,22 @@
         >确 定</el-button>
       </span>
     </el-dialog>
+
+    <div
+      class="block"
+      style="margin-top:2%"
+    >
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[8, 16, 24, 32, 40]"
+        :page-size="pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="infoTypeList.length"
+      >
+      </el-pagination>
+    </div>
   </div>
 </template>
 
@@ -206,9 +239,6 @@ export default {
       infoTypeList: [],
       infoTypeList1: [],
       detailList: [],
-      currentPage: 0,
-      total: 40,
-      pageSize: 8,
       updatecenterDialogVisible: false,
       addcenterDialogVisible: false,
       datailcenterDialogVisible: false,
@@ -219,20 +249,14 @@ export default {
       gmtTime: '',
       msg: '',
       delarr: [], //存放删除的数据
-      multipleSelection: []
+      multipleSelection: [],
+      ruleForm: {
+        name: ''
+      }
     }
   },
   created() {
     this.getinfoType()
-  },
-  watch: {
-    pageSize: function() {
-      this.getinfoType()
-    },
-    currentPage: function() {
-      this.getinfoType()
-    },
-    total: function() {}
   },
   methods: {
     // 查询所有
@@ -297,6 +321,17 @@ export default {
         this.$message.error('资讯类型信息批量删除失败')
       }
       this.batchdelVisible = false //关闭删除提示模态框
+    },
+    //新增一卡通
+    async confirmAdd() {
+      this.data = {
+        name: this.ruleForm.name
+      }
+      this.url = '/infoType/insert'
+      this.result = await API.init(this.url, this.data, 'post')
+      this.addcenterDialogVisible = false
+      this.getinfoType()
+      this.$message.success('添加成功')
     },
     //编辑
     handleUpdate(index, row) {

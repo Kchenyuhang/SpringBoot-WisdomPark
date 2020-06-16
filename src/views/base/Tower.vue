@@ -42,7 +42,10 @@
     <!-- 表格 -->
     <el-row>
       <el-col span="1"></el-col>
-      <el-col span="23" class="ml-20 mt-10">
+      <el-col
+        span="23"
+        class="ml-20 mt-10"
+      >
         <el-row>
           <el-table
             ref="multipleTable"

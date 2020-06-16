@@ -129,7 +129,7 @@
 </template>
 
 <script>
-const API = require('../utils/api')
+const API = require('../utils/api.js')
 export default {
   name: 'Room',
   data() {
@@ -170,20 +170,18 @@ export default {
   },
   mounted() {},
   methods: {
-    //获取所有房间信息
-    getRoom() {
-      this.axios({
-        method: 'post',
-        url: 'http://localhost:8081/room/list'
-      }).then((res) => {
-        this.rooms = res.data.data
-        for (let i = 0, len = this.rooms.length; i < len; i++) {
-          this.rooms[i].gmtGreate = this.global.formatDate(this.rooms[i].gmtGreate)
-        }
-        this.roomsList = this.rooms
-        this.roomsList1 = this.rooms
-        console.log(this.rooms)
-      })
+    async getRoom() {
+      let res = await API.init('/room/list', null, 'get')
+      // this.axios({
+      //   method: 'get',
+      //   url: 'http://localhost:8080/room/list'
+      // }).then((res) => {
+      this.rooms = res.data.data
+      for (let i = 0, len = this.rooms.length; i < len; i++) {
+        this.rooms[i].gmtGreate = this.global.formatDate(this.rooms[i].gmtGreate)
+      }
+      console.log(this.rooms)
+      // })
     },
     //获取所有楼栋信息
     async getTowers() {
@@ -256,24 +254,30 @@ export default {
       this.filterSearch(val.name)
     },
     //修改房间信息
-    updateRoom() {
-      this.axios({
-        method: 'put',
-        url: 'http://localhost:8081/room/id',
-        data: {
-          name: this.room.name,
-          towerId: 1
-        }
-      }).then((res) => {
-        console.log(res)
-        if (res.data.code == 1) {
-          this.$message({
-            type: 'success',
-            message: '修改成功!'
-          })
-          this.dialogFormVisible = false
-        }
-      })
+    async updateRoom() {
+      let data = {
+        name: this.room.name,
+        towerId: 1
+      }
+      let res = await API.init('/room/id', data, 'put')
+      // this.axios({
+      //   method: 'put',
+      //   url: 'http://localhost:8080/room/id',
+      //   data: {
+      //     name: this.room.name,
+      //     towerId: 1
+      //   }
+      // }).then((res) => {
+      console.log(res)
+      if (res.data.code == 1) {
+        this.$message({
+          type: 'success',
+          message: '修改成功!'
+        })
+        this.dialogFormVisible = false
+      }
+      // })
+
     },
     //刷新数据
     flush() {
@@ -287,20 +291,23 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.axios({
-          method: 'delete',
-          url: 'http://localhost:8081/room/id/' + row.roomId
-        }).then((res) => {
-          if (res.data.code == 1) {
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            })
-            let index = this.rooms.indexOf(row)
-            this.room.splice(index, 1)
-          }
-        })
+        let res = API.init('/room/id/' + row.roomId, null, 'delete')
+
+        // this.axios({
+        //   method: 'delete',
+        //   url: 'http://localhost:8080/room/id/' + row.roomId
+        // }).then((res) => {
+        if (res.data.code == 1) {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+          let index = this.rooms.indexOf(row)
+          this.room.splice(index, 1)
+        }
+
       })
+      // })
     },
     //下一页
     nextPage() {

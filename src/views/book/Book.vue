@@ -70,7 +70,7 @@
               ref="upload"
               style="display:none;"
               @change="handlderFile()"
-            >
+            />
           </el-upload>
         </el-form-item>
         <el-form-item
@@ -169,7 +169,7 @@
               ref="upload"
               style="display:none;"
               @change="handlderFile()"
-            >
+            />
           </el-upload>
         </el-form-item>
         <el-form-item
@@ -185,7 +185,6 @@
           prop="bookResidueNumber"
         >
           <el-input v-model="ruleForm1.bookResidueNumber"></el-input>
-
         </el-form-item>
       </el-form>
       <span
@@ -223,7 +222,6 @@
           :label="item.label"
           :value="item.value"
         > </el-option>
-
       </el-select>
       <el-button
         type="success"
@@ -258,7 +256,6 @@
             slot="footer"
             class="dialog-footer"
           >
-
             <el-button @click="batchdelVisible = false">取 消</el-button>
             <el-button
               type="primary"
@@ -324,7 +321,7 @@
                   slot="reference"
                   :src="scope.row.cover"
                   style="max-height: 50px;max-width: 130px"
-                >
+                />
               </el-popover>
             </template>
           </el-table-column>
@@ -351,9 +348,7 @@
             show-overflow-tooltip
             min-width="15%"
             :formatter="statusChange"
-          >
-
-          </el-table-column>
+          > </el-table-column>
           <el-table-column
             label="创建时间"
             show-overflow-tooltip
