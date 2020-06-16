@@ -17,9 +17,9 @@
             <img src="" ref="image" alt="">
           </p>
         </el-col>
-        <el-col style="text-align:left">
+        <!-- <el-col style="text-align:left">
           <el-checkbox v-model="checked">记住我</el-checkbox>
-        </el-col>
+        </el-col> -->
         <el-col>
           <el-button type="primary" style="width: 100%;" @click="login()">登录</el-button>
         </el-col>
@@ -52,7 +52,8 @@ export default {
       this.currentTime = new Date().getTime()
       this.axios({
         method: 'post',
-        url: 'http://localhost:8080/kaptcha/',
+        // url: 'http://120.26.177.51:8081/kaptcha',
+        url: 'http://localhost:8081/kaptcha',
         // 将请求数据转换为form-data格式
         // data: {
         //   "field": this.currentTime
@@ -76,7 +77,8 @@ export default {
     login() {
       this.axios({
         method: 'post',
-        url: 'http://localhost:8080/sysUser/login',
+        // url: 'http://120.26.177.51:8081/sysUser/login',
+        url: 'http://localhost:8081/sysUser/login',
         data: {
           account: this.user.account,
           password: this.user.password,

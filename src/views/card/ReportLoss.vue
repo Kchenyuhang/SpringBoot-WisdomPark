@@ -5,11 +5,13 @@
       class="ml-20 mt-10"
     >
       <el-input
+        size="mini"
         v-model="input"
         placeholder="请输入内容"
         class="blur-search"
       ></el-input>
       <el-select
+        size="mini"
         v-model="selectValue"
         placeholder="请选择"
         class="statu-search ml-10"
@@ -199,6 +201,7 @@
 </template>
 
 <script>
+const API = require('../utils/api')
 export default {
   name: 'ReportLoss',
   data() {
@@ -235,23 +238,16 @@ export default {
       },
       total: function() {}
     },
-    //分页查询
-    getLossAll() {
-      this.axios({
-        method: 'post',
-        url: 'http://localhost:8080/loss/all',
-        data: {
-          currentPage: this.currentPage,
-          pageSize: this.pageSize
-        }
-      })
-        .then((res) => {
-          this.tableData = res.data.data
-          this.total = this.tableData.length
-        })
-        .catch(function(error) {
-          console.log(error)
-        })
+    // 分页查询所有
+    async getLossAll() {
+      this.data = { currentPage: this.currentPage, pageSize: this.pageSize }
+      this.url = '/loss/all'
+      this.result = await API.init(this.url, this.data, 'post')
+      this.tableData = this.result.data
+      this.tableData1 = this.result.data
+      for (let i = 0; i < this.tableData.length; i++) {
+        this.tableData[i].gmtCreate = this.formatDate(this.tableData[i].gmtCreate)
+      }
     },
     //申请挂失
     handleStatus(index, row) {
@@ -263,24 +259,13 @@ export default {
         this.$message.success('该一卡通已挂失')
       }
     },
-    changeStatus() {
-      console.log(this.msg.pkReportLossId)
-      this.axios({
-        method: 'post',
-        url: 'http://localhost:8080/loss/statuschange',
-        data: {
-          field: this.msg.pkReportLossId,
-          status: true
-        }
-      })
-        // eslint-disable-next-line no-unused-vars
-        .then((res) => {
-          this.getLossAll()
-          this.$message.success('挂失成功')
-        })
-        .catch(function(error) {
-          console.log(error)
-        })
+    // 分页查询所有
+    async changeStatus() {
+      this.data = { field: this.msg.pkReportLossId, status: true }
+      this.url = '/loss/statuschange'
+      this.result = await API.init(this.url, this.data, 'post')
+      this.getLossAll()
+      this.$message.success('挂失成功')
       this.statusVisible = false
     },
     //单行删除
@@ -290,24 +275,16 @@ export default {
       this.delVisible = true
     },
     // 确定删除
-    deleteRow() {
-      this.axios({
-        method: 'post',
-        url: 'http://localhost:8080/loss/deletion/{pk_card_id}',
-        data: {
-          field: this.msg.pkReportLossId
-        }
-      })
-        .then((res) => {
-          if (res.data) {
-            this.getLossAll()
-            this.$message.success('删除成功')
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-          this.$message.error('挂失信息删除失败')
-        })
+    async deleteRow() {
+      this.data = { field: this.msg.pkReportLossId }
+      this.url = '/loss/deletion/{pk_card_id}'
+      this.result = await API.init(this.url, this.data, 'post')
+      if (this.data) {
+        this.getLossAll()
+        this.$message.success('删除成功')
+      } else {
+        this.$message.error('挂失信息删除失败')
+      }
       this.delVisible = false //关闭删除提示模态框
     }
   },

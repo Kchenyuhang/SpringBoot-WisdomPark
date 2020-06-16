@@ -145,7 +145,7 @@
             min-width="12%"
           >
             <template slot-scope="scope">
-              <span>{{ scope.row.clazzId }}</span>
+              <span>{{ scope.row.name }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -250,8 +250,8 @@ export default {
     // 分页查询所有
     async getStudentAll() {
       this.data = { currentPage: this.currentPage, pageSize: this.pageSize }
-      this.url = '/userAccount/all'
-      this.result = await API.init(this.url, this.data, 'get')
+      this.url = '/userAccount/student'
+      this.result = await API.init(this.url, this.data, 'post')
       this.studentList = this.result.data
       this.studentList1 = this.result.data
       for (let i = 0; i < this.studentList.length; i++) {

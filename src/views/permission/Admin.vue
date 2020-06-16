@@ -1,245 +1,724 @@
 <template>
-  <div>
-    <div class="cc-df title">
-      <el-button size="mini" type="success" @click="handleAdd()">新增</el-button>
-      <el-input placeholder="请输入内容" v-model="searchInput" class="search-input cc-mleft" clearable @input="filterSearch"> </el-input>
-    </div>
-    <div>
-      <el-table :data="tableData" style="width: 100%" :default-sort="{ prop: 'date', order: 'descending' }">
-        <el-table-column prop="sys_user_name" label="姓名" sortable width="180"> </el-table-column>
-        <el-table-column prop="role_name" label="角色" sortable width="180"> </el-table-column>
-        <el-table-column prop="sys_user_phone_number" label="手机号" sortable width="180"> </el-table-column>
-        <el-table-column prop="is_enabled" label="状态" sortable width="180"> </el-table-column>
-        <el-table-column prop="gmt_create" label="日期" sortable width="180"> </el-table-column>
-        <el-table-column label="操作" width="250">
-          <template slot-scope="scope">
-            <el-button size="mini" type="success" @click="handleUpdate(scope.$index, scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" @click="handleDelete(scope.$index)">删除</el-button>
-            <el-button size="mini" type="danger" @click="cleanPassword(scope.$index)">重置</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
-    <div>
-      <!-- 修改弹出框 -->
-      <el-dialog title="修改管理员信息" :visible.sync="isTrue" width="30%" left>
-        <div class="cc-df cc-mltop" id="fileBox" v-if="updatecenterDialogVisible">
-          <img class="avatar" :src="ruleForm.sysUserAvatar" @click="avatarClick()" />
-          <input type="file" @change="uploadAvatar($event)" ref="file" style="display: none;" id="file" />
+  <div
+    class="room-container"
+    style="width: 100%"
+  >
+    <el-row
+      type="flex"
+      style="width: 100%"
+    >
+      <!-- <el-col span="4" class="tl">
+        <el-input prefix-icon="el-icon-search" v-model="input" placeholder="请输入内容" class="blur-search mt-10"></el-input>
+        <el-tree :data="towers" :props="defaultProps" @node-click="handleNodeClick" class="mt-20"></el-tree>
+      </el-col> -->
+      <el-col span="23">
+        <!-- 操作按钮 -->
+        <el-row
+          type="flex"
+          class="ml-20 mt-10"
+        >
+          <el-input
+            v-model="blurSearch"
+            prefix-icon="el-icon-search"
+            placeholder="请输入内容"
+            class="blur-search"
+            v-if="searchShow"
+          ></el-input>
+          <!-- <el-date-picker
+            v-model="time"
+            type="daterange"
+            range-separator=":"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            class="date-input-search ml-10"
+            value-format="yyyy-MM-dd"
+            v-if="searchShow"
+          ></el-date-picker> -->
+          <el-select
+            v-model="searchs.statu"
+            placeholder="请选择"
+            v-if="searchShow"
+            class="statu-search ml-10"
+          >
+            <el-option
+              v-for="item in status"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+          <el-button
+            v-if="searchShow"
+            type="success"
+            size="mini"
+            @click="search()"
+            class="ml-10 bg-green"
+            icon=""
+          >
+            <i
+              class="el-icon-search"
+              style="color: rgb(247, 251, 255)"
+            ></i>
+            <span class="light-font-color">搜索</span>
+          </el-button>
+        </el-row>
+        <el-row class="df-jr-ac ml-20 mt-10">
+          <el-col class="tl">
+            <el-button
+              type="primary"
+              icon="el-icon-plus"
+              @click="openDialog"
+              size="mini"
+            >
+              <span class="light-font-color">新增</span>
+            </el-button>
+            <el-button
+              type="success"
+              icon="el-icon-edit"
+              size="mini"
+            >
+              <span class="light-font-color">修改</span>
+            </el-button>
+            <el-button
+              type="danger"
+              icon="el-icon-delete"
+              size="mini"
+            >
+              <span class="light-font-color">删除</span>
+            </el-button>
+            <el-button
+              type="warning"
+              icon="el-icon-download"
+              disabled
+              size="mini"
+            >
+              <span class="light-font-color">导出</span>
+            </el-button>
+          </el-col>
+          <el-col class="tr mr-20">
+            <el-button
+              size="mini"
+              style="width: 45px"
+              class="search-btn"
+              @click="searchShow = !searchShow"
+              @mouseover="searchOver()"
+            >
+              <i
+                class="el-icon-search"
+                style="color: white"
+              ></i>
+            </el-button>
+            <el-button
+              icon="el-icon-refresh"
+              size="small"
+              @click="flush()"
+            ></el-button>
+          </el-col>
+        </el-row>
+        <!-- 表格 -->
+        <el-row
+          style="border: 1px solid #e6ebf5"
+          class="mt-20  ml-20"
+        >
+          <el-table
+            ref="multipleTable"
+            :data="adminInfos.slice(start, end)"
+            tooltip-effect="dark"
+            style="width: 100%; "
+            @selection-change="handleSelectionChange"
+            :header-cell-style="getRowClass"
+            class="light-small-font"
+          >
+            <el-table-column
+              type="selection"
+              min-width="5%"
+            ></el-table-column>
+            <el-table-column
+              label="用户名"
+              min-width="15%"
+            >
+              <template slot-scope="scope">{{ scope.row.sys_user_name }}</template>
+            </el-table-column>
+            <el-table-column
+              label="角色"
+              min-width="15%"
+            >
+              <template slot-scope="scope">{{ scope.row.role_name }}</template>
+            </el-table-column>
+            <el-table-column
+              label="手机号"
+              min-width="15%"
+            >
+              <template slot-scope="scope">{{ scope.row.sys_user_phone_number }}</template>
+            </el-table-column>
+            <el-table-column
+              prop="status"
+              label="状态"
+              show-overflow-tooltip
+              min-width="15%"
+            >
+              <template slot-scope="scope">
+                <el-switch
+                  @change="changeEnabled(scope.row)"
+                  v-model="scope.row.is_enabled"
+                  active-color="#13ce66"
+                  inactive-color="#ff4949"
+                >
+                </el-switch>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="创建时间"
+              show-overflow-tooltip
+              min-width="10%"
+            >
+              <template slot-scope="scope">{{ scope.row.gmt_create }}</template>
+            </el-table-column>
+            <el-table-column
+              label="操作"
+              align="center"
+              min-width="20%"
+            >
+              <template slot-scope="scope">
+                <p style="text-align:center">
+                  <el-button
+                    size="mini"
+                    icon="el-icon-edit"
+                    type="primary"
+                    @click="updaeAdminInfo(scope.row)"
+                  >
+                    <span class="light-font-color">编辑</span>
+                  </el-button>
+                  <el-button
+                    size="mini"
+                    icon="el-icon-delete"
+                    type="danger"
+                    @click="handleDelete(scope.row)"
+                  >
+                    <span class="light-font-color">删除</span>
+                  </el-button>
+                </p>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-row>
+        <el-row class="df-jl-ac mt-10  ml-20">
+          <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="currentPage"
+            :page-sizes="[10, 20]"
+            :page-size="100"
+            layout="total, prev, pager, next, sizes"
+            :total="admins.length"
+            @prev-click="prevPage()"
+            @next-click="nextPage()"
+          ></el-pagination>
+        </el-row>
+        <!-- 新增页面 -->
+        <div
+          class="dialog"
+          v-if="dialogFormVisible"
+        >
+          <el-form
+            class="mt-10 dialog-form dc-jc-ac"
+            :model="adminInfo"
+            style="padding: 0px 20px;"
+          >
+            <p
+              style="width: 90%;"
+              class="dark-large-font tl"
+            >{{ msg }}用户</p>
+            <el-form-item
+              required
+              label="用户名"
+              class="mt-20"
+              :label-width="formLabelWidth"
+              style="width: 90%;"
+            >
+              <el-input
+                v-model="adminInfo.name"
+                autocomplete="off"
+                placeholder="请输入用户名"
+                style="width: 80%"
+              ></el-input>
+            </el-form-item>
+            <el-form-item
+              required
+              label="手机号"
+              :label-width="formLabelWidth"
+              style="width: 90%;"
+            >
+              <el-input
+                v-model="adminInfo.phoneNumber"
+                autocomplete="off"
+                placeholder="请输入手机号"
+                style="width: 80%"
+              ></el-input>
+            </el-form-item>
+            <p
+              style="width: 90%"
+              class="df-jr-ac"
+            >
+              <el-form-item
+                required
+                label="角色"
+                :label-width="formLabelWidth"
+                style="width: 50%;"
+              >
+                <el-select
+                  v-model="adminInfo.role"
+                  placeholder="请选择角色"
+                  style="width: 60%;"
+                  class="ml-10"
+                >
+                  <el-option
+                    v-for="(role, index) in roles"
+                    :key="index"
+                    :label="role.roleName"
+                    :value="role.pkRoleId"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item
+                class="mr-10 df-jc-ac"
+                required
+                label="状态"
+              >
+                <el-radio
+                  v-model="adminInfo.isEnabled"
+                  label="true"
+                >激活</el-radio>
+                <el-radio
+                  v-model="adminInfo.isEnabled"
+                  label="false"
+                >禁用</el-radio>
+              </el-form-item>
+            </p>
+            <p
+              class="mt-20 tr"
+              style="width: 90%"
+            >
+              <el-button
+                @click="dialogFormVisible = false"
+                size="small"
+              >取 消</el-button>
+              <el-button
+                type="primary"
+                @click="addAdminInfo(tag)"
+                size="small"
+              >确定</el-button>
+            </p>
+          </el-form>
+          <!-- <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="addRoomInfo(tag)">确定</el-button>
+          </div> -->
         </div>
-        <el-form :model="ruleForm" status-icon label-width="80px">
-          <el-form-item label="用户名" prop="sysUserName">
-            <el-input type="name" v-model="ruleForm.sysUserName" autocomplete="off" placeholder="输入用户名"></el-input>
-          </el-form-item>
-          <el-form-item label="手机号" prop="sysUserPhoneNumber">
-            <el-input type="name" v-model="ruleForm.sysUserPhoneNumber" autocomplete="off" placeholder="输入用手机号"></el-input>
-          </el-form-item>
-          <el-form-item label="角色信息" prop="roleId">
-            <el-select v-model="ruleForm.roleId" placeholder="请选择角色信息">
-              <div v-for="(item, index) in roles" :key="index">
-                <el-option :label="item.roleDecoration" :value="item.pkRoleId"></el-option>
-              </div>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="状态" prop="isEnabled" v-if="updatecenterDialogVisible">
-            <el-radio-group v-model="ruleForm.isEnabled">
-              <el-radio label="启用"></el-radio>
-              <el-radio label="禁用"></el-radio>
-            </el-radio-group>
-          </el-form-item>
-        </el-form>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="isTrue = false">取 消</el-button>
-          <el-button type="primary" @click="adminUpdate()" v-if="updatecenterDialogVisible">确 定</el-button>
-          <el-button type="primary" @click="adminAdd()" v-if="addVisble">确 定</el-button>
-        </span>
-      </el-dialog>
-    </div>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
-const API = require('../utils/api')
+const API = require('../utils/api.js')
 export default {
+  name: 'Room',
   data() {
     return {
-      tableData: [],
-      tableData1: [],
-      searchInput: '',
-      isShow: true,
-      isTrue: false,
-      updatecenterDialogVisible: false,
-      addVisble: false,
-      idx: '',
-      msg: '',
-      ruleForm: {
-        sysUserName: null,
-        sysPassword: null,
-        sysUserPhoneNumber: null,
-        sysUserAvatar: null,
-        isEnabled: null,
-        roleId: null,
-        pkUserId: null
+      status: [
+        { value: 'false', label: '禁用' },
+        { value: 'true', label: '激活' }
+      ],
+      searchs: {
+        statu: ''
       },
-      roles: []
+      roles: [],
+      adminInfos: [],
+      selectValue: '',
+      rooms: [],
+      start: 0,
+      radio: true,
+      blurSearch: '',
+      time: '',
+      end: 10,
+      searchShow: true,
+      iconColor: '#fefcf8',
+      pageSize: 10,
+      currentPageSize: 10,
+      defaultProps: {
+        children: 'children',
+        label: 'name'
+      },
+      dialogFormVisible: false,
+      multipleSelection: [],
+      admins: [],
+      adminInfo: {
+        userId: '',
+        name: '',
+        role: '',
+        phoneNumber: '',
+        isEnabled: -1
+      },
+      tag: 1,
+      currentPage: 1,
+      msg: '新增',
+      roleName: ''
     }
   },
-  methods: {
-    /* uploadAvatar(event) {
-      const OSS = require('ali-oss')
-      let client = new OSS({
-        region: 'oss-cn-beijing',
-        accessKeyId: 'LTAI4FuNH3cQirWwhynvdCxv',
-        accessKeySecret: 'TmUIP6EkFBi5c9Mrq5kysWMRsNe7x6',
-        bucket: 'niit-cmj'
-      })
-      let timestamp = Date.parse(new Date())
-      let imgUrl = 'img/' + timestamp
-      var file = event.target.files[0] //获取文件流
-      var _this = this
-      client.multipartUpload(imgUrl, file).then(function(result) {
-        _this.avatar = result.res.requestUrls[0]
-        console.log(_this.avatar)
-        _this.updateAdminInfo(_this.avatar)
-      })
-    }, */
-    updateAdminInfo(url) {
-      this.imgDataUrl = url
-      this.ruleForm.sysUserAvatar = this.imgDataUrl
-    },
-    avatarClick() {
-      this.$refs.file.click()
-    },
-    async cleanPassword(index) {
-      this.result = await API.init('/sysUser/reset/' + this.tableData[index].sys_user_id, null, 'put')
-      console.log(this.result)
-    },
-    async adminUpdate() {
-      if (this.ruleForm.isEnabled == '启用') {
-        this.ruleForm.isEnabled = true
-      } else {
-        this.ruleForm.isEnabled = false
-      }
-      console.log(this.ruleForm)
-      this.result = await API.init('/admin/modification', this.ruleForm, 'put')
-
-      this.selectGuanli()
-      console.log(this.result)
-      this.updatecenterDialogVisible = false
-      this.addVisble = false
-      this.isTrue = false
-    },
-    handleUpdate(index, row) {
-      this.idx = index
-      this.msg = row //每一条数据的记录
-      this.ruleForm.sysUserName = row.sys_user_name
-      this.ruleForm.sysUserPhoneNumber = row.sys_user_phone_number
-      this.ruleForm.sysUserAvatar = row.sys_user_avatar
-      this.ruleForm.isEnabled = row.is_enabled
-      this.ruleForm.roleId = row.role_id
-      this.ruleForm.pkUserId = this.tableData[index].sys_user_id
-      this.addVisble = false
-      this.isTrue = true
-      this.updatecenterDialogVisible = true
-    },
-    handleAdd() {
-      this.ruleForm.sysUserName = null
-      this.ruleForm.sysUserPhoneNumber = null
-      this.ruleForm.roleId = null
-      this.updatecenterDialogVisible = false
-      this.isTrue = true
-      this.addVisble = true
-      this.ruleForm.sysPassword = 123456
-    },
-    async adminAdd() {
-      this.data = {
-        sysUserName: this.ruleForm.sysUserName,
-        sysPassword: this.ruleForm.sysPassword,
-        sysUserPhoneNumber: this.ruleForm.sysUserPhoneNumber,
-        roleId: this.ruleForm.roleId
-      }
-      this.result = await API.init('/admin/increase', this.data, 'post')
-      console.log(this.result)
-      this.selectGuanli()
-      this.isTrue = false
-      this.addVisble = false
-    },
-    async handleDelete(index) {
-      console.log(index)
-      this.data = {}
-      this.result = await API.init('/admin/deletion/' + this.tableData[index].sys_user_id, this.data, 'delete')
-      this.result = await API.init('/admin/all', this.data, 'get')
-      this.tableData = this.result.data
-      this.tableData1 = this.result.data
-    },
-    async selectGuanli() {
-      this.data = {}
-      this.url = '/admin/all'
-      this.result = await API.init(this.url, this.data, 'get')
-      console.log(this.result)
-      this.tableData = this.result.data
-      this.tableData1 = this.result.data
-      for (let i = 0; i < this.tableData.length; i++) {
-        this.tableData[i].gmt_create = this.formatDate(this.tableData[i].gmt_create)
-        if (this.tableData[i].is_enabled) {
-          this.tableData[i].is_enabled = '启用'
-        } else {
-          this.tableData[i].is_enabled = '禁用'
-        }
-      }
-    },
-    formatDate(value) {
-      let date = new Date(value)
-      let y = date.getFullYear()
-      let MM = date.getMonth() + 1
-      MM = MM < 10 ? '0' + MM : MM
-      let d = date.getDate()
-      d = d < 10 ? '0' + d : d
-      // let h = date.getHours();
-      // h = h < 10 ? ('0' + h) : h;
-      // let m = date.getMinutes();
-      // m = m < 10 ? ('0' + m) : m;
-      // let s = date.getSeconds();
-      // s = s < 10 ? ('0' + s) : s;
-      return y + '年' + MM + '月' + d + '日'
-    },
-    async selectRole() {
-      this.result = await API.init('/role/all', this.data, 'get')
-      console.log(this.result)
-      this.roles = this.result.data
-    },
-    //过滤搜索
-    filterSearch() {
-      // 获取输入框的值
-      let search = this.searchInput
-      //数组元素按条件过滤
-      console.log('输入的关键字的为：' + search)
-      this.tableData = this.tableData1.filter((v) => {
-        // console.log(JSON.stringify(v))
-        if (JSON.stringify(v).includes(search)) {
-          return v
-        }
-      })
-    }
-  },
+  components: {},
   created() {
-    this.selectRole()
-    this.selectGuanli()
-  }
+    this.getAdmins()
+    this.getRoles()
+  },
+  mounted() {},
+  methods: {
+    //获取所有用户
+    async getAdmins() {
+      let admin = (await API.init('/admin/all', null, 'post')).data
+      for (let i = 0, len = admin.length; i < len; i++) {
+        admin[i].gmt_create = this.global.formatDate(admin[i].gmt_create)
+      }
+      this.admins = admin
+      this.adminInfos = admin
+    },
+    //获取所有角色信息
+    async getRoles() {
+      this.roles = (await API.init('/role/all', null, 'post')).data
+    },
+    /* 打开遮罩层 */
+    openDialog() {
+      this.dialogFormVisible = true
+      this.tag = 1
+      this.msg = ' 新增 '
+      this.adminInfo.name = ''
+      this.adminInfo.role = ''
+      this.adminInfo.phoneNumber = ''
+      this.adminInfo.isEnabled = ''
+    },
+    //改变用户账号状态
+    async changeEnabled(item) {
+      this.$confirm('此操作将修改该用户账号状态, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.axios({
+          method: 'post',
+          url: 'http://localhost:8080/sysUser/single/id',
+          data: {
+            field: item.sys_user_id,
+            status: item.is_enabled
+          }
+        }).then((res) => {
+          if (res.data.code == 1) {
+            this.$message({
+              message: '修改成功',
+              type: 'success'
+            })
+          }
+        })
+      })
+    },
+    //搜索
+    search() {
+      if (this.searchs.statu != '') {
+        let status = ''
+        if (this.searchs.statu == 'false') {
+          status = false
+        } else {
+          status = true
+        }
+        this.adminInfos = this.admins.filter((admin) => {
+          if (admin.is_enabled == status) {
+            //console.log(status)
+            return admin
+          }
+        })
+      } else {
+        this.adminInfos = this.admins.filter((admin) => {
+          if (admin.sys_user_name.indexOf(this.blurSearch) != -1 || admin.role_name.indexOf(this.blurSearch) != -1) {
+            return admin
+          }
+        })
+      }
+    },
+    //新增管理员消息
+    async addAdminInfo(tag) {
+      let time = new Date().getMilliseconds
+      this.roles.filter((role) => {
+        if (role.pkRoleId == this.adminInfo.role) {
+          this.roleName = role.roleName
+        }
+      })
+      //转换isEnabled状态
+      if (this.adminInfo.isEnabled == 'true') {
+        this.adminInfo.isEnabled = true
+      } else {
+        this.adminInfo.isEnabled = false
+      }
+      //定义临时变量，用于新增或修改
+      let admin = {
+        sys_user_id: this.adminInfo.userId,
+        sys_user_name: this.adminInfo.name,
+        role_name: this.roleName,
+        sys_user_phone_number: this.adminInfo.phoneNumber,
+        is_enabled: this.adminInfo.isEnabled,
+        gmt_create: time
+      }
+      if (tag == 1) {
+        let result = await API.init('/admin/increase', this.adminInfo, 'post')
+        if (result.code == 1) {
+          this.$message({
+            message: '新增成功',
+            type: 'success'
+          })
+          this.dialogFormVisible = false
+          this.admins.splice(0, 0, admin)
+        }
+      } else {
+        let result = await API.init('/admin/modification', this.adminInfo, 'post')
+        if (result.code == 1) {
+          let adminInfo = this.admins.filter((admin) => {
+            if (admin.sys_user_id == this.adminInfo.userId) {
+              return admin
+            }
+          })
+          this.dialogFormVisible = false
+          this.$message({
+            message: '修改成功',
+            type: 'success'
+          })
+          //修改用户信息
+          let index = this.admins.indexOf(adminInfo[0])
+          this.admins.splice(index, 1, admin)
+        }
+      }
+    },
+    /* 修改room信息 */
+    updaeAdminInfo(row) {
+      this.msg = '修改'
+      this.adminInfo.name = row.sys_user_name
+      this.roles.filter((role) => {
+        if (role.roleName == row.role_name) {
+          this.adminInfo.role = role.pkRoleId
+        }
+      })
+      this.adminInfo.phoneNumber = row.sys_user_phone_number
+      this.adminInfo.userId = row.sys_user_id
+      if (row.is_enabled == true) {
+        this.adminInfo.isEnabled = 'true'
+      } else {
+        this.adminInfo.isEnabled = 'false'
+      }
+      this.dialogFormVisible = true
+      this.tag = 2
+    },
+    //删除房间信息
+    async handleDelete(item) {
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.axios({
+          method: 'post',
+          url: 'http://localhost:8081/sysUser/deletion/phoneNumber',
+          data: {
+            field: item.sys_user_phone_number
+          }
+        }).then((res) => {
+          if (res.data.code == 1) {
+            this.$message({
+              message: '删除成功',
+              type: 'success'
+            })
+            let index = this.admins.indexOf(item)
+            this.admins.splice(index, 1)
+          }
+        })
+      })
+    },
+    //刷新数据
+    flush() {
+      this.getRoom()
+    },
+    //el-table行内样式回调函数
+    getRowClass({ rowIndex }) {
+      if (rowIndex === 0) {
+        return 'color: #ddd;font-size: 12px; font-weight: 500'
+      } else {
+        return ''
+      }
+    },
+    //下一页
+    nextPage() {
+      this.currentPage += 1
+      this.start += this.pageSize
+      this.end += this.pageSize
+    },
+    //选取单选框
+    handleSelectionChange() {},
+    //上一页
+    prevPage() {
+      this.currentPage -= 1
+      this.start -= this.pageSize
+      this.end -= this.pageSize
+    },
+    //改变页的数据条数
+    handleSizeChange(val) {
+      this.start = (this.currentPage - 1) * val
+      this.end = this.currentPage * val
+      this.currentPageSize = val
+    },
+    //选择分页
+    handleCurrentChange(val) {
+      this.currentPage = val
+      this.start = (this.currentPage - 1) * this.currentPageSize
+      this.end = this.currentPage * this.currentPageSize
+    },
+    searchOver() {
+      this.iconColor = '#f1f1df'
+    }
+  },
+  computed: {}
 }
 </script>
-<style lang="scss" scope>
-.search-input {
-  width: 150px;
+
+<style scoped>
+.room-container {
+  padding: 20px 0px;
 }
-.title {
-  padding-left: 30px;
-  padding-right: 30px;
+
+.demo-ruleForm {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
-.avatar {
+
+.blur-search {
+  width: 200px;
+}
+
+.date-input-search {
+  width: 260px;
+}
+
+.statu-search {
   width: 100px;
-  margin-top: -60px;
-  margin-left: 35%;
-  margin-bottom: 30px;
+}
+
+>>> .el-input__icon {
+  color: #ddd;
+}
+
+.el-button--success {
+  background-color: #13ce66;
+}
+
+.search-btn {
+  background-color: #f4f4f5;
+}
+
+>>>.el-icon-date {
+  margin-bottom: 10px;
+}
+
+.search-btn:hover {
+  background-color: #909399;
+}
+
+>>> .el-input__inner {
+  height: 30px;
+  line-height: 30px;
+}
+
+>>> .el-icon-edit {
+  color: #f7fbff;
+}
+
+>>> .el-icon-plus {
+  color: #f7fbff;
+}
+
+>>> .el-icon-delete {
+  color: #f7fbff;
+}
+
+>>> .el-icon-download {
+  color: #f7fbff;
+}
+
+>>> .el-range-separator {
+  margin-bottom: 10px;
+}
+
+/* >>> .el-icon-search {
+  color: #f7fbff;
+} */
+
+>>> .el-input__prefix {
+  display: flex;
+  align-items: center;
+}
+
+/* >>> .el-select__caret {
+  margin-top: 5px;
+} */
+
+/* >>> .el-input__suffix-inner {
+  display: flex;
+} */
+
+.dialog-form {
+  border-radius: 5px;
+  background-color: white;
+  width: 500px;
+  height: 400px;
+}
+
+.dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+>>> .el-form-item__label {
+  color: #606266;
+  font-weight: 600;
+}
+.top-input {
+  width: 200px;
+  height: 30px;
+  margin-left: 50px;
+}
+.blur-search {
+  width: 200px;
+}
+.date-input-search {
+  width: 260px;
+}
+.statu-search {
+  width: 100px;
+}
+
+el-input {
+  height: 30px;
+}
+
+.search-btn {
+  height: 30px;
+  width: 80px;
+}
+.el-input__inner {
+  height: 30px;
 }
 </style>
