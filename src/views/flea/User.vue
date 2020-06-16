@@ -7,7 +7,7 @@
       </el-row>
     </div>
     <div class="table">
-      <el-table ref="userId" :data="userShow" @selection-change="handleSelectionChange">
+      <el-table ref="userId" :data="userShow" @selection-change="handleSelectionChange"   >
         <el-table-column prop="pkFleaUserId" type="selection" width="50"></el-table-column>
         <el-table-column prop="nickname" label="昵称 " width="100%"> </el-table-column>
         <el-table-column prop="username" label="用户名 " width="100%"> </el-table-column>

@@ -179,6 +179,16 @@ const routes = [
         path: 'fleaorder',
         name: 'Order',
         component: () => import('../views/flea/Order.vue')
+      },
+      {
+        path: 'pdelivery',
+        name: 'pdelivery',
+        component: () => import('../views/errands/DeliveryOrder.vue')
+      },
+      {
+        path: 'puser',
+        name: 'puser',
+        component: () => import('../views/errands/Puer.vue')
       }
     ]
   },
