@@ -1,3 +1,4 @@
+
 <template>
   <div style="width: 100%">
     <el-row
@@ -127,7 +128,8 @@
                 inactive-value="0"
                 active-color="#13ce66"
                 inactive-color="#ff4949"
-              > </el-switch>
+              >
+              </el-switch>
             </template>
           </el-table-column>
           <el-table-column

@@ -50,6 +50,7 @@
     </el-row>
     <el-row class="df-jr-ac ml-20 mt-10">
       <el-col class="tl">
+
         <el-button
           type="primary"
           icon="el-icon-plus"
@@ -193,6 +194,7 @@
 </template>
 
 <script>
+const API = require('../utils/api.js')
 //import global from '@/js/global.js'
 export default {
   name: 'Tower',
@@ -214,17 +216,16 @@ export default {
   },
   mounted() {},
   methods: {
-    getTowerList() {
-      this.axios({
-        method: 'post',
-        url: 'http://localhost:8081/tower/list'
-      }).then((res) => {
-        this.towerList = res.data.data
-        for (let i = 0, len = this.towerList.length; i < len; i++) {
-          this.towerList[i].gmtCreate = this.global.formatDate(this.towerList[i].gmtCreate)
-        }
-        console.log(res)
-      })
+    async getTowerList() {
+      let res = await API.init('/tower/list', null, 'get')
+      // this.axios({
+      //   method: 'get',
+      //   url: 'http://localhost:8080/tower/list'
+      // }).then((res) => {
+      this.towerList = res.data.data
+      for (let i = 0, len = this.towerList.length; i < len; i++) {
+        this.towerList[i].gmtCreate = this.global.formatDate(this.towerList[i].gmtCreate)
+      }
     },
     //下一页
     nextPage() {
