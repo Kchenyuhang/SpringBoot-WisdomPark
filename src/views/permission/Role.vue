@@ -198,56 +198,6 @@ export default {
       msg: '新增',
       roleName: '',
       textarea: '',
-      data: [
-        {
-          id: 1,
-          label: '一级 1',
-          children: [
-            {
-              id: 4,
-              label: '二级 1-1',
-              children: [
-                {
-                  id: 9,
-                  label: '三级 1-1-1'
-                },
-                {
-                  id: 10,
-                  label: '三级 1-1-2'
-                }
-              ]
-            }
-          ]
-        },
-        {
-          id: 2,
-          label: '一级 2',
-          children: [
-            {
-              id: 5,
-              label: '二级 2-1'
-            },
-            {
-              id: 6,
-              label: '二级 2-2'
-            }
-          ]
-        },
-        {
-          id: 3,
-          label: '一级 3',
-          children: [
-            {
-              id: 7,
-              label: '二级 3-1'
-            },
-            {
-              id: 8,
-              label: '二级 3-2'
-            }
-          ]
-        }
-      ],
       menus: [],
       defaultProps1: {
         children: 'subMenus',
@@ -291,6 +241,7 @@ export default {
             field: item.sys_user_id,
             status: item.is_enabled
           }
+
         let res = API.init('/sysUser/single/id',data,'post')
 
         // this.axios({
@@ -399,7 +350,7 @@ export default {
         }
       }
     },
-    /* 修改room信息 */
+    /* 修改role信息 */
     updaeRoleInfo(row) {
       this.msg = '修改'
       this.roleInfo.roleName = row.roleName
@@ -417,7 +368,7 @@ export default {
       }).then(() => {
         this.axios({
           method: 'post',
-          url: 'http://localhost:8080/role/deletion/id',
+          url: 'http://localhost:8081/role/deletion/id',
           data: {
             field: item.pkRoleId
           }
