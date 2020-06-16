@@ -38,7 +38,7 @@ export default {
   name: 'User',
   data() {
     return {
-      currentPage: 0,
+      currentPage: 1, //此处为1，后台处理
       total: 40, //总记录数
       pageSize: 5,
       userShow: [],
@@ -49,16 +49,16 @@ export default {
   },
   components: {},
   created() {
-    this.getAllUser()
+    this.getAllUser() 
   },
   mounted() {},
   methods: {
     async getAllUser() {
-      if (this.currentPage - 1 < 0) {
-        this.currentPage = 0
-      } else {
-        this.currentPage--
-      }
+      // if (this.currentPage - 1 < 0) {
+      //   this.currentPage = 0
+      // } else {
+      //   this.currentPage--
+      // }
 
       let data = {
         currentPage: this.currentPage,
@@ -66,15 +66,14 @@ export default {
       }
       console.log(data)
       let res = await API.init('/flea/user/all', data, 'post')
-      this.userAll = res.data.content
+      console.log(res)
+      this.userAll=[]
+      this.userAll = res.data.data.content
+      this.total = res.data.total
       console.log(this.userAll)
       //需要清除一下原显示
       this.userShow = []
       this.userShow = this.userShow.concat(JSON.parse(JSON.stringify(this.userAll))) //拷贝数组
-      let len = this.userShow.length
-      this.total = len
-      console.log('len' + len)
-      console.log('total' + this.total)
       for (let i = 0; i < this.userShow.length; i++) {
         if (!this.userShow[i].isDeleted) {
           this.userShow[i].isDeleted = '启用'
