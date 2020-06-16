@@ -3,15 +3,14 @@
     <div class="tab-header">
       <el-row class="header-row">
         <el-input class="input" placeholder="请输入内容" v-model="input" clearable @input="filterSearch"></el-input>
-        <!-- <el-button size="medium" type="success">查询</el-button> -->
       </el-row>
       <br />
       <el-col class="tl">
-        <el-button type="danger" icon="el-icon-delete" size="small" class="del">批量删除</el-button>
+        <el-button type="danger" icon="el-icon-delete" size="small" round @click="batchDelete">批量下架</el-button>
       </el-col>
     </div>
     <div class="table">
-      <el-table ref="rewardId" :data="rewardShow" @selection-change="handleSelectionChange">
+      <el-table ref="RewardId" :data="rewardShow" @selection-change="handleSelectionChange">
         <el-table-column prop="pkFleaRewardId" type="selection" width="50%"></el-table-column>
         <el-table-column prop="title" label="标题 " width="200%"> </el-table-column>
         <el-table-column prop="description" label="描述 " width="250%"> </el-table-column>
@@ -19,12 +18,22 @@
         <el-table-column prop="sex" label="性别" width="100%"> </el-table-column>
         <el-table-column prop="username" label="发布人姓名" width="150%"> </el-table-column>
         <el-table-column prop="createTime" label="发布时间" width="200%"> </el-table-column>
+        <el-table-column label="状态">
+          <template slot-scope="scope">
+            <p v-if="rewardShow[scope.$index].isDeleted == 0" style="color: blue">已发布</p>
+            <p v-if="rewardShow[scope.$index].isDeleted == 1" style="color: red">已下架</p>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="150%">
-          <el-button type="danger" icon="el-icon-delete" size="small">删除</el-button>
+          <template slot-scope="scope">
+            <el-button icon="el-icon-delete" @click="deleteOne(scope.$index, scope.row)" type="danger" size="small" round>
+              下架
+            </el-button>
+          </template>
         </el-table-column>
       </el-table>
     </div>
-    <div style="margin-top:2%">
+    <div class="block" style="margin-top:2%">
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -44,9 +53,11 @@ export default {
   name: 'Reword',
   data() {
     return {
-      currentPage: 0,
+      currentPage: 1,
       total: 0, //总记录数
       pageSize: 5,
+      delVisible: false, //删除提示弹框的状态
+      multipleSelection: [], //多选的数据
       rewardShow: [],
       rewardAll: [],
       rewardId: [],
@@ -60,20 +71,15 @@ export default {
   mounted() {},
   methods: {
     async getRewardAll() {
-      if (this.currentPage - 1 < 0) {
-        this.currentPage = 0
-      } else {
-        this.currentPage--
-      }
-
       let data = {
         //此处需要减一
-        currentPage: this.currentPage,
+        currentPage: this.currentPage - 1,
         pageSize: this.pageSize
       }
       console.log(data)
       let res = await apiPost('/flea/reward/all', data)
-      this.rewardAll = res.data
+      this.rewardAll = res.data.content
+      this.total = res.data.totalElements
       console.log(this.rewardAll)
       //需要清除一下原显示
       this.rewardShow = []
@@ -99,13 +105,6 @@ export default {
         }
       })
     },
-    handleSelectionChange(val) {
-      let ids = []
-      for (let i = 0; i < val.length; i++) {
-        ids.push(val[i].pkFleaRewardId)
-      }
-      this.rewardId = ids
-    },
     formatDate(value) {
       let date = new Date(value)
       let y = date.getFullYear()
@@ -122,20 +121,56 @@ export default {
     //当前页
     handleCurrentChange: function(currentPage) {
       this.currentPage = currentPage
+    },
+    //单行删除
+    handleDelete(index, row) {
+      this.index = index
+      // this.msg = row //每一条数据的记录
+      this.rewardId.push(row.pkFleaRewardId) //把单行删除的每条数据的id添加进放删除数据的数组
+      this.delVisible = true
+    },
+    //批量删除
+    delAll() {
+      this.delVisible = true //显示删除弹框
+    },
+    //多选信息
+    handleSelectionChange(val) {
+      let ids = []
+      for (let i = 0; i < val.length; i++) {
+        ids.push(val[i].pkFleaRewardId)
+      }
+      this.rewardId = ids
+    },
+    //确定单行删除
+    async deleteOne() {
+      let data = {
+        fleaRewardId: this.rewardId
+      }
+      console.log(data)
+      // console.log(data.fleaRewardId.get[0])
+      let data1 = {
+        fleaRewardId: data.fleaRewardId[0]
+      }
+      alert('要下架的悬赏id：' + data1.fleaRewardId)
+      await apiPost('flea/reward/deleteOne', data1)
+      this.getRewardAll()
+    },
+    //确定批量删除
+    async batchDelete() {
+      let data = {
+        id: this.rewardId
+      }
+      console.log(data)
+      await apiPost('flea/reward/batchDelete', data)
+      this.getRewardAll()
     }
   },
   computed: {},
   watch: {
     pageSize: function() {
-      console.log('pageSize改变' + this.pageSize)
       this.getRewardAll()
     },
     currentPage: function() {
-      console.log('currentPage改变' + this.currentPage)
-      this.getRewardAll()
-    },
-    total: function() {
-      console.log('total改变' + this.total)
       this.getRewardAll()
     }
   }
@@ -161,6 +196,6 @@ export default {
 }
 .del {
   background-color: red;
-  color: aliceblue;
+  color: white;
 }
 </style>
