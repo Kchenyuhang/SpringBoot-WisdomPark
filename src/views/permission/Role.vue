@@ -49,7 +49,7 @@
             </el-button>
           </el-col>
           <el-col class="tr mr-20">
-            <el-button size="small" class="search-btn" @click="searchShow = !searchShow" @mouseover="searchOver()">
+            <el-button size="small" class="search-btn" style="width: 40px" @click="searchShow = !searchShow" @mouseover="searchOver()">
               <i class="el-icon-search" style="color: white"></i>
             </el-button>
             <el-button icon="el-icon-refresh" size="small" @click="flush()"></el-button>
@@ -75,7 +75,7 @@
               <template slot-scope="scope">{{ scope.row.roleName }}</template>
             </el-table-column>
             <el-table-column label="角色描述" min-width="15%">
-              <template slot-scope="scope">{{ scope.row.roleDescription.slice(1, 10) }}</template>
+              <template slot-scope="scope">{{ scope.row.roleDescription }}</template>
             </el-table-column>
             <el-table-column label="创建时间" show-overflow-tooltip min-width="10%">
               <template slot-scope="scope">{{ scope.row.gmtCreate }}</template>
@@ -134,18 +134,23 @@
       </el-col>
       <!-- 菜单分配 -->
       <el-col span="7" style="border: 1px solid #e6ebf5">
-        <p class="dark-large-font fw tl df-jr-ac" style="border-bottom: 1px solid #e6ebf5; height: 50px">
+        <p class="dark-large-font fw tl df-jb-ac" style="border-bottom: 1px solid #e6ebf5; height: 50px">
           <span class="ml-10">分配权限</span>
-          <el-button @click="getCheckedNode" type="primary" size="mini" class="mr-20" >
+          <el-button @click="getCheckedNode" type="primary" size="mini" class="mr-20">
             <span class="" style="color:#eee">保存</span>
           </el-button>
         </p>
-        <el-tree :data="menus"
-        ref="tree"
-        class="mt-20"
-         show-checkbox node-key="pk_menu_id" :default-checked-keys="roleMenus" :props="defaultProps1"> </el-tree>
+        <el-tree
+          :data="menus"
+          ref="tree"
+          class="mt-20"
+          show-checkbox
+          node-key="pk_menu_id"
+          :default-checked-keys="roleMenus"
+          :props="defaultProps1"
+        >
+        </el-tree>
       </el-col>
-      
     </el-row>
   </div>
 </template>
@@ -215,6 +220,7 @@ export default {
         this.roles[i].gmtCreate = this.global.formatDate(this.roles[i].gmtCreate)
       }
       this.roleInfos = this.roles
+      console.log(this.roleInfos)
     },
     /* 打开遮罩层 */
     openDialog() {
@@ -257,26 +263,47 @@ export default {
         }
       })
     },
-    //获取选中的节点数据
-    async getCheckedNode(){
-      let keys = this.$refs.tree.getCheckedKeys();
-      let add = keys.filter(key => {
-        if(this.roleMenus.indexOf(key) == -1){
+    //获取选中的节点数据, 分配权限
+    async getCheckedNode() {
+      let keys = this.$refs.tree.getCheckedKeys()
+      let add = keys.filter((key) => {
+        if (this.roleMenus.indexOf(key) == -1) {
           return key
         }
       })
-      console.log(add)
-
-      let doubleFieldDto = {
-        firstField: JSON.stringify(add),
-        secondField: this.roleId
+      let roleMenus = this.roleMenus
+      let subtraction = roleMenus.filter((roleMenu) => {
+        if (keys.indexOf(roleMenu) == -1) {
+          return roleMenu
+        }
+      })
+      console.log(add.length)
+      console.log(subtraction)
+      if (add.length > 1) {
+        let doubleFieldDto = {
+          firstField: JSON.stringify(add),
+          secondField: this.roleId
+        }
+        let result = await API.init('/role/assign/menus', doubleFieldDto, 'post')
+        if (result.code == 1) {
+          this.$message({
+            message: '新增成功',
+            type: 'success'
+          })
+        }
       }
-      let result = await API.init('/role/assign/menus', doubleFieldDto, 'post')
-      if(result.code == 1){
-        this.$message({
-              message: '新增成功',
-              type: 'success'
-            })
+      if (subtraction.length > 1) {
+        let queryDto = {
+          firstField: JSON.stringify(subtraction),
+          secondField: this.roleId
+        }
+        let result = await API.init('/role/delection/batch', queryDto, 'post')
+        if (result.code == 1) {
+          this.$message({
+            message: '修改成功',
+            type: 'success'
+          })
+        }
       }
     },
     //获取指定角色的所有权限
@@ -294,7 +321,7 @@ export default {
         roleMenus.push(parentMenu.pkMenuId)
         if (parentMenu.subMenus == null) {
           console.log(parentMenu)
-        }else {
+        } else {
           for (let j = 0, len1 = parentMenu.subMenus.length; j < len1; j++) {
             let subMenus = parentMenu.subMenus[j]
             roleMenus.push(subMenus.pkMenuId)
@@ -419,7 +446,6 @@ export default {
 </script>
 
 <style scoped>
-
 .blur-search {
   width: 200px;
 }

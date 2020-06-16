@@ -2,7 +2,7 @@
   <div class="room-container" style="width: 100%">
     <el-row type="flex" style="width: 100%">
       <el-col span="4" class="tl">
-        <!-- <el-input prefix-icon="el-icon-search" v-model="input" placeholder="请输入内容" class="blur-search mt-10"></el-input> -->
+        <el-input prefix-icon="el-icon-search" v-model="input" placeholder="请输入内容" class="blur-search mt-10"></el-input>
         <el-tree :data="towers" :props="defaultProps" @node-click="handleNodeClick" class="mt-20"></el-tree>
       </el-col>
       <el-col span="20">
@@ -90,35 +90,39 @@
           ></el-pagination>
         </el-row>
         <!-- 新增页面 -->
-        <el-dialog :visible.sync="dialogFormVisible" width="400px" center="true">
+        <div class="dialog" v-if="dialogFormVisible">
           <h2>新增房间信息</h2>
-          <el-form class="mt-10" :model="room" style="border-radius: 5px">
-            <el-form-item label="楼栋" required :label-width="formLabelWidth">
-              <el-select v-model="room.towerName" placeholder="请选择楼栋">
-                <el-option label="雪松苑" value="shanghai"></el-option>
-                <el-option label="求真楼" value="beijing"></el-option>
+          <el-form class="mt-10 dialog-form dc-jc-ac" :model="room" style="border-radius: 5px">
+            <el-form-item label="楼栋" required style="width: 80%">
+              <el-select v-model="room.towerName" placeholder="请选择楼栋" @change="getTowerUnits" style="width: 80%">
+                <el-option
+                  v-for="(item, index) in units"
+                  :key="index"
+                  :label="item.name"
+                  :value="item.pk_tower_id"
+                  @click="getTowerUnits(item)"
+                ></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item required label="单元" :label-width="formLabelWidth">
-              <el-select v-model="room.towerName" placeholder="请选择活动区域">
-                <el-option label="A4" value="shanghai"></el-option>
-                <el-option label="A5" value="beijing"></el-option>
+            <el-form-item required label="单元" style="width: 80%">
+              <el-select v-model="room.towerUnit" placeholder="请选择活动区域" style="width: 55%">
+                <el-option v-for="(item, index) in towerUnits" :key="index" :label="item.name" :value="item.unit_id"></el-option>
               </el-select>
-              <span style="color: red" class="ml-10">* 仅限宿舍</span>
+              <span style="color: red; width: 45%" class="ml-10">* 仅限宿舍</span>
             </el-form-item>
-            <el-form-item required label="房间" :label-width="formLabelWidth">
-              <el-input v-model="room.name" autocomplete="off" placeholder="请输入房间号" style="width: 40%"></el-input>
+            <el-form-item required label="房间" style="width: 80%">
+              <el-input v-model="room.name" autocomplete="off" placeholder="请输入房间号" style="width: 80%"></el-input>
+            </el-form-item>
+            <el-form-item class="tr" style="width: 80%">
+              <el-button @click="dialogFormVisible = false" size="mini">取 消</el-button>
+              <el-button type="primary" @click="addRoomInfo(tag)" size="mini">确定</el-button>
             </el-form-item>
           </el-form>
-          <!-- <p class="df-jl-ac">
+        </div>
+        <!-- <p class="df-jl-ac">
           <span class="mr-10">房间 </span>
           <el-input v-model="room.name" autocomplete="off" placeholder="请输入房间号" style="width: 40%"></el-input>
           </p> -->
-          <div slot="footer" class="dialog-footer">
-            <el-button @click="dialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="addRoomInfo(tag)">确定</el-button>
-          </div>
-        </el-dialog>
       </el-col>
     </el-row>
   </div>
@@ -141,6 +145,8 @@ export default {
         children: 'childTowers',
         label: 'name'
       },
+      units: [],
+      towerUnits: [],
       dialogFormVisible: false,
       multipleSelection: [],
       rooms: [],
@@ -148,7 +154,8 @@ export default {
       roomsList1: [],
       room: {
         name: '',
-        towerName: ''
+        towerName: '',
+        towerUnit: ''
       },
       input: '',
       towerName: -1,
@@ -159,6 +166,7 @@ export default {
   created() {
     this.getRoom()
     this.getTowers()
+    this.getAllTowersUnits()
   },
   mounted() {},
   methods: {
@@ -186,47 +194,66 @@ export default {
     addRoom() {
       this.tag = 1
       this.dialogFormVisible = true
+      this.getAllTowersUnits()
     },
+    //查询所有楼栋及楼栋的所有单元信息
+    async getAllTowersUnits() {
+      this.units = (await API.init('/tower/units/list', null, 'post')).data
+    },
+    updateRoomInfo(row){
+      this.room.name = row.roomName
+      this.room.towerName = row.towerName
+      this.room.towerUnit = row.unitName
+      this.flag = 2
+      this.dialogFormVisible = true
+    }, 
     //新增房间消息
-    addRoomInfo(tag) {
-      if (tag == 1) {
-        this.axios({
-          method: 'post',
-          url: 'http://localhost:8081/room',
-          data: {
-            name: this.room.name,
-            towerId: 1
-          }
-        }).then((res) => {
-          console.log(res)
-          if (res.data.code == 1) {
-            this.$message({
-              type: 'success',
-              message: '新增成功!'
-            })
-            this.dialogFormVisible = false
-          }
-        })
-      } else {
-        this.updateRoom()
+    async addRoomInfo(tag) {
+      let roomInfo = {
+        name: this.room.name,
+        towerId: this.room.towerName,
+        unitId: this.room.towerUnit
       }
+      if (tag == 1) {
+        let result = await API.init('/room', roomInfo, 'post')
+        if (result.code == 1) {
+          this.$message({
+            type: 'success',
+            message: '新增成功!'
+          })
+          this.dialogFormVisible = false
+        }
+      } else {
+        let result = await API.init('/modification/id', roomInfo, 'post')
+        if (result.code == 1) {
+          this.$message({
+            type: 'success',
+            message: '修改成功!'
+          })
+          this.dialogFormVisible = false
+        }
+      }
+    },
+    //点击获取所有楼栋的单元
+    getTowerUnits(val) {
+      let towerUnits = this.units.filter((unit) => {
+        if (unit.pk_tower_id == val) {
+          console.log(unit)
+          return unit
+        }
+      })
+      this.towerUnits = towerUnits[0].childUnit
+      this.room.towerUnit = this.towerUnits[0].name
     },
     //点击节点
-    handleNodeClick(val){
-      if(val.name == "教学楼"){
+    handleNodeClick(val) {
+      if (val.name == '教学楼') {
         return
       }
-      if(val.name == '宿舍楼'){
+      if (val.name == '宿舍楼') {
         return
       }
       this.filterSearch(val.name)
-    },
-    /* 修改room信息 */
-    updateRoomInfo(row) {
-      this.room.name = row.roomName
-      this.room.towerName = row.towerName
-      this.dialogFormVisible = true
-      this.tag = 2
     },
     //修改房间信息
     updateRoom() {
@@ -304,19 +331,21 @@ export default {
       this.iconColor = '#f1f1df'
     },
     //模糊搜索
-    search(){
-       //数组元素按条件过滤
+    search() {
+      //数组元素按条件过滤
       this.roomsList = this.roomsList1.filter((v) => {
         if (JSON.stringify(v).indexOf(this.input) != -1) {
           return v
         }
       })
     },
+    handleSelectionChange() {},
     //过滤搜索
     filterSearch(name) {
       //数组元素按条件过滤
       this.roomsList = this.roomsList1.filter((v) => {
         if (v.towerName === name) {
+          console.log(v)
           return v
         }
       })
@@ -450,5 +479,26 @@ el-input {
 
 .el-select__caret {
   margin-top: 5px;
+}
+
+/* 遮罩层 */
+.dialog-form {
+  border-radius: 5px;
+  background-color: white;
+  width: 400px;
+  height: 300px;
+}
+
+.dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
 }
 </style>
