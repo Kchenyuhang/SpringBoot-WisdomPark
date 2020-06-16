@@ -2,26 +2,13 @@
   <div class="room-container" style="width: 100%">
     <el-row type="flex" style="width: 100%">
       <el-col span="4" class="tl">
-        <el-input prefix-icon="el-icon-search" v-model="input" placeholder="请输入内容" class="blur-search mt-10"></el-input>
+        <!-- <el-input prefix-icon="el-icon-search" v-model="input" placeholder="请输入内容" class="blur-search mt-10"></el-input> -->
         <el-tree :data="towers" :props="defaultProps" @node-click="handleNodeClick" class="mt-20"></el-tree>
       </el-col>
       <el-col span="20">
         <!-- 操作按钮 -->
         <el-row type="flex" class="ml-20 mt-10">
           <el-input v-model="input" prefix-icon="el-icon-search" placeholder="请输入内容" class="blur-search" v-if="searchShow"></el-input>
-          <el-date-picker
-            v-model="time"
-            type="daterange"
-            range-separator=":"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            class="date-input-search ml-10"
-            value-format="yyyy-MM-dd"
-            v-if="searchShow"
-          ></el-date-picker>
-          <el-select v-model="selectValue" placeholder="请选择" v-if="searchShow" class="statu-search ml-10">
-            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
-          </el-select>
           <el-button v-if="searchShow" type="success" size="mini" @click="search()" class="ml-10 bg-green" icon="">
             <i class="el-icon-search" style="color: rgb(247, 251, 255)"></i>
             <span class="light-font-color">搜索</span>
@@ -53,7 +40,7 @@
         <el-row>
           <el-table
             ref="multipleTable"
-            :data="rooms.slice(start, end)"
+            :data="roomsList.slice(start, end)"
             tooltip-effect="dark"
             style="width: 100%"
             class="light-small-font"
@@ -64,7 +51,7 @@
               <template slot-scope="scope">{{ scope.row.towerName }}</template>
             </el-table-column>
             <el-table-column label="单元" min-width="15%">
-              <template slot-scope="scope">{{ scope.row.unitId }}</template>
+              <template slot-scope="scope">{{ scope.row.unitName }}</template>
             </el-table-column>
             <el-table-column label="房间号" min-width="15%">
               <template slot-scope="scope">{{ scope.row.roomName }}</template>
@@ -97,7 +84,7 @@
             :page-sizes="[10, 20]"
             :page-size="100"
             layout="total, prev, pager, next, sizes"
-            :total="rooms.length"
+            :total="roomsList.length"
             @prev-click="prevPage()"
             @next-click="nextPage()"
           ></el-pagination>
@@ -138,37 +125,12 @@
 </template>
 
 <script>
+const API = require('../utils/api')
 export default {
   name: 'Room',
   data() {
     return {
-      towers: [
-        {
-          name: '教学楼',
-          children: [
-            {
-              name: '教四'
-            },
-            {
-              name: '教1'
-            },
-            {
-              name: '教2'
-            }
-          ]
-        },
-        {
-          name: '宿舍楼',
-          children: [
-            {
-              name: '雪松苑'
-            },
-            {
-              name: '青松苑'
-            }
-          ]
-        }
-      ],
+      towers: [],
       start: 0,
       end: 10,
       searchShow: true,
@@ -176,36 +138,49 @@ export default {
       pageSize: 10,
       currentPageSize: 10,
       defaultProps: {
-        children: 'children',
+        children: 'childTowers',
         label: 'name'
       },
       dialogFormVisible: false,
       multipleSelection: [],
       rooms: [],
+      roomsList: [],
+      roomsList1: [],
       room: {
         name: '',
         towerName: ''
       },
+      input: '',
+      towerName: -1,
       tag: 1,
       currentPage: 1
     }
   },
   created() {
     this.getRoom()
+    this.getTowers()
   },
   mounted() {},
   methods: {
+    //获取所有房间信息
     getRoom() {
       this.axios({
-        method: 'get',
-        url: 'http://localhost:8080/room/list'
+        method: 'post',
+        url: 'http://localhost:8081/room/list'
       }).then((res) => {
         this.rooms = res.data.data
         for (let i = 0, len = this.rooms.length; i < len; i++) {
           this.rooms[i].gmtGreate = this.global.formatDate(this.rooms[i].gmtGreate)
         }
+        this.roomsList = this.rooms
+        this.roomsList1 = this.rooms
         console.log(this.rooms)
       })
+    },
+    //获取所有楼栋信息
+    async getTowers() {
+      let result = (await API.init('/tower/list/type', null, 'post')).data
+      this.towers = result
     },
     /* 新增room */
     addRoom() {
@@ -217,7 +192,7 @@ export default {
       if (tag == 1) {
         this.axios({
           method: 'post',
-          url: 'http://localhost:8080/room',
+          url: 'http://localhost:8081/room',
           data: {
             name: this.room.name,
             towerId: 1
@@ -236,6 +211,16 @@ export default {
         this.updateRoom()
       }
     },
+    //点击节点
+    handleNodeClick(val){
+      if(val.name == "教学楼"){
+        return
+      }
+      if(val.name == '宿舍楼'){
+        return
+      }
+      this.filterSearch(val.name)
+    },
     /* 修改room信息 */
     updateRoomInfo(row) {
       this.room.name = row.roomName
@@ -247,7 +232,7 @@ export default {
     updateRoom() {
       this.axios({
         method: 'put',
-        url: 'http://localhost:8080/room/id',
+        url: 'http://localhost:8081/room/id',
         data: {
           name: this.room.name,
           towerId: 1
@@ -277,7 +262,7 @@ export default {
       }).then(() => {
         this.axios({
           method: 'delete',
-          url: 'http://localhost:8080/room/id/' + row.roomId
+          url: 'http://localhost:8081/room/id/' + row.roomId
         }).then((res) => {
           if (res.data.code == 1) {
             this.$message({
@@ -317,6 +302,24 @@ export default {
     searchOver() {
       alert(1)
       this.iconColor = '#f1f1df'
+    },
+    //模糊搜索
+    search(){
+       //数组元素按条件过滤
+      this.roomsList = this.roomsList1.filter((v) => {
+        if (JSON.stringify(v).indexOf(this.input) != -1) {
+          return v
+        }
+      })
+    },
+    //过滤搜索
+    filterSearch(name) {
+      //数组元素按条件过滤
+      this.roomsList = this.roomsList1.filter((v) => {
+        if (v.towerName === name) {
+          return v
+        }
+      })
     }
   },
   computed: {}

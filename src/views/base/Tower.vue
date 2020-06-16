@@ -125,8 +125,8 @@ export default {
   methods: {
     getTowerList() {
       this.axios({
-        method: 'get',
-        url: 'http://localhost:8080/tower/list'
+        method: 'post',
+        url: 'http://localhost:8081/tower/list'
       }).then((res) => {
         this.towerList = res.data.data
         for (let i = 0, len = this.towerList.length; i < len; i++) {

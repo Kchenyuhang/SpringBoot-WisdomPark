@@ -1,6 +1,49 @@
 /* eslint-disable prettier/prettier */
 <template>
   <div style="width:100%">
+    <!-- 修改弹出框 -->
+    <el-dialog
+      title="编辑一卡通"
+      :visible.sync="updatecenterDialogVisible"
+      width="30%"
+      left
+    >
+      <el-form
+        :model="ruleForm"
+        status-icon
+        label-width="80px"
+      >
+        <el-form-item
+          label="类型"
+          prop="type"
+        >
+          <el-input v-model.number="ruleForm.type"></el-input>
+        </el-form-item>
+        <el-form-item
+          label="余额"
+          prop="balance"
+        >
+          <el-input v-model.number="ruleForm.balance"></el-input>
+        </el-form-item>
+        <el-form-item
+          label="缴费描述"
+          prop="description"
+        >
+          <el-input v-model.number="ruleForm.description"></el-input>
+        </el-form-item>
+      </el-form>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="updatecenterDialogVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="confirmUpdate"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+
     <el-row
       type="flex"
       class="ml-20 mt-10"
@@ -21,11 +64,6 @@
     </el-row>
     <el-row class="df-jr-ac ml-20 mt-10">
       <el-col class="tl">
-        <el-button
-          type="primary"
-          icon="el-icon-plus"
-          size="small"
-        ><span>新增</span></el-button>
         <el-button
           type="success"
           icon="el-icon-edit"
@@ -111,13 +149,9 @@
           >
             <template slot-scope="scope">
               <el-button
-                @click="handleClick(scope.row)"
                 type="text"
                 size="small"
-              >查看</el-button>
-              <el-button
-                type="text"
-                size="small"
+                @click="handleUpdate(scope.$index, scope.row)"
               >编辑</el-button>
               <el-button
                 slot="reference"
@@ -168,6 +202,7 @@
 </template>
 
 <script>
+const API = require('../utils/api')
 export default {
   name: 'Order',
   data() {
@@ -177,7 +212,13 @@ export default {
       currentPage: 1,
       pageSize: 6,
       visible: false,
-      delVisible: false
+      delVisible: false,
+      updatecenterDialogVisible: false,
+      ruleForm: {
+        balance: '',
+        description: '',
+        type: ''
+      }
     }
   },
   components: {},
@@ -202,26 +243,19 @@ export default {
       this.delVisible = true
     },
     // 确定删除
-    deleteRow() {
-      this.axios({
-        method: 'post',
-        url: 'http://localhost:8080/order/id',
-        data: {
-          field: this.msg.pkOrderId
-        }
-      })
-        .then((res) => {
-          if (res.data) {
-            this.getOrderAll()
-            this.$message.success('删除成功')
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-          this.$message.error('订单信息删除失败')
-        })
+    async deleteRow() {
+      this.data = { field: this.msg.pkOrderId }
+      this.url = '/order/id'
+      this.result = await API.init(this.url, this.data, 'post')
+      if (this.data) {
+        this.getCardAll()
+        this.$message.success('删除成功')
+      } else {
+        this.$message.error('订单信息删除失败')
+      }
       this.delVisible = false //关闭删除提示模态框
     },
+
     //时间格式化
     dateFormat: function(row, column) {
       var date = row[column.property]
@@ -235,25 +269,16 @@ export default {
     statusChange: function(row, column) {
       return row.status == 1 ? '已支付' : row.status == 0 ? '未支付' : 'aaa'
     },
-    //获取所有订单消息
-    getOrderAll() {
-      this.axios({
-        method: 'post',
-        url: 'http://localhost:8080/order/all',
-        data: {
-          currentPage: this.currentPage,
-          pageSize: this.pageSize
-        }
-      })
-        .then((res) => {
-          this.tableData = res.data.data
-          for (let i = 0; i < this.tableData.length; i++) {
-            this.tableData[i].gmtCreate = this.formatDate(this.tableData[i].gmtCreate)
-          }
-        })
-        .catch(function(error) {
-          console.log(error)
-        })
+    // 分页查询所有
+    async getOrderAll() {
+      this.data = { currentPage: this.currentPage, pageSize: this.pageSize }
+      this.url = '/order/all'
+      this.result = await API.init(this.url, this.data, 'post')
+      this.tableData = this.result.data
+      this.tableData1 = this.result.data
+      for (let i = 0; i < this.tableData.length; i++) {
+        this.tableData[i].gmtCreate = this.formatDate(this.tableData[i].gmtCreate)
+      }
     },
     // 当前页展示数据
     handleSizeChange: function(pageSize) {
@@ -262,6 +287,30 @@ export default {
     // 当前页
     handleCurrentChange: function(currentPage) {
       this.currentPage = currentPage
+    },
+    //编辑
+    handleUpdate(index, row) {
+      this.idx = index
+      this.msg = row //每一条数据的记录
+      this.updatecenterDialogVisible = true
+    },
+    //修改订单信息
+    async confirmUpdate() {
+      this.data = {
+        pkCardId: this.msg.pkCardId,
+        orderType: this.ruleForm.orderType,
+        description: this.ruleForm.description,
+        cardBalance: this.ruleForm.balance
+      }
+      this.url = '/card/modification'
+      this.result = await API.init(this.url, this.data, 'post')
+      this.updatecenterDialogVisible = false
+      this.getCardAll()
+      if (this.result.data == null) {
+        this.$message.success('该一卡通未激活，信息修改失败')
+      } else {
+        this.$message.success('信息修改成功')
+      }
     },
     formatDate(value) {
       let date = new Date(value)

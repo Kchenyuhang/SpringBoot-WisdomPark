@@ -230,11 +230,6 @@
             >确 定</el-button>
           </span>
         </el-dialog>
-        <el-button
-          type="warning"
-          icon="el-icon-download"
-          size="small"
-        >导出</el-button>
       </el-col>
       <el-col class="tr mr-20">
         <el-button
@@ -467,7 +462,6 @@ export default {
       this.url = '/card/list'
       this.result = await API.init(this.url, this.data, 'post')
       this.cardList = this.result.data
-      console.log(this.result.data)
       this.cardList1 = this.result.data
       for (let i = 0; i < this.cardList.length; i++) {
         this.cardList[i].gmtCreate = this.formatDate(this.cardList[i].gmtCreate)
