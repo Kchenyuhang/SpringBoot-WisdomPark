@@ -252,8 +252,7 @@ export default {
       this.resetAddType()
     },
     resetAddType() {
-      // 图片不可修改，此处先不变
-      // this.typeShow.typeCoverUrl = ''
+      this.typeShow.typeCoverUrl = ''
       this.typeShow.typeName = ''
       this.typeShow.typeUrl = ''
     },
