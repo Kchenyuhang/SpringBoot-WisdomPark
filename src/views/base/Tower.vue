@@ -9,8 +9,15 @@
     <Form :dialogFormVisible="dialogFormVisible"></Form>
   </div> -->
   <div style="width: 100%">
-    <el-row type="flex" class="ml-20 mt-10">
-      <el-input v-model="input" placeholder="请输入内容" class="blur-search"></el-input>
+    <el-row
+      type="flex"
+      class="ml-20 mt-10"
+    >
+      <el-input
+        v-model="input"
+        placeholder="请输入内容"
+        class="blur-search"
+      ></el-input>
       <el-date-picker
         v-model="time"
         type="daterange"
@@ -21,67 +28,151 @@
         value-format="yyyy-MM-dd"
       >
       </el-date-picker>
-      <el-select v-model="selectValue" placeholder="请选择" class="statu-search ml-10">
-        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
+      <el-select
+        v-model="selectValue"
+        placeholder="请选择"
+        class="statu-search ml-10"
+      >
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        > </el-option>
       </el-select>
-      <el-button type="success" size="mini" @click="search()" class="ml-10" icon="el-icon-search">搜索</el-button>
+      <el-button
+        type="success"
+        size="mini"
+        @click="search()"
+        class="ml-10"
+        icon="el-icon-search"
+      >搜索</el-button>
     </el-row>
     <el-row class="df-jr-ac ml-20 mt-10">
-          <el-col class="tl">
-            <el-button type="primary" icon="el-icon-plus" @click="openDialog" size="mini">
-              <span class="light-font-color">新增</span>
-            </el-button>
-            <el-button type="success" icon="el-icon-edit" size="mini">
-              <span class="light-font-color">修改</span>
-            </el-button>
-            <el-button type="danger" icon="el-icon-delete" size="mini">
-              <span class="light-font-color">删除</span>
-            </el-button>
-            <el-button type="warning" icon="el-icon-download" disabled size="mini">
-              <span class="light-font-color">导出</span>
-            </el-button>
-          </el-col>
-          <el-col class="tr mr-20">
-            <el-button size="mini" style="width: 45px" class="search-btn" @click="searchShow = !searchShow" @mouseover="searchOver()">
-              <i class="el-icon-search" style="color: white"></i>
-            </el-button>
-            <el-button icon="el-icon-refresh" size="small" @click="flush()"></el-button>
-          </el-col>
-        </el-row>
+      <el-col class="tl">
+        <el-button
+          type="primary"
+          icon="el-icon-plus"
+          @click="openDialog"
+          size="mini"
+        >
+          <span class="light-font-color">新增</span>
+        </el-button>
+        <el-button
+          type="success"
+          icon="el-icon-edit"
+          size="mini"
+        >
+          <span class="light-font-color">修改</span>
+        </el-button>
+        <el-button
+          type="danger"
+          icon="el-icon-delete"
+          size="mini"
+        >
+          <span class="light-font-color">删除</span>
+        </el-button>
+        <el-button
+          type="warning"
+          icon="el-icon-download"
+          disabled
+          size="mini"
+        >
+          <span class="light-font-color">导出</span>
+        </el-button>
+      </el-col>
+      <el-col class="tr mr-20">
+        <el-button
+          size="mini"
+          style="width: 45px"
+          class="search-btn"
+          @click="searchShow = !searchShow"
+          @mouseover="searchOver()"
+        >
+          <i
+            class="el-icon-search"
+            style="color: white"
+          ></i>
+        </el-button>
+        <el-button
+          icon="el-icon-refresh"
+          size="small"
+          @click="flush()"
+        ></el-button>
+      </el-col>
+    </el-row>
     <!-- 表格 -->
     <el-row>
       <el-col span="1"></el-col>
-      <el-col span="23" class="ml-20 mt-10">
+      <el-col
+        span="23"
+        class="ml-20 mt-10"
+      >
         <el-row>
-        <el-table
-          ref="multipleTable"
-          :data="towerList.slice(start, end)"
-          tooltip-effect="dark"
-          style="width: 100%;"
-          stripe="true"
-          class="light-small-font"
-          @selection-change="handleSelectionChange"
-        >
-          <el-table-column type="selection" min-width="5%"></el-table-column>
-          <el-table-column label="用户名" min-width="10%">
-            <template slot-scope="scope">{{ scope.row.name }}</template>
-          </el-table-column>
-          <el-table-column prop="latitude" label="经度" min-width="15%"></el-table-column>
-          <el-table-column prop="longitude" label="纬度" show-overflow-tooltip min-width="15%"> </el-table-column>
-          <el-table-column prop="gmtCreate" label="创建时间" show-overflow-tooltip min-width="15%"> </el-table-column>
-          <el-table-column label="操作" align="center" show-overflow-tooltip min-width="20%">
-            <template slot-scope="scope">
-              <p class="tc">
-                <el-button size="mini" icon="el-icon-edit" type="primary" @click="handleEdit(scope.row)">
-                  <span class="light-font-color">编辑</span>
-                </el-button>
-                <el-button size="mini" icon="el-icon-delete" type="danger" @click="handleDelete(scope.row)">
-                  <span class="light-font-color">删除</span>
-                </el-button>
-              </p>
-            </template>
-          </el-table-column>
-        </el-table>
+          <el-table
+            ref="multipleTable"
+            :data="towerList.slice(start, end)"
+            tooltip-effect="dark"
+            style="width: 100%;"
+            stripe="true"
+            class="light-small-font"
+            @selection-change="handleSelectionChange"
+          >
+            <el-table-column
+              type="selection"
+              min-width="5%"
+            ></el-table-column>
+            <el-table-column
+              label="用户名"
+              min-width="10%"
+            >
+              <template slot-scope="scope">{{ scope.row.name }}</template>
+            </el-table-column>
+            <el-table-column
+              prop="latitude"
+              label="经度"
+              min-width="15%"
+            ></el-table-column>
+            <el-table-column
+              prop="longitude"
+              label="纬度"
+              show-overflow-tooltip
+              min-width="15%"
+            > </el-table-column>
+            <el-table-column
+              prop="gmtCreate"
+              label="创建时间"
+              show-overflow-tooltip
+              min-width="15%"
+            > </el-table-column>
+            <el-table-column
+              label="操作"
+              align="center"
+              show-overflow-tooltip
+              min-width="20%"
+            >
+              <template slot-scope="scope">
+                <p class="tc">
+                  <el-button
+                    size="mini"
+                    icon="el-icon-edit"
+                    type="primary"
+                    @click="handleEdit(scope.row)"
+                  >
+                    <span class="light-font-color">编辑</span>
+                  </el-button>
+                  <el-button
+                    size="mini"
+                    icon="el-icon-delete"
+                    type="danger"
+                    @click="handleDelete(scope.row)"
+                  >
+                    <span class="light-font-color">删除</span>
+                  </el-button>
+                </p>
+              </template>
+            </el-table-column>
+          </el-table>
         </el-row>
         <el-row class="df-jl-ac mt-10">
           <el-pagination
@@ -125,8 +216,8 @@ export default {
   methods: {
     getTowerList() {
       this.axios({
-        method: 'get',
-        url: 'http://localhost:8080/tower/list'
+        method: 'post',
+        url: 'http://localhost:8081/tower/list'
       }).then((res) => {
         this.towerList = res.data.data
         for (let i = 0, len = this.towerList.length; i < len; i++) {
@@ -158,7 +249,7 @@ export default {
       this.currentPage = val
       this.start = (this.currentPage - 1) * this.currentPageSize
       this.end = this.currentPage * this.currentPageSize
-    },
+    }
     // formatDate(value) {
     //   let date = new Date(value)
     //   let y = date.getFullYear()
@@ -263,5 +354,4 @@ el-input {
 >>> .el-select__caret {
   margin-top: 5px;
 }
-
 </style>
