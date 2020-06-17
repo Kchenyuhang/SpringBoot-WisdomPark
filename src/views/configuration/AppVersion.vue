@@ -196,6 +196,7 @@ export default {
       textarea: '',
       delarr: [], //存放删除的数据
       multipleSelection: [],
+      units: [], //所有单元数据
       dialogFormVisible: false,
       appVersionInfo: {
         appType: '',

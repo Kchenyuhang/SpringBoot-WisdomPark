@@ -1,22 +1,13 @@
 <template>
-  <div
-    class="room-container"
-    style="width: 100%"
-  >
-    <el-row
-      type="flex"
-      style="width: 100%"
-    >
+  <div class="room-container" style="width: 100%">
+    <el-row type="flex" style="width: 100%">
       <!-- <el-col span="4" class="tl">
         <el-input prefix-icon="el-icon-search" v-model="input" placeholder="请输入内容" class="blur-search mt-10"></el-input>
         <el-tree :data="towers" :props="defaultProps" @node-click="handleNodeClick" class="mt-20"></el-tree>
       </el-col> -->
       <el-col span="23">
         <!-- 操作按钮 -->
-        <el-row
-          type="flex"
-          class="ml-20 mt-10"
-        >
+        <el-row type="flex" class="ml-20 mt-10">
           <el-input
             v-model="blurSearch"
             prefix-icon="el-icon-search"
@@ -34,92 +25,38 @@
             value-format="yyyy-MM-dd"
             v-if="searchShow"
           ></el-date-picker> -->
-          <el-select
-            v-model="searchs.statu"
-            placeholder="请选择"
-            v-if="searchShow"
-            class="statu-search ml-10"
-          >
-            <el-option
-              v-for="item in status"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
+          <el-select v-model="searchs.statu" placeholder="请选择" v-if="searchShow" class="statu-search ml-10">
+            <el-option v-for="item in status" :key="item.value" :label="item.label" :value="item.value"></el-option>
           </el-select>
-          <el-button
-            v-if="searchShow"
-            type="success"
-            size="mini"
-            @click="search()"
-            class="ml-10 bg-green"
-            icon=""
-          >
-            <i
-              class="el-icon-search"
-              style="color: rgb(247, 251, 255)"
-            ></i>
+          <el-button v-if="searchShow" type="success" size="mini" @click="search()" class="ml-10 bg-green" icon="">
+            <i class="el-icon-search" style="color: rgb(247, 251, 255)"></i>
             <span class="light-font-color">搜索</span>
           </el-button>
         </el-row>
         <el-row class="df-jr-ac ml-20 mt-10">
           <el-col class="tl">
-            <el-button
-              type="primary"
-              icon="el-icon-plus"
-              @click="openDialog"
-              size="mini"
-            >
+            <el-button type="primary" icon="el-icon-plus" @click="openDialog" size="mini">
               <span class="light-font-color">新增</span>
             </el-button>
-            <el-button
-              type="success"
-              icon="el-icon-edit"
-              size="mini"
-            >
+            <el-button type="success" icon="el-icon-edit" size="mini">
               <span class="light-font-color">修改</span>
             </el-button>
-            <el-button
-              type="danger"
-              icon="el-icon-delete"
-              size="mini"
-            >
+            <el-button type="danger" icon="el-icon-delete" size="mini">
               <span class="light-font-color">删除</span>
             </el-button>
-            <el-button
-              type="warning"
-              icon="el-icon-download"
-              disabled
-              size="mini"
-            >
+            <el-button type="warning" icon="el-icon-download" disabled size="mini">
               <span class="light-font-color">导出</span>
             </el-button>
           </el-col>
           <el-col class="tr mr-20">
-            <el-button
-              size="mini"
-              style="width: 45px"
-              class="search-btn"
-              @click="searchShow = !searchShow"
-              @mouseover="searchOver()"
-            >
-              <i
-                class="el-icon-search"
-                style="color: white"
-              ></i>
+            <el-button size="mini" style="width: 45px" class="search-btn" @click="searchShow = !searchShow" @mouseover="searchOver()">
+              <i class="el-icon-search" style="color: white"></i>
             </el-button>
-            <el-button
-              icon="el-icon-refresh"
-              size="small"
-              @click="flush()"
-            ></el-button>
+            <el-button icon="el-icon-refresh" size="small" @click="flush()"></el-button>
           </el-col>
         </el-row>
         <!-- 表格 -->
-        <el-row
-          style="border: 1px solid #e6ebf5"
-          class="mt-20  ml-20"
-        >
+        <el-row style="border: 1px solid #e6ebf5" class="mt-20  ml-20">
           <el-table
             ref="multipleTable"
             :data="adminInfos.slice(start, end)"
@@ -129,34 +66,17 @@
             :header-cell-style="getRowClass"
             class="light-small-font"
           >
-            <el-table-column
-              type="selection"
-              min-width="5%"
-            ></el-table-column>
-            <el-table-column
-              label="用户名"
-              min-width="15%"
-            >
+            <el-table-column type="selection" min-width="5%"></el-table-column>
+            <el-table-column label="用户名" min-width="15%">
               <template slot-scope="scope">{{ scope.row.sys_user_name }}</template>
             </el-table-column>
-            <el-table-column
-              label="角色"
-              min-width="15%"
-            >
+            <el-table-column label="角色" min-width="15%">
               <template slot-scope="scope">{{ scope.row.role_name }}</template>
             </el-table-column>
-            <el-table-column
-              label="手机号"
-              min-width="15%"
-            >
+            <el-table-column label="手机号" min-width="15%">
               <template slot-scope="scope">{{ scope.row.sys_user_phone_number }}</template>
             </el-table-column>
-            <el-table-column
-              prop="status"
-              label="状态"
-              show-overflow-tooltip
-              min-width="15%"
-            >
+            <el-table-column prop="status" label="状态" show-overflow-tooltip min-width="15%">
               <template slot-scope="scope">
                 <el-switch
                   @change="changeEnabled(scope.row)"
@@ -167,34 +87,16 @@
                 </el-switch>
               </template>
             </el-table-column>
-            <el-table-column
-              label="创建时间"
-              show-overflow-tooltip
-              min-width="10%"
-            >
+            <el-table-column label="创建时间" show-overflow-tooltip min-width="10%">
               <template slot-scope="scope">{{ scope.row.gmt_create }}</template>
             </el-table-column>
-            <el-table-column
-              label="操作"
-              align="center"
-              min-width="20%"
-            >
+            <el-table-column label="操作" align="center" min-width="20%">
               <template slot-scope="scope">
                 <p style="text-align:center">
-                  <el-button
-                    size="mini"
-                    icon="el-icon-edit"
-                    type="primary"
-                    @click="updaeAdminInfo(scope.row)"
-                  >
+                  <el-button size="mini" icon="el-icon-edit" type="primary" @click="updaeAdminInfo(scope.row)">
                     <span class="light-font-color">编辑</span>
                   </el-button>
-                  <el-button
-                    size="mini"
-                    icon="el-icon-delete"
-                    type="danger"
-                    @click="handleDelete(scope.row)"
-                  >
+                  <el-button size="mini" icon="el-icon-delete" type="danger" @click="handleDelete(scope.row)">
                     <span class="light-font-color">删除</span>
                   </el-button>
                 </p>
@@ -216,98 +118,29 @@
           ></el-pagination>
         </el-row>
         <!-- 新增页面 -->
-        <div
-          class="dialog"
-          v-if="dialogFormVisible"
-        >
-          <el-form
-            class="mt-10 dialog-form dc-jc-ac"
-            :model="adminInfo"
-            style="padding: 0px 20px;"
-          >
-            <p
-              style="width: 90%;"
-              class="dark-large-font tl"
-            >{{ msg }}用户</p>
-            <el-form-item
-              required
-              label="用户名"
-              class="mt-20"
-              :label-width="formLabelWidth"
-              style="width: 90%;"
-            >
-              <el-input
-                v-model="adminInfo.name"
-                autocomplete="off"
-                placeholder="请输入用户名"
-                style="width: 80%"
-              ></el-input>
+        <div class="dialog" v-if="dialogFormVisible">
+          <el-form class="mt-10 dialog-form dc-jc-ac" :model="adminInfo" style="padding: 0px 20px;">
+            <p style="width: 90%;" class="dark-large-font tl">{{ msg }}用户</p>
+            <el-form-item required label="用户名" class="mt-20" :label-width="formLabelWidth" style="width: 90%;">
+              <el-input v-model="adminInfo.name" autocomplete="off" placeholder="请输入用户名" style="width: 80%"></el-input>
             </el-form-item>
-            <el-form-item
-              required
-              label="手机号"
-              :label-width="formLabelWidth"
-              style="width: 90%;"
-            >
-              <el-input
-                v-model="adminInfo.phoneNumber"
-                autocomplete="off"
-                placeholder="请输入手机号"
-                style="width: 80%"
-              ></el-input>
+            <el-form-item required label="手机号" :label-width="formLabelWidth" style="width: 90%;">
+              <el-input v-model="adminInfo.phoneNumber" autocomplete="off" placeholder="请输入手机号" style="width: 80%"></el-input>
             </el-form-item>
-            <p
-              style="width: 90%"
-              class="df-jr-ac"
-            >
-              <el-form-item
-                required
-                label="角色"
-                :label-width="formLabelWidth"
-                style="width: 50%;"
-              >
-                <el-select
-                  v-model="adminInfo.role"
-                  placeholder="请选择角色"
-                  style="width: 60%;"
-                  class="ml-10"
-                >
-                  <el-option
-                    v-for="(role, index) in roles"
-                    :key="index"
-                    :label="role.roleName"
-                    :value="role.pkRoleId"
-                  ></el-option>
+            <p style="width: 90%" class="df-jr-ac">
+              <el-form-item required label="角色" :label-width="formLabelWidth" style="width: 50%;">
+                <el-select v-model="adminInfo.role" placeholder="请选择角色" style="width: 60%;" class="ml-10">
+                  <el-option v-for="(role, index) in roles" :key="index" :label="role.roleName" :value="role.pkRoleId"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item
-                class="mr-10 df-jc-ac"
-                required
-                label="状态"
-              >
-                <el-radio
-                  v-model="adminInfo.isEnabled"
-                  label="true"
-                >激活</el-radio>
-                <el-radio
-                  v-model="adminInfo.isEnabled"
-                  label="false"
-                >禁用</el-radio>
+              <el-form-item class="mr-10 df-jc-ac" required label="状态">
+                <el-radio v-model="adminInfo.isEnabled" label="true">激活</el-radio>
+                <el-radio v-model="adminInfo.isEnabled" label="false">禁用</el-radio>
               </el-form-item>
             </p>
-            <p
-              class="mt-20 tr"
-              style="width: 90%"
-            >
-              <el-button
-                @click="dialogFormVisible = false"
-                size="small"
-              >取 消</el-button>
-              <el-button
-                type="primary"
-                @click="addAdminInfo(tag)"
-                size="small"
-              >确定</el-button>
+            <p class="mt-20 tr" style="width: 90%">
+              <el-button @click="dialogFormVisible = false" size="small">取 消</el-button>
+              <el-button type="primary" @click="addAdminInfo(tag)" size="small">确定</el-button>
             </p>
           </el-form>
           <!-- <div slot="footer" class="dialog-footer">
@@ -403,22 +236,27 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.axios({
-          method: 'post',
-          url: 'http://localhost:8080/sysUser/single/id',
-          data: {
-            field: item.sys_user_id,
-            status: item.is_enabled
-          }
-        }).then((res) => {
-          if (res.data.code == 1) {
-            this.$message({
-              message: '修改成功',
-              type: 'success'
-            })
-          }
-        })
+        let data = {
+          field: item.sys_user_id,
+          status: item.is_enabled
+        }
+        let res = API.init('/sysUser/single/id', data, 'post')
+        // this.axios({
+        //   method: 'post',
+        //   url: 'http://localhost:8080/sysUser/single/id',
+        //   data: {
+        //     field: item.sys_user_id,
+        //     status: item.is_enabled
+        //   }
+        // }).then((res) => {
+        if (res.data.code == 1) {
+          this.$message({
+            message: '修改成功',
+            type: 'success'
+          })
+        }
       })
+      // })
     },
     //搜索
     search() {
@@ -521,23 +359,28 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.axios({
-          method: 'post',
-          url: 'http://localhost:8081/sysUser/deletion/phoneNumber',
-          data: {
-            field: item.sys_user_phone_number
-          }
-        }).then((res) => {
-          if (res.data.code == 1) {
-            this.$message({
-              message: '删除成功',
-              type: 'success'
-            })
-            let index = this.admins.indexOf(item)
-            this.admins.splice(index, 1)
-          }
-        })
+        let data = {
+          field: item.sys_user_phone_number
+        }
+        let res = API.init('/sysUser/deletion/phoneNumber', data, 'post')
+        // this.axios({
+        //   method: 'post',
+        //   url: 'http://localhost:8080/sysUser/deletion/phoneNumber',
+        //   data: {
+        //     field: item.sys_user_phone_number
+        //   }
+        // }).then((res) => {
+        if (res.data.code == 1) {
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          })
+          let index = this.admins.indexOf(item)
+          this.admins.splice(index, 1)
+        }
+
       })
+      // })
     },
     //刷新数据
     flush() {
@@ -611,6 +454,7 @@ export default {
 
 >>> .el-input__icon {
   color: #ddd;
+  margin-top: -5px;
 }
 
 .el-button--success {
@@ -621,7 +465,13 @@ export default {
   background-color: #f4f4f5;
 }
 
->>>.el-icon-date {
+>>> .el-input__prefix {
+  display: flex;
+  height: 30px;
+  line-height: 30px;
+}
+
+>>> .el-icon-date {
   margin-bottom: 10px;
 }
 
@@ -650,18 +500,9 @@ export default {
   color: #f7fbff;
 }
 
->>> .el-range-separator {
-  margin-bottom: 10px;
-}
-
 /* >>> .el-icon-search {
   color: #f7fbff;
 } */
-
->>> .el-input__prefix {
-  display: flex;
-  align-items: center;
-}
 
 /* >>> .el-select__caret {
   margin-top: 5px;
@@ -710,15 +551,8 @@ export default {
   width: 100px;
 }
 
-el-input {
-  height: 30px;
-}
-
 .search-btn {
   height: 30px;
   width: 80px;
-}
-.el-input__inner {
-  height: 30px;
 }
 </style>

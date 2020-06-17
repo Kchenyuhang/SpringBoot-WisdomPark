@@ -1,5 +1,53 @@
 <template>
   <div style="width:100%">
+    <!-- 增加弹出框 -->
+    <el-dialog
+      title="新增一卡通挂失"
+      :visible.sync="addcenterDialogVisible"
+      width="30%"
+      center
+    >
+      <el-form
+        label-width="80px"
+        :model="ruleForm1"
+      >
+        <el-form-item
+          required
+          label="卡号"
+          prop="cardNumber"
+        >
+          <el-input v-model="ruleForm1.cardNumber"></el-input>
+        </el-form-item>
+        <el-form-item
+          required
+          label="卡号密码"
+          prop="cardPassword"
+        >
+          <el-input
+            type="password"
+            v-model="ruleForm1.cardPassword"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          required
+          label="备注信息"
+          prop="remark"
+        >
+          <el-input v-model="ruleForm1.remark"></el-input>
+        </el-form-item>
+      </el-form>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="addcenterDialogVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="confirmAdd"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
     <el-row
       type="flex"
       class="ml-20 mt-10"
@@ -9,6 +57,7 @@
         v-model="input"
         placeholder="请输入内容"
         class="blur-search"
+        @input="filterSearch()"
       ></el-input>
       <el-select
         size="mini"
@@ -37,6 +86,7 @@
           type="primary"
           icon="el-icon-plus"
           size="small"
+          @click="addcenterDialogVisible = true"
         ><span>新增</span></el-button>
         <el-button
           type="success"
@@ -166,7 +216,7 @@
       width="300px"
       center
     >
-      <div class="del-dialog-cnt">该一卡通正在申请挂失，是否确定挂失</div>
+      <div class="del-dialog-cnt">该一卡通挂失正在申请挂失，是否确定挂失</div>
       <span
         slot="footer"
         class="dialog-footer"
@@ -211,9 +261,16 @@ export default {
       pageSize: 1000,
       pageSizeA: 4,
       total: '',
+      input: '',
       currentPageA: 0,
       delVisible: false,
-      statusVisible: false
+      statusVisible: false,
+      addcenterDialogVisible: false,
+      ruleForm1: {
+        cardNumber: '',
+        cardPassword: '',
+        remark: ''
+      }
     }
   },
   components: {},
@@ -256,10 +313,9 @@ export default {
       if (this.msg.lossStatus == false) {
         this.statusVisible = true
       } else {
-        this.$message.success('该一卡通已挂失')
+        this.$message.success('该一卡通挂失已挂失')
       }
     },
-    // 分页查询所有
     async changeStatus() {
       this.data = { field: this.msg.pkReportLossId, status: true }
       this.url = '/loss/statuschange'
@@ -286,6 +342,39 @@ export default {
         this.$message.error('挂失信息删除失败')
       }
       this.delVisible = false //关闭删除提示模态框
+    },
+    //新增一卡通挂失
+    async confirmAdd() {
+      this.data = {
+        remark: this.ruleForm1.remark,
+        cardNumber: this.ruleForm1.cardNumber,
+        cardPassword: this.ruleForm1.cardPassword
+      }
+      this.url = '/increase'
+      this.result = await API.init(this.url, this.data, 'post')
+      console.log(this.result)
+      this.addcenterDialogVisible = false
+      this.getLossAll()
+      if (this.result.code == 20020) {
+        this.$message.success('账号或密码错误，新增挂失失败')
+      } else if (this.result.code == 30004) {
+        this.$message.success('该账号已挂失')
+      } else if (this.result.code == 20006) {
+        this.$message.success('该账号已被禁用')
+      } else {
+        this.$message.success('一卡通添加成功')
+      }
+    },
+    //过滤搜索
+    filterSearch() {
+      // 获取输入框的值
+      let search = this.input
+      //数组元素按条件过滤
+      this.tableData = this.tableData1.filter((v) => {
+        if (JSON.stringify(v).includes(search)) {
+          return v
+        }
+      })
     }
   },
   computed: {}

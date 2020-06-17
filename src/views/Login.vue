@@ -14,7 +14,7 @@
         <el-col style="display:flex; align-items: center;">
           <el-input style="width: 60%" v-model="vertifyCode" placeholder="请输入内容" prefix-icon="el-icon-s-goods"></el-input>
           <p style="width:38%;display:flex; margin-left: 10px; align-items: center;">
-            <img src="" ref="image" alt="">
+            <img src="" ref="image" alt="" />
           </p>
         </el-col>
         <!-- <el-col style="text-align:left">
@@ -27,8 +27,8 @@
     </el-form>
   </div>
 </template>
-
 <script>
+//const API = require('../views/utils/api')
 export default {
   name: 'Login',
   data() {
@@ -47,7 +47,7 @@ export default {
   },
   mounted() {},
   methods: {
-    getVerify() {
+    async getVerify() {
       //获取当前时间毫秒数作为验证码的key
       this.currentTime = new Date().getTime()
       this.axios({
@@ -74,11 +74,17 @@ export default {
         img.src = url
       })
     },
-    login() {
+    async login() {
+      /* let data = {
+        account: this.user.account,
+        password: this.user.password,
+        code: this.vertifyCode
+      }
+      let res = await API.init('/sysUser/login', data, 'post') */
       this.axios({
         method: 'post',
-        // url: 'http://120.26.177.51:8081/sysUser/login',
-        url: 'http://localhost:8081/sysUser/login',
+        url: 'http://120.26.177.51:8081/sysUser/login',
+        // url: 'http://localhost:8081/sysUser/login',
         data: {
           account: this.user.account,
           password: this.user.password,
@@ -87,12 +93,12 @@ export default {
         // 设置请求头Content-Type
         //headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
       }).then((res) => {
-        this.$store.commit('setToken', res.data.data.token)
-        localStorage.setItem('token', res.data.data.token)
-        this.$store.commit('setUser', res.data.data.user)
-        localStorage.setItem('user', JSON.stringify(res.data.data.user))
-        console.log(res.data.data.user)
-        this.$router.push('/')
+      this.$store.commit('setToken', res.data.data.token)
+      localStorage.setItem('token', res.data.data.token)
+      this.$store.commit('setUser', res.data.data.user)
+      localStorage.setItem('user', JSON.stringify(res.data.data.user))
+      console.log(res.data.data.user)
+      this.$router.push('/')
       })
     }
   },
