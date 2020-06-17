@@ -5,6 +5,7 @@
       title="新增一卡通挂失"
       :visible.sync="addcenterDialogVisible"
       width="30%"
+      :modal="false"
       center
     >
       <el-form
@@ -211,6 +212,7 @@
     </div>
     <!-- 申请挂失弹出框 -->
     <el-dialog
+      :modal="false"
       title="提示"
       :visible.sync="statusVisible"
       width="300px"
@@ -230,6 +232,7 @@
     </el-dialog>
     <!-- 删除提示框 -->
     <el-dialog
+      :modal="false"
       title="提示"
       :visible.sync="delVisible"
       width="300px"

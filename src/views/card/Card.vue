@@ -3,6 +3,7 @@
     <!-- 修改弹出框 -->
     <el-dialog
       title="编辑一卡通"
+      :modal="false"
       :visible.sync="updatecenterDialogVisible"
       width="30%"
       left
@@ -65,6 +66,7 @@
       title="新增一卡通"
       :visible.sync="addcenterDialogVisible"
       width="30%"
+      :modal="false"
       center
     >
       <el-form
@@ -122,6 +124,7 @@
       :visible.sync="datailcenterDialogVisible"
       width="30%"
       left
+      :modal="false"
     >
       <el-form
         status-icon
@@ -321,7 +324,7 @@
           <el-table-column
             label="操作"
             show-overflow-tooltip
-            min-width="23%"
+            min-width="26%"
           >
             <template slot-scope="scope">
               <el-button
@@ -350,6 +353,7 @@
       :visible.sync="delVisible"
       width="300px"
       center
+      :modal="false"
     >
       <div class="del-dialog-cnt">一卡通信息删除不可恢复，是否确定删除？</div>
       <span

@@ -6,6 +6,7 @@
       :visible.sync="updatecenterDialogVisible"
       width="30%"
       left
+      :modal="false"
     >
       <el-form
         :model="ruleForm"
@@ -102,6 +103,7 @@
 
     <!-- 增加弹出框 -->
     <el-dialog
+      :modal="false"
       title="新增图书"
       :visible.sync="addcenterDialogVisible"
       width="50%"
@@ -246,6 +248,7 @@
         >批量删除</el-button>
         <!-- 删除提示框 -->
         <el-dialog
+          :modal="false"
           title="提示"
           :visible.sync="batchdelVisible"
           width="300px"
@@ -383,6 +386,7 @@
     <!-- 删除提示框 -->
     <el-dialog
       title="提示"
+      :modal="false"
       :visible.sync="delVisible"
       width="300px"
       center

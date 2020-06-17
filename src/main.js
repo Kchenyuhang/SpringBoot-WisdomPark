@@ -18,7 +18,24 @@ import global from './js/global.js'
 import './assets/css/global.css'
 
 Vue.use(VueQuillEditor /* { default global options } */)
-
+//高德地图
+import VueAMap from 'vue-amap'
+Vue.use(VueAMap)
+VueAMap.initAMapApiLoader({
+  key: '025c96a31208089600fc9d6bdbd5f465',
+  plugin: [
+    'AMap.Autocomplete',
+    'AMap.PlaceSearch',
+    'AMap.Scale',
+    'AMap.OverView',
+    'AMap.ToolBar',
+    'AMap.MapType',
+    'AMap.PolyEditor',
+    'AMap.CircleEditor'
+  ], //依赖配置，根据自己的需求引入
+  // 默认高德 sdk 版本为 1.4.4
+  v: '1.4.4'
+})
 // 设置默认接口请求路径
 Vue.prototype.axios = axios
 Vue.prototype.global = global

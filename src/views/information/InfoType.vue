@@ -1,24 +1,5 @@
 <template>
   <div style="width:100%">
-    <!-- 修改弹出框 -->
-    <el-dialog
-      title="编辑资讯类型信息"
-      :visible.sync="updatecenterDialogVisible"
-      width="30%"
-      left
-    >
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button @click="updatecenterDialogVisible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="confirmUpdate"
-        >确 定</el-button>
-      </span>
-    </el-dialog>
-
     <!-- 增加弹出框 -->
     <el-dialog
       title="新增资讯类型信息"
@@ -30,7 +11,8 @@
         :model="ruleForm"
         status-icon
         label-width="80px"
-      >
+      >cnpm install vue-amap --save
+
         <el-form-item
           label="分类名"
           prop="name"
@@ -179,6 +161,7 @@
           >
             <template slot-scope="scope">
               <el-button
+                disabled
                 size="mini"
                 type="success"
                 @click="handleUpdate(scope.$index, scope.row)"

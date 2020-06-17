@@ -3,6 +3,7 @@
   <div style="width:100%">
     <!-- 修改弹出框 -->
     <el-dialog
+      :modal="false"
       title="编辑一卡通"
       :visible.sync="updatecenterDialogVisible"
       width="30%"
@@ -189,6 +190,7 @@
     </div>
     <!-- 删除提示框 -->
     <el-dialog
+      :modal="false"
       title="提示"
       :visible.sync="delVisible"
       width="300px"

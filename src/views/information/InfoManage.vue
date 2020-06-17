@@ -2,9 +2,10 @@
   <div style="width:100%">
     <!-- 修改弹出框 -->
     <el-dialog
-      title="编辑一卡通"
+      title="编辑资讯内容"
       :visible.sync="updatecenterDialogVisible"
       width="98%"
+      :modal="false"
       left
     >
       <template>
@@ -32,11 +33,60 @@
 
     <!-- 增加弹出框 -->
     <el-dialog
-      title="新增资讯类型信息"
+      title="新增资讯信息"
       :visible.sync="addcenterDialogVisible"
       width="30%"
+      :modal="false"
       center
     >
+      <el-form
+        label-width="80px"
+        :model="ruleForm1"
+      >
+        <el-form-item
+          required
+          label="标题"
+          prop="title"
+        >
+          <el-input
+            type="textarea"
+            :rows="2"
+            placeholder="请输入内容"
+            v-model="ruleForm1.title"
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          required
+          label="内容"
+          prop="text"
+        >
+          <el-input
+            type="textarea"
+            :rows="4"
+            placeholder="请输入内容"
+            v-model="ruleForm1.text"
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          required
+          label="封面"
+          prop="cover"
+        >
+          <img
+            :src="ruleForm1.cover"
+            alt=""
+            style="width:100px;height:100px"
+            @click="getClick()"
+          >
+          <!-- 隐藏的文件输入框 -->
+          <input
+            type="file"
+            ref="upload"
+            style="display:none;"
+            @change="handlderFile()"
+          >
+        </el-form-item>
+      </el-form>
       <span
         slot="footer"
         class="dialog-footer"
@@ -228,6 +278,7 @@
       title="提示"
       :visible.sync="delVisible"
       width="300px"
+      :modal="false"
       center
     >
       <div class="del-dialog-cnt">删除资讯类型号后不可恢复，是否确定删除？</div>
@@ -283,6 +334,12 @@ export default {
       delarr: [], //存放删除的数据
       multipleSelection: [],
       dialogFormVisible: false,
+      ruleForm1: {
+        text: '',
+        title: '',
+        cover: 'https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png'
+      },
+      file: '',
       options: [
         {
           value: '选项1',
@@ -410,7 +467,7 @@ export default {
         this.$message.success('置顶成功')
       }
     },
-    //修改一卡通信息
+    //修改资讯信息
     async confirmUpdate() {
       this.data = {
         pkInfoManageId: this.msg.pkInfoManageId,
@@ -432,6 +489,47 @@ export default {
           return v
         }
       })
+    },
+    getClick() {
+      this.$refs.upload.click()
+    },
+    handlderFile() {
+      this.getClient()
+      this.file = this.$refs.upload.files[0]
+      var _this = this
+      async function put() {
+        try {
+          let result = await _this.client.put(_this.$refs.upload.files[0].name, _this.file)
+          _this.ruleForm1.cover = result.url
+          _this.update()
+        } catch (e) {
+          alert('文件上传成功')
+          console.log(e)
+        }
+      }
+      put()
+    },
+    getClient() {
+      let OSS = require('ali-oss')
+      this.client = new OSS({
+        region: 'oss-cn-beijing',
+        accessKeyId: 'LTAIaG9RkwvVwXq6',
+        accessKeySecret: '5WPkPJ4JY0nWciRfDpMFxzScm3oJn2',
+        bucket: 'zhent-img'
+      })
+    },
+    //新增资讯
+    async confirmAdd() {
+      this.data = {
+        text: this.ruleForm1.text,
+        title: this.ruleForm1.title,
+        cover: this.ruleForm1.cover
+      }
+      this.url = '/info/insert'
+      this.result = await API.init(this.url, this.data, 'post')
+      this.addcenterDialogVisible = false
+      this.getinfoAll()
+      this.$message.success('资讯添加成功')
     },
     formatDate(value) {
       let date = new Date(value)

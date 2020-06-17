@@ -2,6 +2,7 @@
   <div style="width:100%">
     <!-- 增加弹出框 -->
     <el-dialog
+      :modal="false"
       title="新增借阅"
       :visible.sync="addcenterDialogVisible"
       width="50%"
@@ -112,6 +113,7 @@
         >批量删除</el-button>
         <!-- 删除提示框 -->
         <el-dialog
+          :modal="false"
           title="提示"
           :visible.sync="batchdelVisible"
           width="300px"
@@ -238,6 +240,7 @@
     </el-row>
     <!-- 删除提示框 -->
     <el-dialog
+      :modal="false"
       title="提示"
       :visible.sync="delVisible"
       width="300px"
