@@ -54,6 +54,7 @@
       <el-col :span="one"></el-col>
       <el-col :span="tt" class="ml-20 mt-10">
         <el-table
+          ref="multipleTable"
           :data="statementList.slice(start, end)"
           tooltip-effect="dark"
           class="light-small-font"
