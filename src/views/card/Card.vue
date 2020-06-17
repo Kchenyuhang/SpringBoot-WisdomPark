@@ -1,144 +1,57 @@
 <template>
   <div style="width:100%">
     <!-- 修改弹出框 -->
-    <el-dialog
-      title="编辑一卡通"
-      :visible.sync="updatecenterDialogVisible"
-      width="30%"
-      left
-    >
-      <el-form
-        :model="ruleForm"
-        status-icon
-        :rules="rules"
-        label-width="80px"
-      >
-        <el-form-item
-          label="密码"
-          prop="pass"
-        >
-          <el-input
-            type="password"
-            v-model="ruleForm.pass"
-            autocomplete="off"
-            placeholder="123456"
-          ></el-input>
+    <el-dialog title="编辑一卡通" :visible.sync="updatecenterDialogVisible" width="30%" left>
+      <el-form :model="ruleForm" status-icon :rules="rules" label-width="80px">
+        <el-form-item label="密码" prop="pass">
+          <el-input type="password" v-model="ruleForm.pass" autocomplete="off" placeholder="123456"></el-input>
         </el-form-item>
-        <el-form-item
-          label="确认密码"
-          prop="checkPass"
-        >
-          <el-input
-            type="password"
-            v-model="ruleForm.checkPass"
-            autocomplete="off"
-            placeholder="123456"
-          ></el-input>
+        <el-form-item label="确认密码" prop="checkPass">
+          <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off" placeholder="123456"></el-input>
         </el-form-item>
-        <el-form-item
-          label="绑定号码"
-          prop="job_number"
-        >
+        <el-form-item label="绑定号码" prop="job_number">
           <el-input v-model.number="ruleForm.jobnumber"></el-input>
         </el-form-item>
-        <el-form-item
-          label="余额"
-          prop="balance"
-        >
+        <el-form-item label="余额" prop="balance">
           <el-input v-model.number="ruleForm.balance"></el-input>
         </el-form-item>
       </el-form>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
+      <span slot="footer" class="dialog-footer">
         <el-button @click="updatecenterDialogVisible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="confirmUpdate"
-        >确 定</el-button>
+        <el-button type="primary" @click="confirmUpdate">确 定</el-button>
       </span>
     </el-dialog>
 
     <!-- 增加弹出框 -->
-    <el-dialog
-      title="新增一卡通"
-      :visible.sync="addcenterDialogVisible"
-      width="30%"
-      center
-    >
-      <el-form
-        label-width="80px"
-        :model="ruleForm1"
-      >
-        <el-form-item
-          required
-          label="卡号"
-          prop="cardNumber"
-        >
+    <el-dialog title="新增一卡通" :visible.sync="addcenterDialogVisible" width="30%" center>
+      <el-form label-width="80px" :model="ruleForm1">
+        <el-form-item required label="卡号" prop="cardNumber">
           <el-input v-model="ruleForm1.cardNumber"></el-input>
         </el-form-item>
-        <el-form-item
-          required
-          label="绑定卡号"
-          prop="jobNumber"
-        >
+        <el-form-item required label="绑定卡号" prop="jobNumber">
           <el-input v-model="ruleForm1.jobNumber"></el-input>
         </el-form-item>
-        <el-form-item
-          required
-          label="卡号密码"
-          prop="cardPassword"
-        >
-          <el-input
-            type="password"
-            v-model="ruleForm1.cardPassword"
-            autocomplete="off"
-          ></el-input>
+        <el-form-item required label="卡号密码" prop="cardPassword">
+          <el-input type="password" v-model="ruleForm1.cardPassword" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item
-          required
-          label="余额"
-          prop="cardbalance1"
-        >
+        <el-form-item required label="余额" prop="cardbalance1">
           <el-input v-model="ruleForm1.cardbalance1"></el-input>
         </el-form-item>
       </el-form>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
+      <span slot="footer" class="dialog-footer">
         <el-button @click="addcenterDialogVisible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="confirmAdd"
-        >确 定</el-button>
+        <el-button type="primary" @click="confirmAdd">确 定</el-button>
       </span>
     </el-dialog>
 
     <!-- 流水明细 -->
-    <el-dialog
-      title="流水查询"
-      :visible.sync="datailcenterDialogVisible"
-      width="30%"
-      left
-    >
-      <el-form
-        status-icon
-        label-width="80px"
-        style="height:400px;overflow:auto"
-      >
+    <el-dialog title="流水查询" :visible.sync="datailcenterDialogVisible" width="30%" left>
+      <el-form status-icon label-width="80px" style="height:400px;overflow:auto">
         <el-collapse accordion>
-          <div
-            v-for="(item, index) in detailList"
-            :key="index"
-          >
+          <div v-for="(item, index) in detailList" :key="index">
             <el-collapse-item>
               <template slot="title">
-                {{ item.gmtCreate }}<i
-                  class="el-icon-s-shop"
-                  style="margin-left:15%"
-                ></i>{{ item.description }} -{{ item.orderMoney }}
+                {{ item.gmtCreate }}<i class="el-icon-s-shop" style="margin-left:15%"></i>{{ item.description }} -{{ item.orderMoney }}
               </template>
               <div><i class="el-icon-s-shop"></i>{{ item.description }}</div>
               <div>
@@ -158,149 +71,62 @@
           </div>
         </el-collapse>
       </el-form>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
+      <span slot="footer" class="dialog-footer">
         <el-button @click="datailcenterDialogVisible = false">取 消</el-button>
       </span>
     </el-dialog>
-    <el-row
-      type="flex"
-      class="ml-20 mt-10"
-    >
-      <el-input
-        v-model="input"
-        clearable
-        placeholder="请输入内容"
-        class="blur-search"
-        size="mini"
-        @input="filterSearch()"
-      ></el-input>
-      <el-select
-        size="mini"
-        v-model="selectValue"
-        placeholder="请选择"
-        class="statu-search ml-10"
-      >
-        <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        > </el-option>
+    <el-row type="flex" class="ml-20 mt-10">
+      <el-input v-model="input" clearable placeholder="请输入内容" class="blur-search" size="mini" @input="filterSearch()"></el-input>
+      <el-select size="mini" v-model="selectValue" placeholder="请选择" class="statu-search ml-10">
+        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
       </el-select>
-      <el-button
-        type="success"
-        size="mini"
-        class="ml-10"
-        icon="el-icon-search"
-      >搜索</el-button>
+      <el-button type="success" size="mini" class="ml-10" icon="el-icon-search">搜索</el-button>
     </el-row>
     <el-row class="df-jr-ac ml-20 mt-10">
       <el-col class="tl">
-        <el-button
-          type="primary"
-          icon="el-icon-plus"
-          size="small"
-          @click="addcenterDialogVisible = true"
-        ><span>新增</span></el-button>
-        <el-button
-          type="danger"
-          icon="el-icon-delete"
-          size="small"
-          @click="delAll()"
-        >批量删除</el-button>
+        <el-button type="primary" icon="el-icon-plus" size="small" @click="addcenterDialogVisible = true"><span>新增</span></el-button>
+        <el-button type="danger" icon="el-icon-delete" size="small" @click="delAll()">批量删除</el-button>
         <!-- 删除提示框 -->
-        <el-dialog
-          title="提示"
-          :visible.sync="batchdelVisible"
-          width="300px"
-          center
-        >
+        <el-dialog title="提示" :visible.sync="batchdelVisible" width="300px" center>
           <div class="del-dialog-cnt">批量删除一卡通信息后不可恢复，是否确定删除？</div>
-          <span
-            slot="footer"
-            class="dialog-footer"
-          >
+          <span slot="footer" class="dialog-footer">
             <el-button @click="batchdelVisible = false">取 消</el-button>
-            <el-button
-              type="primary"
-              @click="deleteBatch()"
-            >确 定</el-button>
+            <el-button type="primary" @click="deleteBatch()">确 定</el-button>
           </span>
         </el-dialog>
-        <el-button
-          type="warning"
-          icon="el-icon-download"
-          size="small"
-        >导出</el-button>
+        <el-button type="warning" icon="el-icon-download" size="small">导出</el-button>
       </el-col>
       <el-col class="tr mr-20">
-        <el-button
-          icon="el-icon-refresh"
-          size="small"
-        ></el-button>
+        <el-button icon="el-icon-refresh" size="small"></el-button>
       </el-col>
     </el-row>
     <!-- 表格展示 -->
     <el-row>
       <el-col span="1"></el-col>
-      <el-col
-        span="23"
-        class="ml-20 mt-10"
-      >
-        <el-table
-          :data="cardList"
-          stripe="true"
-          style="width: 100%;"
-          @selection-change="handleSelectionChange"
-        >
-          <el-table-column
-            type="selection"
-            min-width="10%"
-          > </el-table-column>
-          <el-table-column
-            label="卡号"
-            show-overflow-tooltip
-            min-width="13%"
-          >
+      <el-col span="23" class="ml-20 mt-10">
+        <el-table :data="cardList" stripe="true" style="width: 100%;" @selection-change="handleSelectionChange">
+          <el-table-column type="selection" min-width="10%"> </el-table-column>
+          <el-table-column label="卡号" show-overflow-tooltip min-width="13%">
             <template slot-scope="scope">
               <span style="margin-left:-5%">{{ scope.row.cardNumber }}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            label="卡密"
-            show-overflow-tooltip
-            min-width="13%"
-          >
+          <el-table-column label="卡密" show-overflow-tooltip min-width="13%">
             <template slot-scope="scope">
               <span>{{ scope.row.cardPassword }}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            label="绑定账号"
-            show-overflow-tooltip
-            min-width="15%"
-          >
+          <el-table-column label="绑定账号" show-overflow-tooltip min-width="15%">
             <template slot-scope="scope">
               <span>{{ scope.row.jobNumber }}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            label="余额"
-            show-overflow-tooltip
-            min-width="13%"
-          >
+          <el-table-column label="余额" show-overflow-tooltip min-width="13%">
             <template slot-scope="scope">
               <span>{{ scope.row.cardBalance }}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            label="状态"
-            show-overflow-tooltip
-            min-width="15%"
-          >
+          <el-table-column label="状态" show-overflow-tooltip min-width="15%">
             <template slot-scope="scope">
               <el-switch
                 v-model="scope.row.status"
@@ -313,65 +139,31 @@
               </el-switch>
             </template>
           </el-table-column>
-          <el-table-column
-            label="创建时间"
-            show-overflow-tooltip
-            min-width="18%"
-          >
+          <el-table-column label="创建时间" show-overflow-tooltip min-width="18%">
             <template slot-scope="scope">
               <i class="el-icon-time"></i>
               <span>{{ scope.row.gmtCreate }}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            label="操作"
-            show-overflow-tooltip
-            min-width="23%"
-          >
+          <el-table-column label="操作" show-overflow-tooltip min-width="23%">
             <template slot-scope="scope">
-              <el-button
-                size="mini"
-                type="success"
-                @click="handleUpdate(scope.$index, scope.row)"
-              >编辑</el-button>
-              <el-button
-                size="mini"
-                type="primary"
-                @click="handleDetail(scope.$index, scope.row)"
-              >流水账单</el-button>
-              <el-button
-                size="mini"
-                type="danger"
-                @click="handleDelete(scope.$index, scope.row)"
-              >删除</el-button>
+              <el-button size="mini" type="success" @click="handleUpdate(scope.$index, scope.row)">编辑</el-button>
+              <el-button size="mini" type="primary" @click="handleDetail(scope.$index, scope.row)">流水账单</el-button>
+              <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
       </el-col>
     </el-row>
     <!-- 删除提示框 -->
-    <el-dialog
-      title="提示"
-      :visible.sync="delVisible"
-      width="300px"
-      center
-    >
+    <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
       <div class="del-dialog-cnt">一卡通信息删除不可恢复，是否确定删除？</div>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
+      <span slot="footer" class="dialog-footer">
         <el-button @click="delVisible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="deleteRow"
-        >确 定</el-button>
+        <el-button type="primary" @click="deleteRow">确 定</el-button>
       </span>
     </el-dialog>
-    <div
-      class="block"
-      style="margin-top:2%"
-    >
+    <div class="block" style="margin-top:2%">
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
