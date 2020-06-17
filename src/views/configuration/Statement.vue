@@ -1,4 +1,74 @@
-﻿﻿<template>     <div  style="width:  100%">         <el-row  type="flex"  class="ml-20  mt-10">             <el-input                 size="mini"                 v-model="input"                 prefix-icon="el-icon-search"                 clearable                 placeholder="请输入内容"                 class="blur-search"                 @input="filterSearch()"                 v-if="searchShow"             ></el-input>             <el-date-picker                 v-model="time"                 type="daterange"                 range-separator=":"                 start-placeholder="开始日期"                 end-placeholder="结束日期"                 class="date-input-search  ml-10"                 value-format="yyyy-MM-dd"                 v-if="searchShow"             >             </el-date-picker>             <el-button  type="success"  size="mini"  class="ml-10"  v-if="searchShow"  @click="searchAppInfoByCreate">                 <i  class="el-icon-search"  style="color:  rgb(247,  251,  255)"></i>                 <span  class="light-font-color">搜索</span>             </el-button>         </el-row>         <el-row  class="df-jr-ac  ml-20  mt-10">             <el-col  class="tl">                 <el-button  type="primary"  icon="el-icon-plus"  @click="openDialog"  size="mini">                     <span  class="light-font-color">新增</span>                 </el-button>                 <el-button  type="success"  icon="el-icon-edit"  size="mini"  @click="handleEdit(selections[0])"  :disabled="selections.length  !=  1">                     <span  class="light-font-color">修改</span>                 </el-button>                 <el-button  type="danger"  icon="el-icon-delete"  size="mini"  @click="batchDelete"  :disabled="selections.length  <  1">                     <span  class="light-font-color">删除</span>                 </el-button>                 <el-button  type="warning"  icon="el-icon-download"  disabled  size="mini">                     <span  class="light-font-color">导出</span>                 </el-button>             </el-col>             <el-col  class="tr  mr-20">                 <el-button  size="mini"  style="width:  45px"  class="search-btn"  @click="searchShow  =  !searchShow"  @mouseover="searchOver()">                     <i  class="el-icon-search"  style="color:  white"></i>                 </el-button>                 <el-button  icon="el-icon-refresh"  size="small"></el-button>             </el-col>         </el-row>         <!--  表格  -->         <el-row>             <el-col  span="1"></el-col>             <el-col  span="23"  class="ml-20  mt-10">                 <el-table                     :data="statementList.slice(start,  end)"                     tooltip-effect="dark"                     class="light-small-font"                     style="width:  100%;"                     @selection-change="handleSelectionChange"                 >                     <el-table-column  type="selection"  min-width="5%"></el-table-column>                     <el-table-column  label="声明标题"  min-width="10%">                         <template  slot-scope="scope">{{  scope.row.statementTitle  }}</template>                     </el-table-column>                     <el-table-column  prop="statementContent"  label="声明内容"  min-width="15%"></el-table-column>                     <el-table-column  prop="statementType"  label="声明分类"  show-overflow-tooltip  min-width="15%">  </el-table-column>                     <el-table-column  prop="gmtCreate"  label="创建时间"  show-overflow-tooltip  min-width="15%">  </el-table-column>                     <el-table-column  label="操作"  align="center"  show-overflow-tooltip min-width="20%">
+﻿<template>
+  <div style="width: 100%">
+    <el-row type="flex" class="ml-20 mt-10">
+      <el-input
+        size="mini"
+        v-model="input"
+        prefix-icon="el-icon-search"
+        clearable
+        placeholder="请输入内容"
+        class="blur-search"
+        @input="filterSearch()"
+        v-if="searchShow"
+      ></el-input>
+      <el-date-picker
+        v-model="time"
+        type="daterange"
+        range-separator=":"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期"
+        class="date-input-search ml-10"
+        value-format="yyyy-MM-dd"
+        v-if="searchShow"
+      >
+      </el-date-picker>
+      <el-button type="success" size="mini" class="ml-10" v-if="searchShow" @click="searchAppInfoByCreate">
+        <i class="el-icon-search" style="color: rgb(247, 251, 255)"></i>
+        <span class="light-font-color">搜索</span>
+      </el-button>
+    </el-row>
+    <el-row class="df-jr-ac ml-20 mt-10">
+      <el-col class="tl">
+        <el-button type="primary" icon="el-icon-plus" @click="openDialog" size="mini">
+          <span class="light-font-color">新增</span>
+        </el-button>
+        <el-button type="success" icon="el-icon-edit" size="mini" @click="handleEdit(selections[0])" :disabled="selections.length != 1">
+          <span class="light-font-color">修改</span>
+        </el-button>
+        <el-button type="danger" icon="el-icon-delete" size="mini" @click="batchDelete" :disabled="selections.length < 1">
+          <span class="light-font-color">删除</span>
+        </el-button>
+        <el-button type="warning" icon="el-icon-download" disabled size="mini">
+          <span class="light-font-color">导出</span>
+        </el-button>
+      </el-col>
+      <el-col class="tr mr-20">
+        <el-button size="mini" style="width: 45px" class="search-btn" @click="searchShow = !searchShow" @mouseover="searchOver()">
+          <i class="el-icon-search" style="color: white"></i>
+        </el-button>
+        <el-button icon="el-icon-refresh" size="small"></el-button>
+      </el-col>
+    </el-row>
+    <!-- 表格 -->
+    <el-row>
+      <el-col :span="one"></el-col>
+      <el-col :span="tt" class="ml-20 mt-10">
+        <el-table
+          ref="multipleTable"
+          :data="statementList.slice(start, end)"
+          tooltip-effect="dark"
+          class="light-small-font"
+          style="width: 100%;"
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column type="selection" min-width="5%"> </el-table-column>
+          <el-table-column label="声明标题" min-width="10%">
+            <template slot-scope="scope">{{ scope.row.statementTitle }}</template>
+          </el-table-column>
+          <el-table-column prop="statementContent" label="声明内容" min-width="25%"></el-table-column>
+          <el-table-column prop="statementType" label="声明分类" show-overflow-tooltip min-width="20%"> </el-table-column>
+          <el-table-column prop="gmtCreate" label="创建时间" show-overflow-tooltip min-width="20%"> </el-table-column>
+          <el-table-column label="操作" align="center" show-overflow-tooltip min-width="20%">
             <template slot-scope="scope">
               <p style="text-align:center">
                 <el-button size="mini" icon="el-icon-edit" type="primary" @click="handleEdit(scope.row)">
@@ -62,6 +132,8 @@ export default {
   name: 'Permmission',
   data() {
     return {
+      one: 1,
+      tt: 23,
       statementList: [],
       statementList1: [],
       dialogFormVisible: false, //新增框
@@ -272,15 +344,8 @@ export default {
     //下一页
     nextPage() {
       this.currentPage += 1
-      this.start += this.pageSize
-      this.end += this.pageSize
-      /* let num = this.appList.length / this.currentPageSize - 1
-      if (this.currentPage === num) {
-        this.currentPage1 += 1
-        this.getStatementAll()
-      } */
-      /* alert(this.start)
-      alert(this.end) */
+      this.start += 8
+      this.end += 8
     },
     //上一页
     prevPage() {
@@ -297,8 +362,8 @@ export default {
     //选择分页
     handleCurrentChange(val) {
       this.currentPage = val
-      this.start = (this.currentPage - 1) * this.currentPageSize
-      this.end = this.currentPage * this.currentPageSize
+      this.start = (this.currentPage - 1) * this.pageSize
+      this.end = this.currentPage * this.pageSize
     },
     //过滤搜索
     filterSearch() {

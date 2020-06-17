@@ -454,6 +454,7 @@ export default {
 
 >>> .el-input__icon {
   color: #ddd;
+  margin-top: -5px;
 }
 
 .el-button--success {
@@ -464,7 +465,13 @@ export default {
   background-color: #f4f4f5;
 }
 
->>>.el-icon-date {
+>>> .el-input__prefix {
+  display: flex;
+  height: 30px;
+  line-height: 30px;
+}
+
+>>> .el-icon-date {
   margin-bottom: 10px;
 }
 
@@ -493,18 +500,9 @@ export default {
   color: #f7fbff;
 }
 
->>> .el-range-separator {
-  margin-bottom: 10px;
-}
-
 /* >>> .el-icon-search {
   color: #f7fbff;
 } */
-
->>> .el-input__prefix {
-  display: flex;
-  align-items: center;
-}
 
 /* >>> .el-select__caret {
   margin-top: 5px;
@@ -553,15 +551,8 @@ export default {
   width: 100px;
 }
 
-el-input {
-  height: 30px;
-}
-
 .search-btn {
   height: 30px;
   width: 80px;
-}
-.el-input__inner {
-  height: 30px;
 }
 </style>

@@ -113,6 +113,14 @@
             label="类型"
             min-width="15%"
           >
+            <template slot-scope="{row,$index}">
+              <input
+                class="edit-cell"
+                v-if="showEdit[$index]"
+                v-model="row.orderType"
+              >
+              <span v-if="!showEdit[$index]">{{row.orderType}}</span>
+            </template>
           </el-table-column>
           <el-table-column
             prop="orderMoney"
@@ -218,7 +226,10 @@ export default {
         balance: '',
         description: '',
         type: ''
-      }
+      },
+      showEdit: [], //显示编辑框
+      showBtn: [],
+      showBtnOrdinary: true
     }
   },
   components: {},
@@ -236,11 +247,16 @@ export default {
   },
   mounted() {},
   methods: {
-    //单行删除
-    handleDelete(index, row) {
-      this.idx = index
-      this.msg = row //每一条数据的记录
-      this.delVisible = true
+    // eslint-disable-next-line no-unused-vars
+    handleEdit(index, row) {
+      this.$set(this.showEdit, index, true)
+      this.$set(this.showBtn, index, true)
+    },
+    //取消编辑
+    // eslint-disable-next-line no-unused-vars
+    handelCancel(index, row) {
+      this.$set(this.showEdit, index, false)
+      this.$set(this.showBtn, index, false)
     },
     // 确定删除
     async deleteRow() {

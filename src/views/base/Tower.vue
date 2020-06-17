@@ -1,16 +1,7 @@
 <template>
-  <!-- <div class="container1">
-    <div class="operation">
-      <el-button type="primary" size="medium" @click="dialogFormVisible = true">新增</el-button>
-      <el-button type="warning" size="medium" disabled>修改</el-button>
-      <el-button type="danger" size="medium">删除</el-button>
-    </div>
-    <Table :towerList="towerList"></Table>
-    <Form :dialogFormVisible="dialogFormVisible"></Form>
-  </div> -->
   <div style="width: 100%">
     <el-row type="flex" class="ml-20 mt-10">
-      <el-input v-model="input" placeholder="请输入内容" class="blur-search"></el-input>
+      <el-input v-model="blurSearch" prefix-icon="el-icon-search" placeholder="请输入内容" class="blur-search" v-if="searchShow"></el-input>
       <el-date-picker
         v-model="time"
         type="daterange"
@@ -19,22 +10,22 @@
         end-placeholder="结束日期"
         class="date-input-search ml-10"
         value-format="yyyy-MM-dd"
+        v-if="searchShow"
       >
       </el-date-picker>
-      <el-select v-model="selectValue" placeholder="请选择" class="statu-search ml-10">
-        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
-      </el-select>
-      <el-button type="success" size="mini" @click="search()" class="ml-10" icon="el-icon-search">搜索</el-button>
+      <el-button type="success" size="mini" @click="searchAppInfoByCreate()" class="ml-10" icon="el-icon-search" v-if="searchShow"
+        >搜索</el-button
+      >
     </el-row>
     <el-row class="df-jr-ac ml-20 mt-10">
       <el-col class="tl">
         <el-button type="primary" icon="el-icon-plus" @click="openDialog" size="mini">
           <span class="light-font-color">新增</span>
         </el-button>
-        <el-button type="success" icon="el-icon-edit" size="mini">
+        <el-button type="success" icon="el-icon-edit" disabled size="mini">
           <span class="light-font-color">修改</span>
         </el-button>
-        <el-button type="danger" icon="el-icon-delete" size="mini">
+        <el-button type="danger" icon="el-icon-delete" disabled size="mini">
           <span class="light-font-color">删除</span>
         </el-button>
         <el-button type="warning" icon="el-icon-download" disabled size="mini">
@@ -51,25 +42,25 @@
     <!-- 表格 -->
     <el-row>
       <el-col span="1"></el-col>
-      <el-col span="23" class="ml-20 mt-10">
+      <el-col
+        span="23"
+        class="ml-20 mt-10"
+      >
         <el-row>
           <el-table
             ref="multipleTable"
             :data="towerList.slice(start, end)"
             tooltip-effect="dark"
             style="width: 100%;"
-            stripe="true"
             class="light-small-font"
-            @selection-change="handleSelectionChange"
           >
-            <el-table-column type="selection" min-width="5%"></el-table-column>
-            <el-table-column label="用户名" min-width="10%">
+            <el-table-column label="楼栋名称" min-width="15%">
               <template slot-scope="scope">{{ scope.row.name }}</template>
             </el-table-column>
             <el-table-column prop="latitude" label="经度" min-width="15%"></el-table-column>
-            <el-table-column prop="longitude" label="纬度" show-overflow-tooltip min-width="15%"> </el-table-column>
-            <el-table-column prop="gmtCreate" label="创建时间" show-overflow-tooltip min-width="15%"> </el-table-column>
-            <el-table-column label="操作" align="center" show-overflow-tooltip min-width="20%">
+            <el-table-column prop="longitude" label="纬度" show-overflow-tooltip min-width="20%"> </el-table-column>
+            <el-table-column prop="gmtCreate" label="创建时间" show-overflow-tooltip min-width="20%"> </el-table-column>
+            <el-table-column label="操作" align="center" show-overflow-tooltip min-width="30%">
               <template slot-scope="scope">
                 <p class="tc">
                   <el-button size="mini" icon="el-icon-edit" type="primary" @click="handleEdit(scope.row)">
@@ -98,24 +89,63 @@
         </el-row>
       </el-col>
     </el-row>
+    <!-- 新增 -->
+    <div class="dialog" v-if="dialogFormVisible">
+      <el-form class="mt-10 dialog-form dc-jc-ac" :model="towerInfo" style="padding: 0px 20px;">
+        <p style="width: 90%;" class="dark-large-font tl">{{ msg }}楼栋</p>
+        <el-form-item required label="楼栋名" class="mt-20" :label-width="formLabelWidth" style="width: 90%;">
+          <el-input v-model="towerInfo.name" autocomplete="off" placeholder="请输入楼栋名" style="width: 80%"></el-input>
+        </el-form-item>
+        <p class="df-jb-ac" style="width: 90%;">
+          <el-form-item required label="经度" :label-width="formLabelWidth" style="width: 40%;">
+            <el-input v-model="towerInfo.longitude" class="ml-10" autocomplete="off" placeholder="" style="width: 50%"></el-input>
+          </el-form-item>
+          <el-form-item required label="纬度" :label-width="formLabelWidth" style="width: 40%;">
+            <el-input v-model="towerInfo.latitude" class="ml-10" autocomplete="off" placeholder="" style="width: 50%"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" size="mini">定位</el-button>
+          </el-form-item>
+        </p>
+        <el-form-item required label="类型" :label-width="formLabelWidth" style="width: 90%;">
+          <el-input v-model="towerInfo.type" class="ml-10" autocomplete="off" placeholder="请输入内容" style="width: 80%"></el-input>
+        </el-form-item>
+        <p class="mt-20 tr" style="width: 90%">
+          <el-button @click="dialogFormVisible = false" size="small">取 消</el-button>
+          <el-button type="primary" @click="addTowerInfo(tag)" size="small">确定</el-button>
+        </p>
+      </el-form>
+    </div>
   </div>
 </template>
 
 <script>
 const API = require('../utils/api.js')
-//import global from '@/js/global.js'
 export default {
   name: 'Tower',
   data() {
     return {
       towerList: [],
+      towerList1: [],
       formShow: false,
       dialogFormVisible: false,
+      blurSearch: '',
+      searchShow: true,
       start: 0,
       end: 8,
       pageSize: 8,
+      tag: -1,
+      input: '',
+      time: [],
       currentPageSize: 8,
-      currentPage: 1
+      currentPage: 1,
+      towerInfo: {
+        pkTowerId: -1,
+        name: '',
+        longitude: '',
+        latitude: '',
+        type: -1
+      }
     }
   },
   components: {},
@@ -125,18 +155,63 @@ export default {
   mounted() {},
   methods: {
     async getTowerList() {
-      let res = await API.init('/tower/list', null, 'get')
-      // this.axios({
-      //   method: 'get',
-      //   url: 'http://localhost:8080/tower/list'
-      // }).then((res) => {
-      this.towerList = res.data.data
-      for (let i = 0, len = this.towerList.length; i < len; i++) {
-        this.towerList[i].gmtCreate = this.global.formatDate(this.towerList[i].gmtCreate)
+      let result = (await API.init('/tower/list', null, 'post')).data
+      for (let i = 0, len = result.length; i < len; i++) {
+        result[i].gmtCreate = this.global.formatDate(result[i].gmtCreate)
       }
-      console.log(res)
-      // })
-
+      this.towerList = result
+      this.towerList1 = result
+    },
+    //新增楼栋消息
+    async addTowerInfo(tag) {
+      let time = new Date().getMilliseconds
+      //定义临时变量，用于新增或修改
+      let tower = {
+        pkTowerId: this.towerInfo.pkTowerId,
+        name: this.towerInfo.name,
+        longitude: this.towerInfo.longitude,
+        latitude: this.towerInfo.latitude,
+        type: this.towerInfo.type,
+        gmtCreate: this.global.formatDate(time)
+      }
+      console.log(this.towerInfo)
+      if (tag == 1) {
+        let result = await API.init('/tower/increase', this.towerInfo, 'post')
+        if (result.code == 1) {
+          this.$message({
+            message: '新增成功',
+            type: 'success'
+          })
+          this.dialogFormVisible = false
+          this.towerList.splice(0, 0, tower)
+        }
+      } else {
+        let result = await API.init('/tower/single', this.towerInfo, 'post')
+        if (result.code == 1) {
+          let towerInfo = this.towerList1.filter((tower) => {
+            if (tower.pkTowerId == this.towerInfo.pkTowerId) {
+              return tower
+            }
+          })
+          this.dialogFormVisible = false
+          this.$message({
+            message: '修改成功',
+            type: 'success'
+          })
+          //修改用户信息
+          let index = this.towerList1.indexOf(towerInfo[0])
+          this.towerList.splice(index, 1, tower)
+        }
+      }
+    },
+    handleEdit(item) {
+      ;(this.towerInfo.pkTowerId = item.pkTowerId),
+        (this.towerInfo.name = item.name),
+        (this.towerInfo.longitude = item.longitude),
+        (this.towerInfo.latitude = item.latitude)
+      this.towerInfo.type = item.type
+      this.dialogFormVisible = true
+      this.tag = 2
     },
     //下一页
     nextPage() {
@@ -161,16 +236,38 @@ export default {
       this.currentPage = val
       this.start = (this.currentPage - 1) * this.currentPageSize
       this.end = this.currentPage * this.currentPageSize
+    },
+    //根据时间查询
+    searchAppInfoByCreate() {
+      console.log(this.time.length)
+      if (this.blurSearch != '') {
+        // 获取输入框的值
+        let search = this.blurSearch
+        //数组元素按条件过滤
+        console.log(search)
+        this.towerList = this.towerList1.filter((v) => {
+          if (v.name.indexOf(this.blurSearch) != -1) {
+            return v
+          }
+        })
+        this.blurSearch = ''
+      } else if(this.time.length >= 1){
+        this.towerList = this.towerList1.filter((tower) => {
+          if (this.time[0] <= tower.gmtCreate && tower.gmtCreate <= this.time[1]) {
+            //console.log(status)
+            return tower
+          }
+        })
+        this.time = null
+      }
+    },
+    /* 打开遮罩层 */
+    openDialog() {
+      this.dialogFormVisible = true
+      this.tag = 1
+      this.msg = ' 新增 '
+      ;(this.towerInfo.name = ''), (this.towerInfo.longitude = null), (this.towerInfo.latitude = null), (this.towerInfo.type = null)
     }
-    // formatDate(value) {
-    //   let date = new Date(value)
-    //   let y = date.getFullYear()
-    //   let MM = date.getMonth() + 1
-    //   MM = MM < 10 ? '0' + MM : MM
-    //   let d = date.getDate()
-    //   d = d < 10 ? '0' + d : d
-    //   return y + '-' + MM + '-' + d
-    // }
   },
   computed: {}
 }
@@ -265,5 +362,26 @@ el-input {
 
 >>> .el-select__caret {
   margin-top: 5px;
+}
+
+/* 遮罩层 */
+.dialog-form {
+  border-radius: 5px;
+  background-color: white;
+  width: 500px;
+  height: 400px;
+}
+
+.dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
 }
 </style>
