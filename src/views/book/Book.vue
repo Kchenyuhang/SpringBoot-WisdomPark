@@ -19,6 +19,7 @@
           label="书名"
           prop="bookName"
         >
+
           <el-input v-model="ruleForm.bookName"></el-input>
         </el-form-item>
         <el-form-item
@@ -108,6 +109,7 @@
           label="书名"
           prop="bookName"
         >
+
           <el-input v-model="ruleForm1.bookName"></el-input>
         </el-form-item>
         <el-form-item
@@ -234,6 +236,7 @@
           width="300px"
           center
         >
+
           <div class="del-dialog-cnt">批量删除图书信息后不可恢复，是否确定删除？</div>
           <span
             slot="footer"

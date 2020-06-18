@@ -13,12 +13,17 @@
       <el-table ref="pkFleaOrderId" :data="orderShow" @selection-change="handleSelectionChange">
         <el-table-column prop="pkFleaOrderId" type="selection" width="50%"></el-table-column>
         <el-table-column prop="pkFleaOrderId" label="订单编号 " width="130%"> </el-table-column>
-        <el-table-column prop="goodsName" label="商品名 " width="180%"> </el-table-column>
-        <el-table-column prop="goodsMark" label="商品标签 " width="100%"> </el-table-column>
-        <el-table-column prop="goodsSeller" label="卖方 " width="120%"> </el-table-column>
+        <el-table-column prop="goodsName" label="商品名 " width="130%" show-overflow-tooltip> </el-table-column>
+        <el-table-column prop="goodsMark" label="商品标签 " width="140%"> </el-table-column>
+        <el-table-column prop="goodsSeller" label="卖方 " width="140%"> </el-table-column>
         <el-table-column prop="goodsBuyer" label="买方" width="120%"> </el-table-column>
-        <el-table-column prop="goodsDescription" label="商品信息" width="250%"> </el-table-column>
-        <el-table-column prop="orderCreateTime" label="订单创建时间" width="200%"> </el-table-column>
+        <el-table-column prop="goodsDescription" label="商品信息" width="150%" show-overflow-tooltip> </el-table-column>
+        <el-table-column prop="orderCreateTime" label="订单创建时间" width="170%" sortable show-overflow-tooltip>
+          <template slot-scope="scope">
+            <i class="el-icon-time"></i>
+            <span>{{ orderShow[scope.$index].orderCreateTime }}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="状态" width="130%">
           <template slot-scope="scope">
             <p v-if="orderShow[scope.$index].isDeleted == 0" style="color: blue">已发布</p>
@@ -114,7 +119,13 @@ export default {
       MM = MM < 10 ? '0' + MM : MM
       let d = date.getDate()
       d = d < 10 ? '0' + d : d
-      return y + '年' + MM + '月' + d + '日'
+      let h = date.getHours()
+      h = h < 10 ? '0' + h : h
+      let m = date.getMinutes()
+      m = m < 10 ? '0' + m : m
+      let s = date.getSeconds()
+      s = s < 10 ? '0' + s : s
+      return y + '年' + MM + '月' + d + '日' + h + ':' + m + ':' + s
     },
     //当前页展示数据
     handleSizeChange: function(pageSize) {
