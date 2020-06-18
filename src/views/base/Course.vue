@@ -21,7 +21,6 @@
     </el-row>
     <!-- 表格 -->
     <el-row>
-      <el-col span="1"></el-col>
       <el-col span="23" class="ml-20 mt-10">
         <el-table
           border
@@ -32,28 +31,30 @@
           @selection-change="handleSelectionChange"
         >
           <el-table-column type="selection" min-width="5%"></el-table-column>
-          <el-table-column label="课程名" min-width="20%">
+          <el-table-column label="课程名" min-width="10%">
             <template slot-scope="scope">{{ scope.row.subjectName }}</template>
           </el-table-column>
-          <el-table-column prop="semesterName" label="学期" min-width="10%"></el-table-column>
-          <el-table-column prop="user_name" align="center" label="授课教师" show-overflow-tooltip min-width="15%"> </el-table-column>
-          <el-table-column prop="classRoom" align="center" label="上课地点" show-overflow-tooltip min-width="15%"> </el-table-column>
-          <el-table-column prop="time" align="center" label="上课时间" show-overflow-tooltip min-width="15%"> </el-table-column>
-          <el-table-column prop="" align="center" label="上课班级" show-overflow-tooltip min-width="15%"> </el-table-column>
-          <el-table-column prop="week_day" align="center" label="周几" show-overflow-tooltip min-width="15%"> </el-table-column>
-          <el-table-column prop="week_duration" align="center" label="上课的周次" show-overflow-tooltip min-width="15%"> </el-table-column>
-          <el-table-column prop="gmt_create" align="center" label="创建时间" show-overflow-tooltip min-width="20%"> </el-table-column>
-          <el-table-column label="操作" align="center" show-overflow-tooltip min-width="30%">
+          <el-table-column prop="semesterName" label="学期" min-width="15%"></el-table-column>
+          <el-table-column prop="user_name" align="center" label="授课教师" show-overflow-tooltip min-width="10%"> </el-table-column>
+          <el-table-column prop="classRoom" align="center" label="上课地点" show-overflow-tooltip min-width="10%"> </el-table-column>
+          <el-table-column prop="time" align="center" label="上课时间" show-overflow-tooltip min-width="10%">
+            <template slot-scope="scope">
+              <span>周{{ scope.row.week_day }}第{{ scope.row.time }}节</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="" align="center" label="上课班级" show-overflow-tooltip min-width="10%"> </el-table-column>
+          <el-table-column prop="week_duration" align="center" label="上课周次" show-overflow-tooltip min-width="10%"> </el-table-column>
+          <el-table-column label="操作" align="center" show-overflow-tooltip min-width="20%">
             <template slot-scope="scope">
               <p class="tc">
                 <el-button size="mini" icon="el-icon-edit" type="primary" @click="handleEdit(scope.row)">
-                  <span class="light-font-color">编辑</span>
+                  <span class="light-font-color"></span>
                 </el-button>
                 <el-button size="mini" type="primary" @click="handleEdit(scope.row)">
                   <span class="light-font-color">学生管理</span>
                 </el-button>
                 <el-button size="mini" icon="el-icon-delete" type="danger" @click="handleDelete(scope.row)">
-                  <span class="light-font-color">删除</span>
+                  <span class="light-font-color"></span>
                 </el-button>
               </p>
             </template>
@@ -189,7 +190,7 @@ export default {
       this.msg = row //每一条数据的记录
       this.delVisible = true
     },
-    addCourseInfo(){
+    addCourseInfo() {
       console.log(this.course)
     },
     //批量删除
