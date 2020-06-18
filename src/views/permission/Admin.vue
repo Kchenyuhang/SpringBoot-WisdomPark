@@ -363,13 +363,6 @@ export default {
           field: item.sys_user_phone_number
         }
         let res = API.init('/sysUser/deletion/phoneNumber', data, 'post')
-        // this.axios({
-        //   method: 'post',
-        //   url: 'http://localhost:8080/sysUser/deletion/phoneNumber',
-        //   data: {
-        //     field: item.sys_user_phone_number
-        //   }
-        // }).then((res) => {
         if (res.data.code == 1) {
           this.$message({
             message: '删除成功',
