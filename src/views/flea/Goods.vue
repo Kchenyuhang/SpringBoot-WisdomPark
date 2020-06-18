@@ -7,7 +7,12 @@
         <el-button size="medium" type="danger" @click="handleDeleteMul()">批量删除</el-button>
       </el-row>
     </div>
-    <el-table ref="pkFleaGoodsId" :data="goodsShow" @selection-change="handleSelectionChange" height="100%">
+    <el-table
+      ref="pkFleaGoodsId"
+      :data="goodsShow"
+      @selection-change="handleSelectionChange"
+      height="100%"
+    >
       <el-table-column prop="pkFleaGoodsId" type="selection" width="50"></el-table-column>
       <el-table-column prop="pkFleaGoodsId" label="id" width="50"></el-table-column>
       <el-table-column prop="goodsName" label="商品名" width="110"></el-table-column>
@@ -28,10 +33,18 @@
       </el-table-column>
       <el-table-column label="操作" width="150">
         <template slot-scope="scope">
-          <el-button v-if="goodsShow[scope.$index].isDeleted == 0" size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)"
-            >下架</el-button
-          >
-          <el-button v-else size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">上架</el-button>
+          <el-button
+            v-if="goodsShow[scope.$index].isDeleted == 0"
+            size="mini"
+            type="danger"
+            @click="handleDelete(scope.$index, scope.row)"
+          >下架</el-button>
+          <el-button
+            v-else
+            size="mini"
+            type="danger"
+            @click="handleDelete(scope.$index, scope.row)"
+          >上架</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -62,7 +75,7 @@
       </span>
     </el-dialog>
     <!-- 设置可以被引用  引用名为file  不可见
-    <input ref="file" v-show="false" type="file" @change="uploadAvatar($event)" /> -->
+    <input ref="file" v-show="false" type="file" @change="uploadAvatar($event)" />-->
   </div>
 </template>
 
@@ -161,7 +174,7 @@ export default {
     //单行删除
     handleDelete(index, row) {
       this.index = index
-      this.goodsId.push(row.pkFleaGoodsId)
+      this.msg = row
       this.delVisible = true
     }, //批量删除
     handleDeleteMul() {
@@ -170,12 +183,16 @@ export default {
     //确定删除
     async deleteGoods() {
       let data = {
-        pkFleaGoodsId: this.goodsId
+        pkFleaGoodsId: this.msg.pkFleaGoodsId
       }
-      let data1 = {
-        pkFleaGoodsId: data.pkFleaGoodsId[0]
+      this.result = await API.init('/flea/goods/logicalDel', data, 'post')
+      console.log(this.result)
+      if (this.result.code === 1) {
+        this.getAllGoods()
+        this.$message.success('下架成功')
+      } else {
+        this.$message.error('商品下架失败')
       }
-      API.init('/flea/goods/logicalDel', data1, 'post')
       this.delVisible = false //关闭删除提示模态框
       this.goodsId = []
     },

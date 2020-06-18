@@ -5,6 +5,7 @@
       title="新增一卡通挂失"
       :visible.sync="addcenterDialogVisible"
       width="30%"
+      :modal="false"
       center
     >
       <el-form
@@ -119,7 +120,7 @@
       >
         <el-table
           ref="multipleTable"
-          :data="tableData"
+          :data="tableData.slice(start,end)"
           tooltip-effect="dark"
           style="width: 100%;"
           @selection-change="handleSelectionChange"
@@ -202,15 +203,18 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPageA"
-        :page-sizes="[2, 4, 6, 8, 10]"
-        :page-size="pageSizeA"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
+        :page-sizes="[6,12,18]"
+        :page-size="pageSize"
+        layout="total, prev, pager, next, sizes,jumper"
+        :total="tableData.length"
+        @prev-click="prevPage()"
+        @next-click="nextPage()"
       >
       </el-pagination>
     </div>
     <!-- 申请挂失弹出框 -->
     <el-dialog
+      :modal="false"
       title="提示"
       :visible.sync="statusVisible"
       width="300px"
@@ -230,6 +234,7 @@
     </el-dialog>
     <!-- 删除提示框 -->
     <el-dialog
+      :modal="false"
       title="提示"
       :visible.sync="delVisible"
       width="300px"
@@ -257,12 +262,15 @@ export default {
   data() {
     return {
       tableData: [],
+      tableData1: [],
+      start: 0,
+      end: 6,
+      pageSize: 6,
+      currentPageSize: 6,
       currentPage: 0,
-      pageSize: 1000,
-      pageSizeA: 4,
-      total: '',
-      input: '',
+      currentPageSizeA: 6,
       currentPageA: 0,
+      input: '',
       delVisible: false,
       statusVisible: false,
       addcenterDialogVisible: false,
@@ -279,6 +287,30 @@ export default {
   },
   mounted() {},
   methods: {
+    //下一页
+    nextPage() {
+      this.currentPageA += 1
+      this.start += this.pageSize
+      this.end += this.pageSize
+    },
+    //上一页
+    prevPage() {
+      this.currentPageA -= 1
+      this.start -= this.pageSize
+      this.end -= this.pageSize
+    },
+    //改变页的数据条数
+    handleSizeChange(val) {
+      this.start = (this.currentPageA - 1) * val
+      this.end = this.currentPageA * val
+      this.pageSize = val
+    },
+    //选择分页
+    handleCurrentChange(val) {
+      this.currentPageA = val
+      this.start = (this.currentPageA - 1) * this.pageSize
+      this.end = this.currentPageA * this.pageSize
+    },
     // eslint-disable-next-line no-unused-vars
     statusChange: function(row, column) {
       return row.lossStatus == 1 ? '已挂失' : row.lossStatus == 0 ? '申请挂失中' : 'aaa'
@@ -286,18 +318,9 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
-    watch: {
-      pageSizeA: function() {
-        this.getLossAll()
-      },
-      currentPageA: function() {
-        this.getLossAll()
-      },
-      total: function() {}
-    },
     // 分页查询所有
     async getLossAll() {
-      this.data = { currentPage: this.currentPage, pageSize: this.pageSize }
+      this.data = { currentPage: this.currentPage, pageSize: this.currentPageSize }
       this.url = '/loss/all'
       this.result = await API.init(this.url, this.data, 'post')
       this.tableData = this.result.data
@@ -347,8 +370,8 @@ export default {
     async confirmAdd() {
       this.data = {
         remark: this.ruleForm1.remark,
-        cardNumber: this.ruleForm1.cardNumber,
-        cardPassword: this.ruleForm1.cardPassword
+        lossJobNumber: this.ruleForm1.cardNumber,
+        password: this.ruleForm1.cardPassword
       }
       this.url = '/increase'
       this.result = await API.init(this.url, this.data, 'post')
@@ -364,6 +387,21 @@ export default {
       } else {
         this.$message.success('一卡通添加成功')
       }
+    },
+    formatDate(value) {
+      let date = new Date(value)
+      let y = date.getFullYear()
+      let MM = date.getMonth() + 1
+      MM = MM < 10 ? '0' + MM : MM
+      let d = date.getDate()
+      d = d < 10 ? '0' + d : d
+      let h = date.getHours()
+      h = h < 10 ? '0' + h : h
+      let m = date.getMinutes()
+      m = m < 10 ? '0' + m : m
+      let s = date.getSeconds()
+      s = s < 10 ? '0' + s : s
+      return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s
     },
     //过滤搜索
     filterSearch() {
