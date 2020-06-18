@@ -1,23 +1,9 @@
 <template>
   <div style="width:100%">
     <!-- 修改弹出框 -->
-    <el-dialog
-      title="编辑图书"
-      :visible.sync="updatecenterDialogVisible"
-      width="30%"
-      left
-      :modal="false"
-    >
-      <el-form
-        :model="ruleForm"
-        status-icon
-        label-width="80px"
-      >
-        <el-form-item
-          required
-          label="书名"
-          prop="bookName"
-        >
+    <el-dialog title="编辑图书" :visible.sync="updatecenterDialogVisible" width="30%" left :modal="false">
+      <el-form :model="ruleForm" status-icon label-width="80px">
+        <el-form-item required label="书名" prop="bookName">
           <el-input v-model="ruleForm.bookName"></el-input>
         </el-form-item>
         <el-form-item required label="作者" prop="author">
@@ -51,22 +37,9 @@
     </el-dialog>
 
     <!-- 增加弹出框 -->
-    <el-dialog
-      :modal="false"
-      title="新增图书"
-      :visible.sync="addcenterDialogVisible"
-      width="50%"
-      center
-    >
-      <el-form
-        label-width="80px"
-        :model="ruleForm1"
-      >
-        <el-form-item
-          required
-          label="书名"
-          prop="bookName"
-        >
+    <el-dialog :modal="false" title="新增图书" :visible.sync="addcenterDialogVisible" width="50%" center>
+      <el-form label-width="80px" :model="ruleForm1">
+        <el-form-item required label="书名" prop="bookName">
           <el-input v-model="ruleForm1.bookName"></el-input>
         </el-form-item>
         <el-form-item required label="作者" prop="author">
@@ -110,13 +83,7 @@
         <el-button type="primary" icon="el-icon-plus" size="small" @click="addcenterDialogVisible = true"><span>新增</span></el-button>
         <el-button type="danger" icon="el-icon-delete" size="small" @click="delAll()">批量删除</el-button>
         <!-- 删除提示框 -->
-        <el-dialog
-          :modal="false"
-          title="提示"
-          :visible.sync="batchdelVisible"
-          width="300px"
-          center
-        >
+        <el-dialog :modal="false" title="提示" :visible.sync="batchdelVisible" width="300px" center>
           <div class="del-dialog-cnt">批量删除图书信息后不可恢复，是否确定删除？</div>
           <span slot="footer" class="dialog-footer">
             <el-button @click="batchdelVisible = false">取 消</el-button>
@@ -179,13 +146,7 @@
       </el-col>
     </el-row>
     <!-- 删除提示框 -->
-    <el-dialog
-      title="提示"
-      :modal="false"
-      :visible.sync="delVisible"
-      width="300px"
-      center
-    >
+    <el-dialog title="提示" :modal="false" :visible.sync="delVisible" width="300px" center>
       <div class="del-dialog-cnt">图书信息删除不可恢复，是否确定删除？</div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="delVisible = false">取 消</el-button>
