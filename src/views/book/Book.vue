@@ -2,6 +2,7 @@
   <div style="width:100%">
     <!-- 修改弹出框 -->
     <el-dialog
+      class="dialog"
       title="编辑图书"
       :visible.sync="updatecenterDialogVisible"
       width="30%"
@@ -20,38 +21,78 @@
         >
           <el-input v-model="ruleForm.bookName"></el-input>
         </el-form-item>
-        <el-form-item required label="作者" prop="author">
+        <el-form-item
+          required
+          label="作者"
+          prop="author"
+        >
           <el-input v-model="ruleForm.author"></el-input>
         </el-form-item>
-        <el-form-item required label="类型" prop="jobNumber">
+        <el-form-item
+          required
+          label="类型"
+          prop="jobNumber"
+        >
           <el-input v-model="ruleForm.jobNumber"></el-input>
         </el-form-item>
-        <el-form-item required label="简介" prop="description">
-          <el-input v-model="ruleForm.description" autocomplete="off"></el-input>
+        <el-form-item
+          required
+          label="简介"
+          prop="description"
+        >
+          <el-input
+            v-model="ruleForm.description"
+            autocomplete="off"
+          ></el-input>
         </el-form-item>
-        <el-form-item required label="封面">
-          <el-upload ref="file" class="upload-demo" action="" :file-list="file" list-type="picture" :auto-upload="false">
-            <el-button size="small" type="primary" @click="selectavatar()">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传一张jpg/png文件，且不超过500kb</div>
-            <!-- 隐藏的文件输入框 -->
-            <input type="file" ref="upload" style="display:none;" @change="handlderFile()" />
-          </el-upload>
+        <el-form-item
+          required
+          label="封面"
+        >
+          <img
+            :src="ruleForm.cover"
+            alt=""
+            style="width:100px;height:100px"
+            @click="getClick()"
+          >
+          <!-- 隐藏的文件输入框 -->
+          <input
+            type="file"
+            ref="upload"
+            style="display:none;"
+            @change="handlderFile()"
+          >
         </el-form-item>
-        <el-form-item required label="总数" prop="bookNumber">
+        <el-form-item
+          required
+          label="总数"
+          prop="bookNumber"
+        >
           <el-input v-model="ruleForm.bookNumber"></el-input>
         </el-form-item>
-        <el-form-item required label="库存量" prop="bookResidueNumber">
+        <el-form-item
+          required
+          label="库存量"
+          prop="bookResidueNumber"
+        >
           <el-input v-model="ruleForm.bookResidueNumber"></el-input>
         </el-form-item>
       </el-form>
-      <span slot="footer" class="dialog-footer">
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="updatecenterDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="confirmUpdate">确 定</el-button>
+        <el-button
+          type="primary"
+          @click="confirmUpdate"
+        >确 定</el-button>
       </span>
     </el-dialog>
 
     <!-- 增加弹出框 -->
     <el-dialog
+      class="dialog"
       :modal="false"
       title="新增图书"
       :visible.sync="addcenterDialogVisible"
@@ -69,48 +110,124 @@
         >
           <el-input v-model="ruleForm1.bookName"></el-input>
         </el-form-item>
-        <el-form-item required label="作者" prop="author">
+        <el-form-item
+          required
+          label="作者"
+          prop="author"
+        >
           <el-input v-model="ruleForm1.author"></el-input>
         </el-form-item>
-        <el-form-item required label="类型" prop="jobNumber">
+        <el-form-item
+          required
+          label="类型"
+          prop="jobNumber"
+        >
           <el-input v-model="ruleForm1.jobNumber"></el-input>
         </el-form-item>
-        <el-form-item required label="简介" prop="description">
-          <el-input v-model="ruleForm1.description" autocomplete="off"></el-input>
+        <el-form-item
+          required
+          label="简介"
+          prop="description"
+        >
+          <el-input
+            v-model="ruleForm1.description"
+            autocomplete="off"
+          ></el-input>
         </el-form-item>
-        <el-form-item required label="封面">
-          <el-upload ref="file" class="upload-demo" action="" :file-list="file" list-type="picture" :auto-upload="false">
-            <el-button size="small" type="primary" @click="selectavatar()">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传一张jpg/png文件，且不超过500kb</div>
-            <!-- 隐藏的文件输入框 -->
-            <input type="file" ref="upload" style="display:none;" @change="handlderFile()" />
-          </el-upload>
+        <el-form-item
+          required
+          label="封面"
+          prop="cover"
+        >
+          <img
+            :src="ruleForm1.cover"
+            alt=""
+            style="width:100px;height:100px"
+            @click="getClick()"
+          >
+          <!-- 隐藏的文件输入框 -->
+          <input
+            type="file"
+            ref="upload"
+            style="display:none;"
+            @change="handlderFile()"
+          >
         </el-form-item>
-        <el-form-item required label="总数" prop="bookNumber">
+        <el-form-item
+          required
+          label="总数"
+          prop="bookNumber"
+        >
           <el-input v-model="ruleForm1.bookNumber"></el-input>
         </el-form-item>
-        <el-form-item required label="库存量" prop="bookResidueNumber">
+        <el-form-item
+          required
+          label="库存量"
+          prop="bookResidueNumber"
+        >
           <el-input v-model="ruleForm1.bookResidueNumber"></el-input>
         </el-form-item>
       </el-form>
-      <span slot="footer" class="dialog-footer">
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="addcenterDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="confirmAdd">确 定</el-button>
+        <el-button
+          type="primary"
+          @click="confirmAdd"
+        >确 定</el-button>
       </span>
     </el-dialog>
-    <el-row type="flex" class="ml-20 mt-10">
-      <el-input v-model="input" clearable placeholder="请输入内容" class="blur-search" size="mini" @input="filterSearch()"></el-input>
-      <el-select size="mini" v-model="selectValue" placeholder="请选择" class="statu-search ml-10">
-        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
+    <el-row
+      type="flex"
+      class="ml-20 mt-10"
+    >
+      <el-input
+        v-model="input"
+        clearable
+        placeholder="请输入内容"
+        class="blur-search"
+        size="mini"
+        @input="filterSearch()"
+      ></el-input>
+      <el-select
+        size="mini"
+        v-model="selectValue"
+        placeholder="请选择"
+        class="statu-search ml-10"
+      >
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        > </el-option>
       </el-select>
-      <el-button type="success" size="mini" class="ml-10" icon="el-icon-search">搜索</el-button>
+      <el-button
+        type="success"
+        size="mini"
+        class="ml-10"
+        icon="el-icon-search"
+      >搜索</el-button>
     </el-row>
     <el-row class="df-jr-ac ml-20 mt-10">
       <el-col class="tl">
-        <el-button type="primary" icon="el-icon-plus" size="small" @click="addcenterDialogVisible = true"><span>新增</span></el-button>
-        <el-button type="danger" icon="el-icon-delete" size="small" @click="delAll()">批量删除</el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-plus"
+          size="small"
+          @click="addcenterDialogVisible = true"
+        ><span>新增</span></el-button>
+        <el-button
+          type="danger"
+          icon="el-icon-delete"
+          size="small"
+          @click="delAll()"
+        >批量删除</el-button>
         <!-- 删除提示框 -->
         <el-dialog
+          class="dialog"
           :modal="false"
           title="提示"
           :visible.sync="batchdelVisible"
@@ -118,61 +235,129 @@
           center
         >
           <div class="del-dialog-cnt">批量删除图书信息后不可恢复，是否确定删除？</div>
-          <span slot="footer" class="dialog-footer">
+          <span
+            slot="footer"
+            class="dialog-footer"
+          >
             <el-button @click="batchdelVisible = false">取 消</el-button>
-            <el-button type="primary" @click="deleteBatch()">确 定</el-button>
+            <el-button
+              type="primary"
+              @click="deleteBatch()"
+            >确 定</el-button>
           </span>
         </el-dialog>
       </el-col>
       <el-col class="tr mr-20">
-        <el-button icon="el-icon-refresh" size="small"></el-button>
+        <el-button
+          icon="el-icon-refresh"
+          size="small"
+        ></el-button>
       </el-col>
     </el-row>
     <!-- 表格展示 -->
     <el-row>
       <el-col span="1"></el-col>
-      <el-col span="23" class="ml-20 mt-10">
-        <el-table :data="bookList" stripe="true" style="width: 100%;" @selection-change="handleSelectionChange">
-          <el-table-column type="selection" min-width="10%"> </el-table-column>
-          <el-table-column label="图书名" show-overflow-tooltip min-width="13%">
+      <el-col
+        span="23"
+        class="ml-20 mt-10"
+      >
+        <el-table
+          :data="bookList"
+          stripe="true"
+          style="width: 100%;"
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column
+            type="selection"
+            min-width="10%"
+          > </el-table-column>
+          <el-table-column
+            label="图书名"
+            show-overflow-tooltip
+            min-width="13%"
+          >
             <template slot-scope="scope">
               <span style="margin-left:-5%">{{ scope.row.bookName }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="作者" show-overflow-tooltip min-width="13%">
+          <el-table-column
+            label="作者"
+            show-overflow-tooltip
+            min-width="13%"
+          >
             <template slot-scope="scope">
               <span>{{ scope.row.author }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="封面" show-overflow-tooltip min-width="15%">
+          <el-table-column
+            label="封面"
+            show-overflow-tooltip
+            min-width="15%"
+          >
             <template slot-scope="scope">
-              <el-popover placement="right" trigger="hover">
+              <el-popover
+                placement="right"
+                trigger="hover"
+              >
                 <img :src="scope.row.cover" />
-                <img slot="reference" :src="scope.row.cover" style="max-height: 50px;max-width: 130px" />
+                <img
+                  slot="reference"
+                  :src="scope.row.cover"
+                  style="max-height: 50px;max-width: 130px"
+                />
               </el-popover>
             </template>
           </el-table-column>
-          <el-table-column label="类型" show-overflow-tooltip min-width="13%">
+          <el-table-column
+            label="类型"
+            show-overflow-tooltip
+            min-width="13%"
+          >
             <template slot-scope="scope">
               <span>{{ scope.row.type }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="简介" show-overflow-tooltip min-width="13%">
+          <el-table-column
+            label="简介"
+            show-overflow-tooltip
+            min-width="13%"
+          >
             <template slot-scope="scope">
               <span>{{ scope.row.description }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="是否还有库存" show-overflow-tooltip min-width="15%" :formatter="statusChange"> </el-table-column>
-          <el-table-column label="创建时间" show-overflow-tooltip min-width="18%">
+          <el-table-column
+            label="是否还有库存"
+            show-overflow-tooltip
+            min-width="15%"
+            :formatter="statusChange"
+          > </el-table-column>
+          <el-table-column
+            label="创建时间"
+            show-overflow-tooltip
+            min-width="18%"
+          >
             <template slot-scope="scope">
               <i class="el-icon-time"></i>
               <span>{{ scope.row.gmtCreate }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" show-overflow-tooltip min-width="23%">
+          <el-table-column
+            label="操作"
+            show-overflow-tooltip
+            min-width="23%"
+          >
             <template slot-scope="scope">
-              <el-button size="mini" type="success" @click="handleUpdate(scope.$index, scope.row)">编辑</el-button>
-              <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+              <el-button
+                size="mini"
+                type="success"
+                @click="handleUpdate(scope.$index, scope.row)"
+              >编辑</el-button>
+              <el-button
+                size="mini"
+                type="danger"
+                @click="handleDelete(scope.$index, scope.row)"
+              >删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -180,6 +365,7 @@
     </el-row>
     <!-- 删除提示框 -->
     <el-dialog
+      class="dialog"
       title="提示"
       :modal="false"
       :visible.sync="delVisible"
@@ -187,12 +373,21 @@
       center
     >
       <div class="del-dialog-cnt">图书信息删除不可恢复，是否确定删除？</div>
-      <span slot="footer" class="dialog-footer">
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="delVisible = false">取 消</el-button>
-        <el-button type="primary" @click="deleteRow">确 定</el-button>
+        <el-button
+          type="primary"
+          @click="deleteRow"
+        >确 定</el-button>
       </span>
     </el-dialog>
-    <div class="block" style="margin-top:2%">
+    <div
+      class="block"
+      style="margin-top:2%"
+    >
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -250,7 +445,7 @@ export default {
       ruleForm: {
         author: '',
         type: '',
-        cover: '',
+        cover: 'https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png',
         description: '',
         bookNumber: '',
         bookResidueNumber: '',
@@ -259,7 +454,7 @@ export default {
       ruleForm1: {
         author: '',
         type: '',
-        cover: '',
+        cover: 'https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png',
         description: '',
         bookNumber: '',
         bookResidueNumber: '',
@@ -397,9 +592,8 @@ export default {
         this.$message.success('图书添加成功')
       }
     },
-    // 上传图片
-    selectavatar() {
-      this.$refs.file.click()
+    getClick() {
+      this.$refs.upload.click()
     },
     handlderFile() {
       this.getClient()
@@ -425,6 +619,19 @@ export default {
         accessKeySecret: '5WPkPJ4JY0nWciRfDpMFxzScm3oJn2',
         bucket: 'zhent-img'
       })
+    },
+    //新增资讯
+    async confirmAdd() {
+      this.data = {
+        text: this.ruleForm1.text,
+        title: this.ruleForm1.title,
+        cover: this.ruleForm1.cover
+      }
+      this.url = '/info/insert'
+      this.result = await API.init(this.url, this.data, 'post')
+      this.addcenterDialogVisible = false
+      this.getinfoAll()
+      this.$message.success('资讯添加成功')
     },
     formatDate(value) {
       let date = new Date(value)
@@ -479,5 +686,17 @@ el-input {
 }
 .el-input__inner {
   height: 30px;
+}
+.dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
 }
 </style>

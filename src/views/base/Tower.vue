@@ -242,6 +242,7 @@
           :visible.sync="mapVisible"
           :modal="false"
           width="350px"
+          class="dialog"
         >
 
           <!-- //地图 -->
