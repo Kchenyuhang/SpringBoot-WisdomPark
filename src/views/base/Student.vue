@@ -151,17 +151,17 @@ export default {
       gmtTime: '',
       msg: '新增', //记录每一条的信息，便于取id
       userAccountVo: {
-        pkUserAccountId: -1,
+        pkUserAccountId: null,
         gender: '',
         jobNumber: '',
         phoneNumber: '',
         userName: '',
-        role: '',
+        role: '1',
         msg: '新增',
         status: '',
         cardNumber: '',
         gmtCreate: '',
-        name: ''
+        name: '',
       }
     }
   },
@@ -189,7 +189,6 @@ export default {
       this.userAccountVo.jobNumber = ''
       this.userAccountVo.phoneNumber = ''
       this.userAccountVo.userName = ''
-      this.userAccountVo.role = ''
     },
     /* 修改room信息 */
     handleEdit(row) {
@@ -219,6 +218,7 @@ export default {
       } else {
         this.userAccountVo.status = false
       }
+      console.log(this.userAccountVo)
       //定义临时变量，用于新增或修改
       if (tag == 1) {
         let result = await API.init('/userAccount/insert', this.userAccountVo, 'post')

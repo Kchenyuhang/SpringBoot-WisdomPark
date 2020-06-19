@@ -156,7 +156,7 @@ export default {
         jobNumber: '',
         phoneNumber: '',
         userName: '',
-        role: '',
+        role: '2',
         msg: '新增',
         status: '',
         cardNumber: '',
@@ -189,7 +189,6 @@ export default {
       this.userAccountVo.jobNumber = ''
       this.userAccountVo.phoneNumber = ''
       this.userAccountVo.userName = ''
-      this.userAccountVo.role = ''
     },
     /* 修改room信息 */
     handleEdit(row) {

@@ -37,6 +37,7 @@
           tooltip-effect="dark"
           style="width: 100%;"
           @selection-change="handleSelectionChange"
+          class="light-small-font"
         >
           <el-table-column type="selection" min-width="5%"></el-table-column>
           <el-table-column label="学期名" min-width="20%">

@@ -2,7 +2,7 @@
   <div class="room-container" style="width: 100%">
     <el-row type="flex" style="width: 100%">
       <el-col span="4" class="tl">
-        <el-input prefix-icon="el-icon-search" v-model="input" placeholder="请输入内容" class="blur-search mt-10"></el-input>
+        <!-- <el-input prefix-icon="el-icon-search" v-model="input" placeholder="请输入内容" class="blur-search mt-10"></el-input> -->
         <el-tree :data="towers" :props="defaultProps" @node-click="handleNodeClick" class="mt-20"></el-tree>
       </el-col>
       <el-col span="20">
@@ -171,16 +171,18 @@ export default {
   mounted() {},
   methods: {
     async getRoom() {
-      let res = await API.init('/room/list', null, 'get')
+      let res = await API.init('/room/list', null, 'post')
       // this.axios({
       //   method: 'get',
       //   url: 'http://localhost:8080/room/list'
+      console.log(res.data)
       // }).then((res) => {
-      this.rooms = res.data.data
+      this.rooms = res.data
       for (let i = 0, len = this.rooms.length; i < len; i++) {
         this.rooms[i].gmtGreate = this.global.formatDate(this.rooms[i].gmtGreate)
       }
-      console.log(this.rooms)
+      this.roomsList = this.rooms
+      this.roomsList1 = this.rooms
       // })
     },
     //获取所有楼栋信息
