@@ -14,8 +14,8 @@
         <el-table-column prop="pkFleaOrderId" type="selection" width="50%"></el-table-column>
         <el-table-column prop="pkFleaOrderId" label="订单编号 " width="130%"> </el-table-column>
         <el-table-column prop="goodsName" label="商品名 " width="130%" show-overflow-tooltip> </el-table-column>
-        <el-table-column prop="goodsMark" label="商品标签 " width="140%"> </el-table-column>
-        <el-table-column prop="goodsSeller" label="卖方 " width="140%"> </el-table-column>
+        <el-table-column prop="goodsMark" label="商品标签 " width="120%"> </el-table-column>
+        <el-table-column prop="goodsSeller" label="卖方 " width="120%"> </el-table-column>
         <el-table-column prop="goodsBuyer" label="买方" width="120%"> </el-table-column>
         <el-table-column prop="goodsDescription" label="商品信息" width="150%" show-overflow-tooltip> </el-table-column>
         <el-table-column prop="orderCreateTime" label="订单创建时间" width="170%" sortable show-overflow-tooltip>
@@ -206,8 +206,7 @@ export default {
   margin: 20px;
   .input {
     width: 400px;
-    margin-right: 20px;
-    margin-left: -70%;
+    margin-right: 69%;
   }
 }
 .table {
