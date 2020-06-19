@@ -303,7 +303,7 @@ export default {
     },
     // 分页查询所有
     async getOrderAll() {
-      this.data = { currentPage: this.currentPage, pageSize: this.currentPageSize }
+      this.data = { currentPage: this.currentPage, pageSize: this.PageSize }
       this.url = '/order/all'
       this.result = await API.init(this.url, this.data, 'post')
       this.tableData = this.result.data

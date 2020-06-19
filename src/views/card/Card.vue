@@ -413,7 +413,7 @@ export default {
       cardList1: [],
       detailList: [],
       currentPage: 0,
-      total: 40,
+      total: 46,
       pageSize: 8,
       updatecenterDialogVisible: false,
       addcenterDialogVisible: false,
