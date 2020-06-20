@@ -168,20 +168,7 @@ export default {
     }
   },
   computed: {},
-  watch: {
-    pageSize: function() {
-      console.log('pageSize改变' + this.pageSize)
-      this.getOrderAll()
-    },
-    currentPage: function() {
-      console.log('currentPage改变' + this.currentPage)
-      this.getOrderAll()
-    },
-    total: function() {
-      console.log('total改变' + this.total)
-      this.getOrderAll()
-    }
-  }
+
 }
 </script>
 
