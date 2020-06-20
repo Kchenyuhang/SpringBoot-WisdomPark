@@ -415,7 +415,7 @@ export default {
     async deleteRow() {
       this.data = { field: this.msg.pkInfoManageId }
       this.url = '/info/deletion'
-      this.result = await API.init(this.url, this.data, 'delete')
+      this.result = await API.init(this.url, this.data, 'post')
       if (this.data) {
         this.getinfoAll()
         this.$message.success('删除成功')
@@ -428,7 +428,7 @@ export default {
     async deleteBatch() {
       this.data = { ids: String(this.delarr) }
       this.url = '/info/deletionBath/'
-      this.result = await API.init(this.url, this.data, 'delete')
+      this.result = await API.init(this.url, this.data, 'post')
       if (this.data) {
         this.getinfoAll()
         this.$message.success('批量删除成功')
@@ -474,7 +474,7 @@ export default {
         text: this.content
       }
       this.url = '/info/modification'
-      this.result = await API.init(this.url, this.data, 'put')
+      this.result = await API.init(this.url, this.data, 'post')
       this.updatecenterDialogVisible = false
       this.getinfoAll()
       this.$message.success('内容修改成功')

@@ -246,7 +246,7 @@ export default {
     async getinfoType() {
       this.data = {}
       this.url = '/infoType/all'
-      this.result = await API.init(this.url, this.data, 'get')
+      this.result = await API.init(this.url, this.data, 'post')
       this.infoTypeList = this.result.data
       this.infoTypeList1 = this.result.data
       for (let i = 0; i < this.infoTypeList.length; i++) {
@@ -283,7 +283,7 @@ export default {
     async deleteRow() {
       this.data = { field: this.msg.pkAppVersionId }
       this.url = '/app/deletion'
-      this.result = await API.init(this.url, this.data, 'delete')
+      this.result = await API.init(this.url, this.data, 'post')
       if (this.data) {
         this.getinfoType()
         this.$message.success('删除成功')

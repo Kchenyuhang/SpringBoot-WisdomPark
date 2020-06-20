@@ -249,7 +249,7 @@ export default {
     async getClazzAll() {
       this.data = {}
       this.url = '/clazz/all'
-      this.result = await API.init(this.url, this.data, 'get')
+      this.result = await API.init(this.url, this.data, 'post')
       this.clazzList = this.result.data
       console.log(this.clazzList.length)
       this.clazzList1 = this.result.data
@@ -278,7 +278,7 @@ export default {
     async deleteRow() {
       this.data = { field: this.msg.pkAppVersionId }
       this.url = '/app/deletion'
-      this.result = await API.init(this.url, this.data, 'delete')
+      this.result = await API.init(this.url, this.data, 'post')
       if (this.data) {
         this.getClazzAll()
         this.$message.success('删除成功')
