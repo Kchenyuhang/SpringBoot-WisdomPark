@@ -262,8 +262,8 @@ export default {
      * 获取所有班级和学期数据
      */
     async getAllInfo() {
-      let clazzRes = await API.init('/clazz/all', null, 'get')
-      let semesterRes = await API.init('/semester/all', null, 'get')
+      let clazzRes = await API.init('/clazz/all', null, 'post')
+      let semesterRes = await API.init('/semester/all', null, 'post')
       for (let i = 0; i < clazzRes.data.length; i++) {
         this.clazzList.push({
           name: clazzRes.data[i].name,

@@ -1,5 +1,192 @@
 <template>
   <div style="width: 100%">
+    <!-- 删除提示框 -->
+    <el-dialog
+      :class="dialog"
+      class="dialog"
+      :modal="false"
+      title="提示"
+      :visible.sync="batchdelVisible"
+      width="300px"
+      center
+    >
+
+      <div class="del-dialog-cnt">批量删除账号信息后不可恢复，是否确定删除？</div>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="batchdelVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="deleteBatch()"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 修改弹出框 -->
+    <el-dialog
+      class="dialog"
+      title="编辑账号信息"
+      :modal="false"
+      :visible.sync="updatecenterDialogVisible"
+      width="30%"
+      left
+    >
+      <el-form
+        :model="ruleForm"
+        status-icon
+        label-width="80px"
+      >
+        <el-form-item
+          label="昵称"
+          prop="nickName"
+        >
+          <el-input
+            v-model="ruleForm.nickName"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          label="头像"
+          prop="avatar"
+        >
+          <img
+            :src="ruleForm.avatar"
+            alt=""
+            style="width:100px;height:100px"
+            @click="getClick()"
+          >
+          <!-- 隐藏的文件输入框 -->
+          <input
+            type="file"
+            ref="upload"
+            style="display:none;"
+            @change="handlderFile()"
+          >
+        </el-form-item>
+        <el-form-item
+          label="手机号"
+          prop="phoneNumber"
+        >
+          <el-input v-model.number="ruleForm.phoneNumber"></el-input>
+        </el-form-item>
+        <el-form-item
+          label="地址"
+          prop="address"
+        >
+          <el-input v-model.number="ruleForm.address"></el-input>
+        </el-form-item>
+      </el-form>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="updatecenterDialogVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="confirmUpdate"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 增加弹出框 -->
+    <el-dialog
+      class="dialog"
+      :modal="false"
+      title="添加账号"
+      :visible.sync="addcenterDialogVisible"
+      width="50%"
+      center
+    >
+      <el-form
+        label-width="80px"
+        :model="ruleForm1"
+      >
+        <el-form-item
+          label="姓名"
+          prop="userName"
+        >
+
+          <el-input v-model="ruleForm1.userName"></el-input>
+        </el-form-item>
+        <el-form-item
+          label="学号"
+          prop="jobNumber"
+        >
+
+          <el-input v-model="ruleForm1.jobNumber"></el-input>
+        </el-form-item>
+        <el-form-item
+          label="班级"
+          prop="clazzId"
+        >
+          <el-select
+            size="mini"
+            v-model="selectValue"
+            placeholder="请选择"
+            class="statu-search ml-10"
+          >
+            <el-option
+              v-for="(item, index) in clazzList"
+              :key="index"
+              :label="item.name"
+              :value="item.pkClazzId"
+            > </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="地址"
+          prop="address"
+        >
+          <el-input v-model="ruleForm1.address"></el-input>
+        </el-form-item>
+        <el-form-item
+          label="手机号"
+          prop="phoneNumber"
+        >
+          <el-input v-model="ruleForm1.phoneNumber"></el-input>
+        </el-form-item>
+        <el-form-item
+          label="性别"
+          prop="gender"
+        >
+          <template>
+            <el-radio
+              v-model="radio"
+              label="男"
+            ></el-radio>
+            <el-radio
+              v-model="radio"
+              label="女"
+            ></el-radio>
+          </template>
+        </el-form-item>
+        <el-form-item
+          label="角色"
+          prop="role"
+        >
+          <template>
+            <el-radio
+              v-model="radio1"
+              label="1"
+            >学生</el-radio>
+            <el-radio
+              v-model="radio1"
+              label="2"
+            >教师</el-radio>
+          </template>
+        </el-form-item>
+      </el-form>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="addcenterDialogVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="confirmAdd"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
     <el-row
       type="flex"
       class="ml-20 mt-10"
@@ -11,37 +198,13 @@
         class="blur-search"
         @input="filterSearch()"
       ></el-input>
-
-      <el-date-picker
-        size="mini"
-        v-model="time"
-        type="daterange"
-        range-separator=":"
-        start-placeholder="开始日期"
-        end-placeholder="结束日期"
-        class="date-input-search ml-10"
-        value-format="yyyy-MM-dd"
-      >
-      </el-date-picker>
-      <el-select
-        size="mini"
-        v-model="selectValue"
-        placeholder="请选择"
-        class="statu-search ml-10"
-      >
-        <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        > </el-option>
-      </el-select>
       <el-button
         type="success"
         size="mini"
-        @click="search()"
+        @click="searchAppInfoByCreate()"
         class="ml-10"
         icon="el-icon-search"
+        v-if="searchShow"
       >搜索</el-button>
     </el-row>
     <el-row class="df-jr-ac ml-20 mt-10">
@@ -50,17 +213,14 @@
           type="primary"
           icon="el-icon-plus"
           size="small"
+          @click="addcenterDialogVisible = true"
         ><span>新增</span></el-button>
-        <el-button
-          type="success"
-          icon="el-icon-edit"
-          size="small"
-        >修改</el-button>
         <el-button
           type="danger"
           icon="el-icon-delete"
           size="small"
-        >删除</el-button>
+          @click="delAll()"
+        >批量删除</el-button>
         <el-button
           type="warning"
           icon="el-icon-download"
@@ -125,7 +285,7 @@
               <el-switch
                 v-model="scope.row.status"
                 active-color="#13ce66"
-                :disabled="scope.row.status == 0"
+                :disabled="scope.row.status == 1"
                 inactive-color="#ff4949"
                 @change="changeSwitchA($event, scope.row, scope.$index)"
               >
@@ -151,13 +311,13 @@
                   size="mini"
                   icon="el-icon-edit"
                   type="primary"
-                  @click="handleEdit(scope.row)"
+                  @click="handleUpdate(scope.$index, scope.row)"
                 >编辑</el-button>
                 <el-button
                   size="mini"
                   icon="el-icon-delete"
                   type="danger"
-                  @click="handleDelete(scope.row)"
+                  @click="handleDelete(scope.$index, scope.row)"
                 >删除</el-button>
               </p>
             </template>
@@ -178,13 +338,34 @@
           >
           </el-pagination>
         </div>
+        <!-- 删除提示框 -->
+        <el-dialog
+          class="dialog"
+          title="提示"
+          :visible.sync="delVisible"
+          width="300px"
+          center
+          :modal="false"
+        >
+          <div class="del-dialog-cnt">账号信息删除不可恢复，是否确定删除？</div>
+          <span
+            slot="footer"
+            class="dialog-footer"
+          >
+            <el-button @click="delVisible = false">取 消</el-button>
+            <el-button
+              type="primary"
+              @click="deleteRow"
+            >确 定</el-button>
+          </span>
+        </el-dialog>
       </el-col>
     </el-row>
   </div>
 </template>
 
 <script>
-const API = require('../utils/api.js')
+const API = require('../utils/api')
 export default {
   name: 'Permmission',
   data() {
@@ -193,29 +374,43 @@ export default {
       value: true,
       userAccountList: [],
       userAccountList1: [],
-      options: [
-        {
-          value: '0',
-          label: '禁用'
-        },
-        {
-          value: '1',
-          label: '正常'
-        }
-      ],
       selectValue: '',
       multipleSelection: [],
-      currentPage: 1,
-      total: 38,
+      currentPage: 0,
+      currentPageA: 0,
+      total: 32,
       pageSize: 8,
-      input: ''
+      pageSizeA: 15,
+      clazzList: [],
+      delVisible: false,
+      input: '',
+      ruleForm1: {
+        userName: '',
+        jobNumber: '',
+        role: '',
+        gender: '',
+        address: '',
+        clazzId: '',
+        phoneNumber: ''
+      },
+      ruleForm: {
+        nickName: '',
+        avatar: 'https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png',
+        phoneNumber: '',
+        address: ''
+      },
+      addcenterDialogVisible: false,
+      radio: '',
+      radio1: '',
+      updatecenterDialogVisible: false,
+      file: '',
+      delarr: [], //存放删除的数据
+      batchdelVisible: false
     }
   },
-  components: {},
   created() {
     this.getuserAccount()
   },
-  mounted() {},
   watch: {
     pageSize: function() {
       this.getuserAccount()
@@ -226,45 +421,62 @@ export default {
     total: function() {}
   },
   methods: {
-    //删除信息
-    async handleDelete(item) {
-      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        let data = {
-          field1: item.pk_user_account_id
-        }
-        let res = API.init('/userAccount/deletion', data, 'post')
-        if (res.data.code == 1) {
-          this.$message({
-            message: '删除成功',
-            type: 'success'
-          })
-          let index = this.userAccountList.indexOf(item)
-          this.userAccountList.splice(index, 1)
-        }
-      })
-      // })
-    },
     // 编辑
     handleEdit(row) {
       console.log(row)
     },
-    //搜索
-    search() {
-      alert(this.selectValue)
-    },
     async getuserAccount() {
       this.data = { currentPage: this.currentPage, pageSize: this.pageSize }
+      this.dataA = { currentPage: this.currentPageA, pageSize: this.pageSizeA }
       this.url = '/userAccount/all'
+      this.url1 = '/clazz/all'
       this.result = await API.init(this.url, this.data, 'post')
+      this.result1 = await API.init(this.url1, this.dataA, 'post')
       this.userAccountList = this.result.data
+      this.clazzList = this.result1.data
       this.userAccountList1 = this.result.data
       for (let i = 0; i < this.userAccountList.length; i++) {
         this.userAccountList[i].gmtCreate = this.formatDate(this.userAccountList[i].gmtCreate)
       }
+    },
+    //单行删除
+    handleDelete(index, row) {
+      this.idx = index
+      this.msg = row //每一条数据的记录
+      this.delVisible = true
+    },
+    async deleteRow() {
+      this.data = { filed1: String(this.msg.pkUserAccountId) }
+      this.url = '/userAccount/deletion'
+      this.result = await API.init(this.url, this.data, 'post')
+      this.getuserAccount()
+      this.$message.success('删除成功')
+      this.delVisible = false //关闭删除提示模态框
+    },
+    //操作多选
+    handleSelectionChange(val) {
+      this.multipleSelection = val
+    },
+    //批量删除
+    delAll() {
+      this.batchdelVisible = true //显示删除弹框
+      const length = this.multipleSelection.length
+      for (let i = 0; i < length; i++) {
+        this.delarr.push(this.multipleSelection[i].pkUserAccountId)
+      }
+    },
+    //批量删除
+    async deleteBatch() {
+      this.data = { ids: String(this.delarr) }
+      this.url = '/userAccount/deletionBath'
+      this.result = await API.init(this.url, this.data, 'post')
+      if (this.data) {
+        this.getuserAccount()
+        this.$message.success('批量删除成功')
+      } else {
+        this.$message.error('信息批量删除失败')
+      }
+      this.batchdelVisible = false //关闭删除提示模态框
     },
     // 当前页展示数据
     handleSizeChange: function(pageSize) {
@@ -273,6 +485,74 @@ export default {
     // 当前页
     handleCurrentChange: function(currentPage) {
       this.currentPage = currentPage
+    },
+    //新增账号
+    async confirmAdd() {
+      // eslint-disable-next-line no-unused-vars
+      let userAccount = {
+        userName: this.ruleForm1.userName,
+        jobNumber: this.ruleForm1.jobNumber,
+        role: this.radio1,
+        gender: this.radio,
+        address: this.ruleForm1.address,
+        clazzId: this.selectValue,
+        phoneNumber: this.ruleForm1.phoneNumber
+      }
+      console.log(this.selectValue)
+      this.data = {
+        userName: this.ruleForm1.userName,
+        jobNumber: this.ruleForm1.jobNumber,
+        role: this.radio1,
+        gender: this.radio,
+        address: this.ruleForm1.address,
+        clazzId: this.selectValue,
+        phoneNumber: this.ruleForm1.phoneNumber
+      }
+      this.url = '/userAccount/insert'
+      this.result = await API.init(this.url, this.data, 'post')
+      console.log(this.result)
+      this.addcenterDialogVisible = false
+      this.getuserAccount()
+      if (this.result.code == 50003) {
+        this.$message.success('账号已存在')
+      } else {
+        this.$message.success('账号添加成功')
+      }
+    },
+    async changeSwitchA(index, row) {
+      this.idx = index
+      this.msg = row //每一条数据的记录
+      console.log(this.msg.pkUserAccountId)
+      this.data = { filed1: this.msg.pkUserAccountId, status: true }
+      this.url = '/userAccount/status'
+      this.result = await API.init(this.url, this.data, 'post')
+      this.$message.success('激活成功')
+      this.getuserAccount()
+    },
+    //编辑
+    handleUpdate(index, row) {
+      this.idx = index
+      this.msg = row //每一条数据的记录
+      this.updatecenterDialogVisible = true
+    },
+    //修改账号信息
+    async confirmUpdate() {
+      this.data = {
+        pkUserAccountId: this.msg.pkUserAccountId,
+        nickname: this.ruleForm.nickName,
+        avatar: this.ruleForm.avatar,
+        phoneNumber: this.ruleForm.phoneNumber,
+        address: this.ruleForm.address
+      }
+      this.url = '/userAccount/modification'
+      this.result = await API.init(this.url, this.data, 'post')
+      this.updatecenterDialogVisible = false
+      this.getuserAccount()
+      if (this.result.data == null) {
+        this.$message.success('该账号未激活，信息修改失败')
+      } else {
+        this.$message.success('信息修改成功')
+      }
     },
     formatDate(value) {
       let date = new Date(value)
@@ -289,19 +569,45 @@ export default {
       s = s < 10 ? '0' + s : s
       return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s
     },
+    getClick() {
+      this.$refs.upload.click()
+    },
+    handlderFile() {
+      this.getClient()
+      this.file = this.$refs.upload.files[0]
+      var _this = this
+      async function put() {
+        try {
+          let result = await _this.client.put(_this.$refs.upload.files[0].name, _this.file)
+          _this.ruleForm.avatar = result.url
+          _this.update()
+        } catch (e) {
+          console.log(e)
+        }
+      }
+      put()
+    },
+    getClient() {
+      let OSS = require('ali-oss')
+      this.client = new OSS({
+        region: 'oss-cn-beijing',
+        accessKeyId: 'LTAIaG9RkwvVwXq6',
+        accessKeySecret: '5WPkPJ4JY0nWciRfDpMFxzScm3oJn2',
+        bucket: 'zhent-img'
+      })
+    },
     //过滤搜索
     filterSearch() {
       // 获取输入框的值
       let search = this.input
       //数组元素按条件过滤
-      this.cardList = this.userAccountList1.filter((v) => {
+      this.userAccountList = this.userAccountList1.filter((v) => {
         if (JSON.stringify(v).includes(search)) {
           return v
         }
       })
     }
-  },
-  computed: {}
+  }
 }
 </script>
 
@@ -329,5 +635,17 @@ el-input {
 
 .el-input__inner {
   height: 30px;
+}
+.dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
 }
 </style>
