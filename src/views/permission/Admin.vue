@@ -333,7 +333,7 @@ export default {
         }
       }
     },
-    /* 修改room信息 */
+    /* 修改admin信息 */
     updaeAdminInfo(row) {
       this.msg = '修改'
       this.adminInfo.name = row.sys_user_name
