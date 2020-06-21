@@ -2,25 +2,58 @@
   <el-container>
     <!-- 考务管理上方的按钮区域 -->
     <el-header>
-      <el-row type="flex" justify="space-between" align="middle" style="height: 60px; width: 100%">
+      <el-row
+        type="flex"
+        justify="space-between"
+        align="middle"
+        style="height: 60px; width: 100%"
+      >
         <el-col :span="1">
-          <el-button size="medium" style="height: 30px">添加考试</el-button>
+          <el-button
+            size="medium"
+            style="height: 30px"
+          >添加考试</el-button>
         </el-col>
         <el-col :span="4">
-          <el-button size="medium" style="height: 30px">添加考试</el-button>
-          <el-button size="medium" style="height: 30px">添加考试</el-button>
+          <el-button
+            size="medium"
+            style="height: 30px"
+          >添加考试</el-button>
+          <el-button
+            size="medium"
+            style="height: 30px"
+          >添加考试</el-button>
         </el-col>
       </el-row>
     </el-header>
     <!-- 考务管理下方的正文内容 -->
     <el-main>
-      <el-table :data="examination" border style="width: 100%">
-        <el-table-column v-for="(item, index) in th" :prop="item.prop" :label="item.label" :width="item.width" :key="index">
+      <el-table
+        :data="examination"
+        border
+        style="width: 100%"
+      >
+        <el-table-column
+          v-for="(item, index) in th"
+          :prop="item.prop"
+          :label="item.label"
+          :width="item.width"
+          :key="index"
+        >
         </el-table-column>
-        <el-table-column label="操作" width="243">
+        <el-table-column
+          label="操作"
+          width="243"
+        >
           <template slot-scope="scope">
-            <el-button @click="handleClick(scope.row)" size="small">编辑</el-button>
-            <el-button @click="handleClick(scope.row)" size="small">考生管理</el-button>
+            <el-button
+              @click="handleClick(scope.row)"
+              size="small"
+            >编辑</el-button>
+            <el-button
+              @click="handleClick(scope.row)"
+              size="small"
+            >考生管理</el-button>
             <el-button size="small">删除</el-button>
           </template>
         </el-table-column>
@@ -94,7 +127,7 @@ export default {
      * 调用接口，获取考务数据的总数
      */
     async getTotal() {
-      let totalRes = await API.init('/examination/count', null, 'get')
+      let totalRes = await API.init('/examination/count', null, 'post')
       this.total = totalRes.data
       // 判断查到的数据条数是否满足分页条件
       if (this.total <= this.pageDto.pageSize) {

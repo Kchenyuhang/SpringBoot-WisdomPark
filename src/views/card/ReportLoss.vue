@@ -19,24 +19,6 @@
         >
           <el-input v-model="ruleForm1.cardNumber"></el-input>
         </el-form-item>
-        <el-form-item
-          required
-          label="卡号密码"
-          prop="cardPassword"
-        >
-          <el-input
-            type="password"
-            v-model="ruleForm1.cardPassword"
-            autocomplete="off"
-          ></el-input>
-        </el-form-item>
-        <el-form-item
-          required
-          label="备注信息"
-          prop="remark"
-        >
-          <el-input v-model="ruleForm1.remark"></el-input>
-        </el-form-item>
       </el-form>
       <span
         slot="footer"
@@ -120,7 +102,7 @@
       >
         <el-table
           ref="multipleTable"
-          :data="tableData.slice(start,end)"
+          :data="tableData.slice(start, end)"
           tooltip-effect="dark"
           style="width: 100%;"
           @selection-change="handleSelectionChange"
@@ -266,18 +248,16 @@ export default {
       start: 0,
       end: 6,
       pageSize: 6,
-      currentPageSize: 6,
+      currentPageSize: 12,
       currentPage: 0,
-      currentPageSizeA: 6,
+      currentPageSizeA: 12,
       currentPageA: 0,
       input: '',
       delVisible: false,
       statusVisible: false,
       addcenterDialogVisible: false,
       ruleForm1: {
-        cardNumber: '',
-        cardPassword: '',
-        remark: ''
+        cardNumber: ''
       }
     }
   },
@@ -369,23 +349,19 @@ export default {
     //新增一卡通挂失
     async confirmAdd() {
       this.data = {
-        remark: this.ruleForm1.remark,
-        lossJobNumber: this.ruleForm1.cardNumber,
-        password: this.ruleForm1.cardPassword
+        ids: this.ruleForm1.cardNumber
       }
       this.url = '/increase'
       this.result = await API.init(this.url, this.data, 'post')
       console.log(this.result)
       this.addcenterDialogVisible = false
       this.getLossAll()
-      if (this.result.code == 20020) {
-        this.$message.success('账号或密码错误，新增挂失失败')
-      } else if (this.result.code == 30004) {
-        this.$message.success('该账号已挂失')
+      if (this.result.code == 50001) {
+        this.$message.success('该账号不存在，挂失失败')
       } else if (this.result.code == 20006) {
-        this.$message.success('该账号已被禁用')
+        this.$message.success('该账号已挂失')
       } else {
-        this.$message.success('一卡通添加成功')
+        this.$message.success('挂失成功')
       }
     },
     formatDate(value) {

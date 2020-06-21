@@ -19,7 +19,7 @@
             <span>{{ rewardShow[scope.$index].description }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="nickname" label="发布人昵称 " width="150%"> </el-table-column>
+        <el-table-column prop="nickname" label="发布人昵称 " width="130%"> </el-table-column>
         <el-table-column prop="sex" label="性别" width="130%"> </el-table-column>
         <el-table-column prop="username" label="发布人姓名" width="150%"> </el-table-column>
         <el-table-column prop="createTime" label="发布时间" width="170%" sortable show-overflow-tooltip>
@@ -203,8 +203,7 @@ export default {
   margin: 20px;
   .input {
     width: 400px;
-    margin-right: 20px;
-    margin-left: -70%;
+    margin-right: 69%;
   }
 }
 .table {

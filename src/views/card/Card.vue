@@ -413,7 +413,7 @@ export default {
       cardList1: [],
       detailList: [],
       currentPage: 0,
-      total: 40,
+      total: 46,
       pageSize: 8,
       updatecenterDialogVisible: false,
       addcenterDialogVisible: false,
@@ -457,9 +457,6 @@ export default {
     total: function() {}
   },
   methods: {
-    load() {
-      this.cardList.length += 2
-    },
     // 分页查询所有
     async getCardAll() {
       this.data = { currentPage: this.currentPage, pageSize: this.pageSize }
@@ -648,5 +645,17 @@ el-input {
 }
 .el-input__inner {
   height: 30px;
+}
+.dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
 }
 </style>
