@@ -2,34 +2,11 @@
 <template>
   <div style="width:100%">
     <!-- 修改弹出框 -->
-<<<<<<< HEAD
+
     <el-dialog :modal="false" title="编辑一卡通" :visible.sync="updatecenterDialogVisible" width="30%" left>
       <el-form :model="ruleForm" status-icon label-width="80px">
         <el-form-item label="余额" prop="balance">
-          <el-input type="number" v-model.number="ruleForm.balance"></el-input>
-=======
-    <el-dialog
-      :modal="false"
-      title="编辑一卡通"
-      :visible.sync="updatecenterDialogVisible"
-      width="30%"
-      left
-    >
-      <el-form
-        :model="ruleForm"
-        status-icon
-        label-width="80px"
-      >
-        <el-form-item
-          label="余额"
-          prop="balance"
-        >
-          <el-input
-            max="5"
-            oninput="value=value.replace(/[^\d]/g,'')"
-            v-model.number="ruleForm.balance"
-          ></el-input>
->>>>>>> d0f6d2f2c40c8b1d1ba5cdd9d8c8d8dfdeb48906
+          <el-input max="5" oninput="value=value.replace(/[^\d]/g,'')" v-model.number="ruleForm.balance"></el-input>
         </el-form-item>
         <el-form-item label="缴费描述" prop="description">
           <el-input v-model.number="ruleForm.description"></el-input>
