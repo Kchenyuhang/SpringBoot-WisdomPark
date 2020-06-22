@@ -1,28 +1,9 @@
 <template>
   <div style="width:100%">
     <!-- 增加弹出框 -->
-<<<<<<< HEAD
-    <el-dialog title="新增借阅" :visible.sync="addcenterDialogVisible" width="50%" center>
+    <el-dialog :modal="false" title="新增借阅" :visible.sync="addcenterDialogVisible" width="50%" center>
       <el-form label-width="80px" :model="ruleForm1">
         <el-form-item required label="书名" prop="bookName">
-=======
-    <el-dialog
-      :modal="false"
-      title="新增借阅"
-      :visible.sync="addcenterDialogVisible"
-      width="50%"
-      center
-    >
-      <el-form
-        label-width="80px"
-        :model="ruleForm1"
-      >
-        <el-form-item
-          required
-          label="书名"
-          prop="bookName"
-        >
->>>>>>> 42a24168cbb0b09cf58f0ef96505731b18473443
           <el-input v-model="ruleForm1.bookName"></el-input>
         </el-form-item>
         <el-form-item required label="借阅人" prop="borrowUserName">
@@ -45,9 +26,16 @@
     </el-dialog>
     <el-row type="flex" class="ml-20 mt-10">
       <el-input v-model="input" clearable placeholder="请输入内容" class="blur-search" size="mini" @input="filterSearch()"></el-input>
-      <el-select size="mini" v-model="selectValue" placeholder="请选择" class="statu-search ml-10">
-        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
-      </el-select>
+      <el-date-picker
+        v-model="time"
+        type="daterange"
+        range-separator=":"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期"
+        class="date-input-search ml-10"
+        value-format="yyyy-MM-dd"
+      >
+      </el-date-picker>
       <el-button type="success" size="mini" class="ml-10" icon="el-icon-search">搜索</el-button>
     </el-row>
     <el-row class="df-jr-ac ml-20 mt-10">
@@ -55,17 +43,7 @@
         <el-button type="primary" icon="el-icon-plus" size="small" @click="addcenterDialogVisible = true"><span>新增</span></el-button>
         <el-button type="danger" icon="el-icon-delete" size="small" @click="delAll()">批量删除</el-button>
         <!-- 删除提示框 -->
-<<<<<<< HEAD
-        <el-dialog title="提示" :visible.sync="batchdelVisible" width="300px" center>
-=======
-        <el-dialog
-          :modal="false"
-          title="提示"
-          :visible.sync="batchdelVisible"
-          width="300px"
-          center
-        >
->>>>>>> 42a24168cbb0b09cf58f0ef96505731b18473443
+        <el-dialog :modal="false" title="提示" :visible.sync="batchdelVisible" width="300px" center>
           <div class="del-dialog-cnt">批量删除借阅信息后不可恢复，是否确定删除？</div>
           <span slot="footer" class="dialog-footer">
             <el-button @click="batchdelVisible = false">取 消</el-button>
@@ -103,16 +81,7 @@
               <span>{{ scope.row.borrowUserPhone }}</span>
             </template>
           </el-table-column>
-<<<<<<< HEAD
           <el-table-column label="是否归还" show-overflow-tooltip min-width="13%" :formatter="statusChange"> </el-table-column>
-=======
-          <el-table-column
-            label="是否归还"
-            show-overflow-tooltip
-            min-width="13%"
-            :formatter="statusChange"
-          > </el-table-column>
->>>>>>> 42a24168cbb0b09cf58f0ef96505731b18473443
 
           <el-table-column label="借阅时间" show-overflow-tooltip min-width="18%">
             <template slot-scope="scope">
@@ -120,22 +89,8 @@
               <span>{{ scope.row.gmtCreate }}</span>
             </template>
           </el-table-column>
-<<<<<<< HEAD
           <el-table-column label="归还时间" show-overflow-tooltip min-width="18%" :formatter="timeChange"> </el-table-column>
           <el-table-column label="操作" show-overflow-tooltip min-width="23%">
-=======
-          <el-table-column
-            label="归还时间"
-            show-overflow-tooltip
-            min-width="18%"
-            :formatter="timeChange"
-          > </el-table-column>
-          <el-table-column
-            label="操作"
-            show-overflow-tooltip
-            min-width="23%"
-          >
->>>>>>> 42a24168cbb0b09cf58f0ef96505731b18473443
             <template slot-scope="scope">
               <el-button size="mini" type="success" @click="handleUpdate(scope.$index, scope.row)">归还处理</el-button>
               <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
@@ -145,17 +100,7 @@
       </el-col>
     </el-row>
     <!-- 删除提示框 -->
-<<<<<<< HEAD
-    <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
-=======
-    <el-dialog
-      :modal="false"
-      title="提示"
-      :visible.sync="delVisible"
-      width="300px"
-      center
-    >
->>>>>>> 42a24168cbb0b09cf58f0ef96505731b18473443
+    <el-dialog :modal="false" title="提示" :visible.sync="delVisible" width="300px" center>
       <div class="del-dialog-cnt">借阅信息删除不可恢复，是否确定删除？</div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="delVisible = false">取 消</el-button>
@@ -203,7 +148,8 @@ export default {
         borrowBookName: '',
         borrowBookId: ''
       },
-      file: ''
+      file: '',
+      time: []
     }
   },
   created() {

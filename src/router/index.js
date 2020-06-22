@@ -185,6 +185,7 @@ const routes = [
         name: 'Order',
         component: () => import('../views/flea/Order.vue')
       },
+
       /**
        * 校友圈相关路由
        */
@@ -197,6 +198,23 @@ const routes = [
         path: 'dynamicComment',
         name: 'DynamicComment',
         component: () => import('../views/schoolmate/DynamicComment.vue')
+      },
+
+      /**跑腿 */
+      {
+        path: 'pdelivery',
+        name: 'pdelivery',
+        component: () => import('../views/errands/DeliveryOrder.vue')
+      },
+      {
+        path: 'puser',
+        name: 'puser',
+        component: () => import('../views/errands/Puer.vue')
+      },
+      {
+        path: 'passErrends',
+        name: 'passErrends',
+        component: () => import('../views/errands/passErrends.vue')
       }
     ]
   },

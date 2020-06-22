@@ -1,45 +1,27 @@
 <template>
   <div style="width:100%">
     <!-- 修改弹出框 -->
-<<<<<<< HEAD
-    <el-dialog title="编辑一卡通" :visible.sync="updatecenterDialogVisible" width="30%" left>
+    <el-dialog title="编辑一卡通" :modal="false" :visible.sync="updatecenterDialogVisible" width="30%" left>
       <el-form :model="ruleForm" status-icon :rules="rules" label-width="80px">
-        <el-form-item label="密码" prop="pass">
-          <el-input type="password" v-model="ruleForm.pass" autocomplete="off" placeholder="123456"></el-input>
-=======
-    <el-dialog
-      title="编辑一卡通"
-      :modal="false"
-      :visible.sync="updatecenterDialogVisible"
-      width="30%"
-      left
-    >
-      <el-form
-        :model="ruleForm"
-        status-icon
-        :rules="rules"
-        label-width="80px"
-      >
-        <el-form-item
-          label="密码"
-          prop="pass"
-        >
-          <el-input
-            type="password"
-            v-model="ruleForm.pass"
-            autocomplete="off"
-            placeholder="123456"
-          ></el-input>
->>>>>>> 42a24168cbb0b09cf58f0ef96505731b18473443
+        <el-form-item required label="密码" prop="pass">
+          <el-input type="password" v-model="ruleForm.pass" autocomplete="off" placeholder="请输入要修改的密码"></el-input>
         </el-form-item>
-        <el-form-item label="确认密码" prop="checkPass">
-          <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off" placeholder="123456"></el-input>
+        <el-form-item required label="确认密码" prop="checkPass">
+          <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off" placeholder="请再次输入要修改的密码"></el-input>
         </el-form-item>
         <el-form-item label="绑定号码" prop="job_number">
-          <el-input v-model.number="ruleForm.jobnumber"></el-input>
+          <el-input
+            oninput="value=value.replace(/[^\d]/g,'')"
+            v-model.number="ruleForm.jobnumber"
+            placeholder="请输入要修改的账号"
+          ></el-input>
         </el-form-item>
-        <el-form-item label="余额" prop="balance">
-          <el-input v-model.number="ruleForm.balance"></el-input>
+        <el-form-item required label="余额" prop="balance">
+          <el-input
+            oninput="value=value.replace(/[^\d]/g,'')"
+            v-model.number="ruleForm.balance"
+            placeholder="请输入要修改的余额"
+          ></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -49,38 +31,19 @@
     </el-dialog>
 
     <!-- 增加弹出框 -->
-<<<<<<< HEAD
-    <el-dialog title="新增一卡通" :visible.sync="addcenterDialogVisible" width="30%" center>
+    <el-dialog title="新增一卡通" :visible.sync="addcenterDialogVisible" width="30%" :modal="false" center>
       <el-form label-width="80px" :model="ruleForm1">
         <el-form-item required label="卡号" prop="cardNumber">
-=======
-    <el-dialog
-      title="新增一卡通"
-      :visible.sync="addcenterDialogVisible"
-      width="30%"
-      :modal="false"
-      center
-    >
-      <el-form
-        label-width="80px"
-        :model="ruleForm1"
-      >
-        <el-form-item
-          required
-          label="卡号"
-          prop="cardNumber"
-        >
->>>>>>> 42a24168cbb0b09cf58f0ef96505731b18473443
-          <el-input v-model="ruleForm1.cardNumber"></el-input>
+          <el-input oninput="value=value.replace(/[^\d]/g,'')" v-model="ruleForm1.cardNumber"></el-input>
         </el-form-item>
         <el-form-item required label="绑定卡号" prop="jobNumber">
-          <el-input v-model="ruleForm1.jobNumber"></el-input>
+          <el-input oninput="value=value.replace(/[^\d]/g,'')" v-model="ruleForm1.jobNumber"></el-input>
         </el-form-item>
         <el-form-item required label="卡号密码" prop="cardPassword">
           <el-input type="password" v-model="ruleForm1.cardPassword" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item required label="余额" prop="cardbalance1">
-          <el-input v-model="ruleForm1.cardbalance1"></el-input>
+          <el-input oninput="value=value.replace(/[^\d]/g,'')" v-model="ruleForm1.cardbalance1"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -90,23 +53,8 @@
     </el-dialog>
 
     <!-- 流水明细 -->
-<<<<<<< HEAD
-    <el-dialog title="流水查询" :visible.sync="datailcenterDialogVisible" width="30%" left>
+    <el-dialog title="流水查询" :visible.sync="datailcenterDialogVisible" width="30%" left :modal="false">
       <el-form status-icon label-width="80px" style="height:400px;overflow:auto">
-=======
-    <el-dialog
-      title="流水查询"
-      :visible.sync="datailcenterDialogVisible"
-      width="30%"
-      left
-      :modal="false"
-    >
-      <el-form
-        status-icon
-        label-width="80px"
-        style="height:400px;overflow:auto"
-      >
->>>>>>> 42a24168cbb0b09cf58f0ef96505731b18473443
         <el-collapse accordion>
           <div v-for="(item, index) in detailList" :key="index">
             <el-collapse-item>
@@ -204,15 +152,7 @@
               <span>{{ scope.row.gmtCreate }}</span>
             </template>
           </el-table-column>
-<<<<<<< HEAD
-          <el-table-column label="操作" show-overflow-tooltip min-width="23%">
-=======
-          <el-table-column
-            label="操作"
-            show-overflow-tooltip
-            min-width="26%"
-          >
->>>>>>> 42a24168cbb0b09cf58f0ef96505731b18473443
+          <el-table-column label="操作" show-overflow-tooltip min-width="26%">
             <template slot-scope="scope">
               <el-button size="mini" type="success" @click="handleUpdate(scope.$index, scope.row)">编辑</el-button>
               <el-button size="mini" type="primary" @click="handleDetail(scope.$index, scope.row)">流水账单</el-button>
@@ -223,17 +163,7 @@
       </el-col>
     </el-row>
     <!-- 删除提示框 -->
-<<<<<<< HEAD
-    <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
-=======
-    <el-dialog
-      title="提示"
-      :visible.sync="delVisible"
-      width="300px"
-      center
-      :modal="false"
-    >
->>>>>>> 42a24168cbb0b09cf58f0ef96505731b18473443
+    <el-dialog title="提示" :visible.sync="delVisible" width="300px" center :modal="false">
       <div class="del-dialog-cnt">一卡通信息删除不可恢复，是否确定删除？</div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="delVisible = false">取 消</el-button>
@@ -407,21 +337,25 @@ export default {
     },
     //修改一卡通信息
     async confirmUpdate() {
-      this.data = {
-        pkCardId: this.msg.pkCardId,
-        status: this.msg.status,
-        cardPassword: this.ruleForm.checkPass,
-        jobNumber: this.ruleForm.jobnumber,
-        cardBalance: this.ruleForm.balance
-      }
-      this.url = '/card/modification'
-      this.result = await API.init(this.url, this.data, 'post')
-      this.updatecenterDialogVisible = false
-      this.getCardAll()
-      if (this.result.data == null) {
-        this.$message.success('该一卡通未激活，信息修改失败')
+      if (this.ruleForm.pass == this.ruleForm.checkPass) {
+        this.data = {
+          pkCardId: this.msg.pkCardId,
+          status: this.msg.status,
+          cardPassword: this.ruleForm.checkPass,
+          jobNumber: this.ruleForm.jobnumber,
+          cardBalance: this.ruleForm.balance
+        }
+        this.url = '/card/modification'
+        this.result = await API.init(this.url, this.data, 'post')
+        this.updatecenterDialogVisible = false
+        this.getCardAll()
+        if (this.result.data == null) {
+          this.$message.success('该一卡通未激活，信息修改失败')
+        } else {
+          this.$message.success('信息修改成功')
+        }
       } else {
-        this.$message.success('信息修改成功')
+        this.$message.error('两次输入的密码不一致，修改失败')
       }
     },
     //新增一卡通
