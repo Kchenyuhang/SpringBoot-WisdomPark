@@ -1,10 +1,36 @@
 <template>
   <div style="width:100%">
     <!-- 修改弹出框 -->
+<<<<<<< HEAD
     <el-dialog title="编辑一卡通" :visible.sync="updatecenterDialogVisible" width="30%" left>
       <el-form :model="ruleForm" status-icon :rules="rules" label-width="80px">
         <el-form-item label="密码" prop="pass">
           <el-input type="password" v-model="ruleForm.pass" autocomplete="off" placeholder="123456"></el-input>
+=======
+    <el-dialog
+      title="编辑一卡通"
+      :modal="false"
+      :visible.sync="updatecenterDialogVisible"
+      width="30%"
+      left
+    >
+      <el-form
+        :model="ruleForm"
+        status-icon
+        :rules="rules"
+        label-width="80px"
+      >
+        <el-form-item
+          label="密码"
+          prop="pass"
+        >
+          <el-input
+            type="password"
+            v-model="ruleForm.pass"
+            autocomplete="off"
+            placeholder="123456"
+          ></el-input>
+>>>>>>> 42a24168cbb0b09cf58f0ef96505731b18473443
         </el-form-item>
         <el-form-item label="确认密码" prop="checkPass">
           <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off" placeholder="123456"></el-input>
@@ -23,9 +49,28 @@
     </el-dialog>
 
     <!-- 增加弹出框 -->
+<<<<<<< HEAD
     <el-dialog title="新增一卡通" :visible.sync="addcenterDialogVisible" width="30%" center>
       <el-form label-width="80px" :model="ruleForm1">
         <el-form-item required label="卡号" prop="cardNumber">
+=======
+    <el-dialog
+      title="新增一卡通"
+      :visible.sync="addcenterDialogVisible"
+      width="30%"
+      :modal="false"
+      center
+    >
+      <el-form
+        label-width="80px"
+        :model="ruleForm1"
+      >
+        <el-form-item
+          required
+          label="卡号"
+          prop="cardNumber"
+        >
+>>>>>>> 42a24168cbb0b09cf58f0ef96505731b18473443
           <el-input v-model="ruleForm1.cardNumber"></el-input>
         </el-form-item>
         <el-form-item required label="绑定卡号" prop="jobNumber">
@@ -45,8 +90,23 @@
     </el-dialog>
 
     <!-- 流水明细 -->
+<<<<<<< HEAD
     <el-dialog title="流水查询" :visible.sync="datailcenterDialogVisible" width="30%" left>
       <el-form status-icon label-width="80px" style="height:400px;overflow:auto">
+=======
+    <el-dialog
+      title="流水查询"
+      :visible.sync="datailcenterDialogVisible"
+      width="30%"
+      left
+      :modal="false"
+    >
+      <el-form
+        status-icon
+        label-width="80px"
+        style="height:400px;overflow:auto"
+      >
+>>>>>>> 42a24168cbb0b09cf58f0ef96505731b18473443
         <el-collapse accordion>
           <div v-for="(item, index) in detailList" :key="index">
             <el-collapse-item>
@@ -144,7 +204,15 @@
               <span>{{ scope.row.gmtCreate }}</span>
             </template>
           </el-table-column>
+<<<<<<< HEAD
           <el-table-column label="操作" show-overflow-tooltip min-width="23%">
+=======
+          <el-table-column
+            label="操作"
+            show-overflow-tooltip
+            min-width="26%"
+          >
+>>>>>>> 42a24168cbb0b09cf58f0ef96505731b18473443
             <template slot-scope="scope">
               <el-button size="mini" type="success" @click="handleUpdate(scope.$index, scope.row)">编辑</el-button>
               <el-button size="mini" type="primary" @click="handleDetail(scope.$index, scope.row)">流水账单</el-button>
@@ -155,7 +223,17 @@
       </el-col>
     </el-row>
     <!-- 删除提示框 -->
+<<<<<<< HEAD
     <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
+=======
+    <el-dialog
+      title="提示"
+      :visible.sync="delVisible"
+      width="300px"
+      center
+      :modal="false"
+    >
+>>>>>>> 42a24168cbb0b09cf58f0ef96505731b18473443
       <div class="del-dialog-cnt">一卡通信息删除不可恢复，是否确定删除？</div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="delVisible = false">取 消</el-button>
@@ -205,7 +283,7 @@ export default {
       cardList1: [],
       detailList: [],
       currentPage: 0,
-      total: 40,
+      total: 46,
       pageSize: 8,
       updatecenterDialogVisible: false,
       addcenterDialogVisible: false,
@@ -249,9 +327,6 @@ export default {
     total: function() {}
   },
   methods: {
-    load() {
-      this.cardList.length += 2
-    },
     // 分页查询所有
     async getCardAll() {
       this.data = { currentPage: this.currentPage, pageSize: this.pageSize }
@@ -440,5 +515,17 @@ el-input {
 }
 .el-input__inner {
   height: 30px;
+}
+.dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
 }
 </style>

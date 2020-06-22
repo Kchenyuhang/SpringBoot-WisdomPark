@@ -1,7 +1,7 @@
 <template>
   <div style="width:100%">
     <!-- 修改弹出框 -->
-    <el-dialog title="编辑图书" :visible.sync="updatecenterDialogVisible" width="30%" left>
+    <el-dialog class="dialog" title="编辑图书" :visible.sync="updatecenterDialogVisible" width="30%" left :modal="false">
       <el-form :model="ruleForm" status-icon label-width="80px">
         <el-form-item required label="书名" prop="bookName">
           <el-input v-model="ruleForm.bookName"></el-input>
@@ -16,12 +16,9 @@
           <el-input v-model="ruleForm.description" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item required label="封面">
-          <el-upload ref="file" class="upload-demo" action="" :file-list="file" list-type="picture" :auto-upload="false">
-            <el-button size="small" type="primary" @click="selectavatar()">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传一张jpg/png文件，且不超过500kb</div>
-            <!-- 隐藏的文件输入框 -->
-            <input type="file" ref="upload" style="display:none;" @change="handlderFile()" />
-          </el-upload>
+          <img :src="ruleForm.cover" alt="" style="width:100px;height:100px" @click="getClick()" />
+          <!-- 隐藏的文件输入框 -->
+          <input type="file" ref="upload" style="display:none;" @change="handlderFile()" />
         </el-form-item>
         <el-form-item required label="总数" prop="bookNumber">
           <el-input v-model="ruleForm.bookNumber"></el-input>
@@ -37,7 +34,7 @@
     </el-dialog>
 
     <!-- 增加弹出框 -->
-    <el-dialog title="新增图书" :visible.sync="addcenterDialogVisible" width="50%" center>
+    <el-dialog class="dialog" :modal="false" title="新增图书" :visible.sync="addcenterDialogVisible" width="50%" center>
       <el-form label-width="80px" :model="ruleForm1">
         <el-form-item required label="书名" prop="bookName">
           <el-input v-model="ruleForm1.bookName"></el-input>
@@ -51,13 +48,10 @@
         <el-form-item required label="简介" prop="description">
           <el-input v-model="ruleForm1.description" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item required label="封面">
-          <el-upload ref="file" class="upload-demo" action="" :file-list="file" list-type="picture" :auto-upload="false">
-            <el-button size="small" type="primary" @click="selectavatar()">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传一张jpg/png文件，且不超过500kb</div>
-            <!-- 隐藏的文件输入框 -->
-            <input type="file" ref="upload" style="display:none;" @change="handlderFile()" />
-          </el-upload>
+        <el-form-item required label="封面" prop="cover">
+          <img :src="ruleForm1.cover" alt="" style="width:100px;height:100px" @click="getClick()" />
+          <!-- 隐藏的文件输入框 -->
+          <input type="file" ref="upload" style="display:none;" @change="handlderFile()" />
         </el-form-item>
         <el-form-item required label="总数" prop="bookNumber">
           <el-input v-model="ruleForm1.bookNumber"></el-input>
@@ -83,7 +77,7 @@
         <el-button type="primary" icon="el-icon-plus" size="small" @click="addcenterDialogVisible = true"><span>新增</span></el-button>
         <el-button type="danger" icon="el-icon-delete" size="small" @click="delAll()">批量删除</el-button>
         <!-- 删除提示框 -->
-        <el-dialog title="提示" :visible.sync="batchdelVisible" width="300px" center>
+        <el-dialog class="dialog" :modal="false" title="提示" :visible.sync="batchdelVisible" width="300px" center>
           <div class="del-dialog-cnt">批量删除图书信息后不可恢复，是否确定删除？</div>
           <span slot="footer" class="dialog-footer">
             <el-button @click="batchdelVisible = false">取 消</el-button>
@@ -146,7 +140,7 @@
       </el-col>
     </el-row>
     <!-- 删除提示框 -->
-    <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
+    <el-dialog class="dialog" title="提示" :modal="false" :visible.sync="delVisible" width="300px" center>
       <div class="del-dialog-cnt">图书信息删除不可恢复，是否确定删除？</div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="delVisible = false">取 消</el-button>
@@ -211,7 +205,7 @@ export default {
       ruleForm: {
         author: '',
         type: '',
-        cover: '',
+        cover: 'https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png',
         description: '',
         bookNumber: '',
         bookResidueNumber: '',
@@ -220,7 +214,7 @@ export default {
       ruleForm1: {
         author: '',
         type: '',
-        cover: '',
+        cover: 'https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png',
         description: '',
         bookNumber: '',
         bookResidueNumber: '',
@@ -358,9 +352,8 @@ export default {
         this.$message.success('图书添加成功')
       }
     },
-    // 上传图片
-    selectavatar() {
-      this.$refs.file.click()
+    getClick() {
+      this.$refs.upload.click()
     },
     handlderFile() {
       this.getClient()
@@ -386,6 +379,19 @@ export default {
         accessKeySecret: '5WPkPJ4JY0nWciRfDpMFxzScm3oJn2',
         bucket: 'zhent-img'
       })
+    },
+    //新增资讯
+    async confirmAdd() {
+      this.data = {
+        text: this.ruleForm1.text,
+        title: this.ruleForm1.title,
+        cover: this.ruleForm1.cover
+      }
+      this.url = '/info/insert'
+      this.result = await API.init(this.url, this.data, 'post')
+      this.addcenterDialogVisible = false
+      this.getinfoAll()
+      this.$message.success('资讯添加成功')
     },
     formatDate(value) {
       let date = new Date(value)
@@ -440,5 +446,17 @@ el-input {
 }
 .el-input__inner {
   height: 30px;
+}
+.dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
 }
 </style>

@@ -4,7 +4,7 @@
       <el-col :span="4">
         <el-menu
           default-active="1"
-          class="el-menu-vertical-demo "
+          class="el-menu-vertical-demo"
           @open="handleOpen"
           @close="handleClose"
           background-color="#F5F5F5 "
@@ -53,7 +53,7 @@
         <el-button size="medium" type="danger" @click="resetAddType">重置</el-button>
       </div>
       <div class="typeBtn" v-else>
-        <el-button size="medium" type="primary" @click="changeType">修改</el-button>
+        <el-button size="medium" type="primary" @click="changeType">保存</el-button>
         <el-button size="medium" type="danger" @click="deleteTypeById">删除</el-button>
       </div>
 
@@ -62,10 +62,14 @@
         <span>管理的艺术在于沟通的技巧和真诚。</span>
         <br />
         <br />
-        <el-divider content-position="left"><i class="el-icon-place"></i></el-divider>
+        <el-divider content-position="left">
+          <i class="el-icon-place"></i>
+        </el-divider>
         <br />
         <br />
-        <el-divider><i class="el-icon-monitor"></i></el-divider>
+        <el-divider>
+          <i class="el-icon-monitor"></i>
+        </el-divider>
         <br />
         <br />
         <span>夫为治有体，上下不可相侵!</span>

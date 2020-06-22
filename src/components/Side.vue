@@ -1,9 +1,16 @@
 <template>
   <div>
-    <el-menu default-active="1-4-1" unique-opened background-color="#304156" class="el-menu-vertical-demo sideBar" @open="handleOpen" @close="handleClose" :collapse="isCollapse">
+    <el-menu
+      default-active="1-4-1"
+      unique-opened
+      background-color="#304156"
+      class="el-menu-vertical-demo sideBar"
+      @open="handleOpen"
+      @close="handleClose"
+    >
       <el-menu-item class="menu-title">
-          <i class="el-icon-s-grid" style="font-size: 30px"></i>
-          <span class="logo-title font-white">智慧校园后台</span>
+        <i class="el-icon-s-grid" style="font-size: 30px"></i>
+        <span class="logo-title font-white">智慧校园后台</span>
       </el-menu-item>
       <el-submenu v-for="(item, index) in menuList" :key="index" :index="item.name">
         <template slot="title">
@@ -52,8 +59,8 @@ export default {
       console.log(key, keyPath)
     },
     changeMenu(item) {
-        //this.$router.push(item.path)
-        Bus.$emit('menuName', item)
+      //this.$router.push(item.path)
+      Bus.$emit('menuName', item)
     },
     changeChildMenu(item1, parentName) {
       if (item1.path != null) {
@@ -70,12 +77,17 @@ export default {
   min-width: 200px;
   height: 100%;
   color: #bfcbd9;
-} 
+}
 
 .logo-title {
   font-size: 14px;
   margin-left: 10px;
   font-weight: 600;
+}
+
+/* 设置滚动条的样式 */
+::-webkit-scrollbar {
+  width: 1px;
 }
 
 .sideBar {
@@ -84,7 +96,7 @@ export default {
   top: 0;
   bottom: 0;
   left: 0;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .menu-title {

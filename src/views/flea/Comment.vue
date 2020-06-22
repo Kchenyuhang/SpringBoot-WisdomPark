@@ -145,7 +145,7 @@ export default {
     //单行删除
     handleDelete(index, row) {
       this.index = index
-      this.commentsId.push(row.commentId)
+      this.msg = row
       this.delVisible = true
     }, //批量删除
     handleDeleteMul() {
@@ -154,17 +154,18 @@ export default {
     //确定删除
     async deleteComments() {
       let data = {
-        commentId: this.commentsId
+        commentId: this.msg.commentId
       }
-      let data1 = {
-        commentId: data.commentId[0]
+      console.log(data)
+      this.result = await API.init('/flea/comment/del', data, 'post')
+      console.log(this.result)
+      if (this.result.code === 1) {
+        this.getAllComments()
+        this.$message.success('删除成功')
+      } else {
+        this.$message.error('评论删除失败')
       }
-      console.log(data1)
-      API.init('/flea/comment/del', data1, 'post')
-      this.getAllComments()
       this.delVisible = false //关闭删除提示模态框
-      this.commentsId = []
-      this.getAllComments()
     },
     toggleSelection(rows) {
       if (rows) {

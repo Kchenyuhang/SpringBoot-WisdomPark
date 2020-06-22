@@ -1,4 +1,8 @@
 <template>
+  <!-- <el-row type="flex" style="width: 100%">
+      <el-col span="4" class="tl"> -->
+  <!-- <el-input prefix-icon="el-icon-search" v-model="input" placeholder="请输入内容" class="blur-search mt-10"></el-input> -->
+  <!-- <el-tree :data="towers" :props="defaultProps" @node-click="handleNodeClick" class="mt-20"></el-tree> -->
   <div class="room-container" style="width: 100%">
     <el-row type="flex" style="width: 100%">
       <el-col span="4" class="tl">
@@ -171,16 +175,18 @@ export default {
   mounted() {},
   methods: {
     async getRoom() {
-      let res = await API.init('/room/list', null, 'get')
+      let res = await API.init('/room/list', null, 'post')
       // this.axios({
       //   method: 'get',
       //   url: 'http://localhost:8080/room/list'
+      console.log(res.data)
       // }).then((res) => {
-      this.rooms = res.data.data
+      this.rooms = res.data
       for (let i = 0, len = this.rooms.length; i < len; i++) {
         this.rooms[i].gmtGreate = this.global.formatDate(this.rooms[i].gmtGreate)
       }
-      console.log(this.rooms)
+      this.roomsList = this.rooms
+      this.roomsList1 = this.rooms
       // })
     },
     //获取所有楼栋信息
@@ -198,13 +204,13 @@ export default {
     async getAllTowersUnits() {
       this.units = (await API.init('/tower/units/list', null, 'post')).data
     },
-    updateRoomInfo(row){
+    updateRoomInfo(row) {
       this.room.name = row.roomName
       this.room.towerName = row.towerName
       this.room.towerUnit = row.unitName
       this.flag = 2
       this.dialogFormVisible = true
-    }, 
+    },
     //新增房间消息
     async addRoomInfo(tag) {
       let roomInfo = {
@@ -259,7 +265,7 @@ export default {
         name: this.room.name,
         towerId: 1
       }
-      let res = await API.init('/room/id', data, 'put')
+      let res = await API.init('/room/id', data, 'post')
       // this.axios({
       //   method: 'put',
       //   url: 'http://localhost:8080/room/id',
@@ -277,7 +283,6 @@ export default {
         this.dialogFormVisible = false
       }
       // })
-
     },
     //刷新数据
     flush() {
@@ -285,13 +290,12 @@ export default {
     },
     //删除房间信息
     handleDelete(row) {
-      console.log(row)
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        let res = API.init('/room/id/' + row.roomId, null, 'delete')
+        let res = API.init('/room/id/' + row.roomId, null, 'post')
 
         // this.axios({
         //   method: 'delete',
@@ -305,7 +309,6 @@ export default {
           let index = this.rooms.indexOf(row)
           this.room.splice(index, 1)
         }
-
       })
       // })
     },

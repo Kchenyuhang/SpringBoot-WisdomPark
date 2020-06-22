@@ -1,24 +1,5 @@
 <template>
   <div style="width:100%">
-    <!-- 修改弹出框 -->
-    <el-dialog
-      title="编辑资讯类型信息"
-      :visible.sync="updatecenterDialogVisible"
-      width="30%"
-      left
-    >
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button @click="updatecenterDialogVisible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="confirmUpdate"
-        >确 定</el-button>
-      </span>
-    </el-dialog>
-
     <!-- 增加弹出框 -->
     <el-dialog
       title="新增资讯类型信息"
@@ -30,7 +11,8 @@
         :model="ruleForm"
         status-icon
         label-width="80px"
-      >
+      >cnpm install vue-amap --save
+
         <el-form-item
           label="分类名"
           prop="name"
@@ -179,6 +161,7 @@
           >
             <template slot-scope="scope">
               <el-button
+                disabled
                 size="mini"
                 type="success"
                 @click="handleUpdate(scope.$index, scope.row)"
@@ -263,7 +246,7 @@ export default {
     async getinfoType() {
       this.data = {}
       this.url = '/infoType/all'
-      this.result = await API.init(this.url, this.data, 'get')
+      this.result = await API.init(this.url, this.data, 'post')
       this.infoTypeList = this.result.data
       this.infoTypeList1 = this.result.data
       for (let i = 0; i < this.infoTypeList.length; i++) {
@@ -300,7 +283,7 @@ export default {
     async deleteRow() {
       this.data = { field: this.msg.pkAppVersionId }
       this.url = '/app/deletion'
-      this.result = await API.init(this.url, this.data, 'delete')
+      this.result = await API.init(this.url, this.data, 'post')
       if (this.data) {
         this.getinfoType()
         this.$message.success('删除成功')

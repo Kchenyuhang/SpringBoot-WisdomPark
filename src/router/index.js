@@ -71,6 +71,11 @@ const routes = [
         component: () => import('../views/base/Clazz.vue')
       },
       {
+        path: 'course',
+        name: 'Course',
+        component: () => import('../views/base/Course.vue')
+      },
+      {
         path: 'student',
         name: 'Student',
         component: () => import('../views/base/Student.vue')
@@ -189,9 +194,9 @@ const routes = [
         component: () => import('../views/schoolmate/Dynamic.vue')
       },
       {
-        path: 'collection',
-        name: 'Collection',
-        component: () => import('../views/schoolmate/Collection.vue')
+        path: 'dynamicComment',
+        name: 'DynamicComment',
+        component: () => import('../views/schoolmate/DynamicComment.vue')
       }
     ]
   },

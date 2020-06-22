@@ -1,6 +1,7 @@
 <template>
   <el-container>
-    <el-header class="nav" :class="{ nav1: !isCollapse }" height="90px" style="box-shadow: 0px 3px 5px 0px #ddd;">
+    <el-header class="nav1" height="90px" style="box-shadow: 0px 3px 5px 0px #ddd;">
+    <!-- <el-header class="nav" :class="{ nav1: !isCollapse }" height="90px" style="box-shadow: 0px 3px 5px 0px #ddd;"> -->
       <el-row class="nav-header">
         <el-col class="nav-header-left">
           <i class="el-icon-s-fold side-bar-show" @click="changeSide"></i>
@@ -149,18 +150,18 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.nav {
+.nav1 {
   position: fixed;
   top: 0;
   right: 0;
   padding: 0%;
-  left: 65px;
+  left: 202px;
   z-index: 100;
   background-color: white;
   transition: left 0.35s;
 }
 
-.nav1 {
+.nav {
   left: 200px;
 }
 
