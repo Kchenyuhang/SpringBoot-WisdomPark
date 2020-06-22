@@ -15,6 +15,7 @@
         label-width="80px"
       >
         <el-form-item
+          required
           label="密码"
           prop="pass"
         >
@@ -22,10 +23,11 @@
             type="password"
             v-model="ruleForm.pass"
             autocomplete="off"
-            placeholder="123456"
+            placeholder="请输入要修改的密码"
           ></el-input>
         </el-form-item>
         <el-form-item
+          required
           label="确认密码"
           prop="checkPass"
         >
@@ -33,20 +35,29 @@
             type="password"
             v-model="ruleForm.checkPass"
             autocomplete="off"
-            placeholder="123456"
+            placeholder="请再次输入要修改的密码"
           ></el-input>
         </el-form-item>
         <el-form-item
           label="绑定号码"
           prop="job_number"
         >
-          <el-input v-model.number="ruleForm.jobnumber"></el-input>
+          <el-input
+            oninput="value=value.replace(/[^\d]/g,'')"
+            v-model.number="ruleForm.jobnumber"
+            placeholder="请输入要修改的账号"
+          ></el-input>
         </el-form-item>
         <el-form-item
+          required
           label="余额"
           prop="balance"
         >
-          <el-input v-model.number="ruleForm.balance"></el-input>
+          <el-input
+            oninput="value=value.replace(/[^\d]/g,'')"
+            v-model.number="ruleForm.balance"
+            placeholder="请输入要修改的余额"
+          ></el-input>
         </el-form-item>
       </el-form>
       <span
@@ -78,14 +89,20 @@
           label="卡号"
           prop="cardNumber"
         >
-          <el-input v-model="ruleForm1.cardNumber"></el-input>
+          <el-input
+            oninput="value=value.replace(/[^\d]/g,'')"
+            v-model="ruleForm1.cardNumber"
+          ></el-input>
         </el-form-item>
         <el-form-item
           required
           label="绑定卡号"
           prop="jobNumber"
         >
-          <el-input v-model="ruleForm1.jobNumber"></el-input>
+          <el-input
+            oninput="value=value.replace(/[^\d]/g,'')"
+            v-model="ruleForm1.jobNumber"
+          ></el-input>
         </el-form-item>
         <el-form-item
           required
@@ -103,7 +120,10 @@
           label="余额"
           prop="cardbalance1"
         >
-          <el-input v-model="ruleForm1.cardbalance1"></el-input>
+          <el-input
+            oninput="value=value.replace(/[^\d]/g,'')"
+            v-model="ruleForm1.cardbalance1"
+          ></el-input>
         </el-form-item>
       </el-form>
       <span
@@ -537,21 +557,25 @@ export default {
     },
     //修改一卡通信息
     async confirmUpdate() {
-      this.data = {
-        pkCardId: this.msg.pkCardId,
-        status: this.msg.status,
-        cardPassword: this.ruleForm.checkPass,
-        jobNumber: this.ruleForm.jobnumber,
-        cardBalance: this.ruleForm.balance
-      }
-      this.url = '/card/modification'
-      this.result = await API.init(this.url, this.data, 'post')
-      this.updatecenterDialogVisible = false
-      this.getCardAll()
-      if (this.result.data == null) {
-        this.$message.success('该一卡通未激活，信息修改失败')
+      if (this.ruleForm.pass == this.ruleForm.checkPass) {
+        this.data = {
+          pkCardId: this.msg.pkCardId,
+          status: this.msg.status,
+          cardPassword: this.ruleForm.checkPass,
+          jobNumber: this.ruleForm.jobnumber,
+          cardBalance: this.ruleForm.balance
+        }
+        this.url = '/card/modification'
+        this.result = await API.init(this.url, this.data, 'post')
+        this.updatecenterDialogVisible = false
+        this.getCardAll()
+        if (this.result.data == null) {
+          this.$message.success('该一卡通未激活，信息修改失败')
+        } else {
+          this.$message.success('信息修改成功')
+        }
       } else {
-        this.$message.success('信息修改成功')
+        this.$message.error('两次输入的密码不一致，修改失败')
       }
     },
     //新增一卡通

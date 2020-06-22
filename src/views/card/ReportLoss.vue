@@ -17,7 +17,11 @@
           label="卡号"
           prop="cardNumber"
         >
-          <el-input v-model="ruleForm1.cardNumber"></el-input>
+          <el-input
+            maxlength="13"
+            oninput="value=value.replace(/[^\d]/g,'')"
+            v-model="ruleForm1.cardNumber"
+          ></el-input>
         </el-form-item>
       </el-form>
       <span
@@ -75,12 +79,8 @@
           type="success"
           icon="el-icon-edit"
           size="small"
+          disabled
         >修改</el-button>
-        <el-button
-          type="danger"
-          icon="el-icon-delete"
-          size="small"
-        >删除</el-button>
         <el-button
           type="warning"
           icon="el-icon-download"
@@ -158,10 +158,6 @@
             min-width="23%"
           >
             <template slot-scope="scope">
-              <el-button
-                size="mini"
-                type="success"
-              >编辑</el-button>
               <el-button
                 size="mini"
                 type="primary"
@@ -335,16 +331,14 @@ export default {
     },
     // 确定删除
     async deleteRow() {
-      this.data = { field: this.msg.pkReportLossId }
-      this.url = '/loss/deletion/{pk_card_id}'
+      this.data = { fleaRewardId: this.msg.pkReportLossId }
+      this.url = '/loss/deletion'
       this.result = await API.init(this.url, this.data, 'post')
       if (this.data) {
         this.getLossAll()
-        this.$message.success('删除成功')
-      } else {
-        this.$message.error('挂失信息删除失败')
+        this.$message.success('挂失信息删除成功')
+        this.delVisible = false //关闭删除提示模态框
       }
-      this.delVisible = false //关闭删除提示模态框
     },
     //新增一卡通挂失
     async confirmAdd() {

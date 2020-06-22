@@ -9,20 +9,62 @@
       </span>
     </el-dialog>
     <!-- 修改弹出框 -->
-    <el-dialog class="dialog" title="编辑账号信息" :modal="false" :visible.sync="updatecenterDialogVisible" width="30%" left>
-      <el-form :model="ruleForm" status-icon label-width="80px">
-        <el-form-item label="昵称" prop="nickName">
-          <el-input v-model="ruleForm.nickName" autocomplete="off"></el-input>
+
+    <el-dialog
+      class="dialog"
+      title="编辑账号信息"
+      :modal="false"
+      :visible.sync="updatecenterDialogVisible"
+      width="30%"
+      left
+    >
+      <el-form
+        :model="ruleForm"
+        status-icon
+        label-width="80px"
+        :rules="rules"
+      >
+        <el-form-item
+          required
+          label="昵称"
+          prop="nickName"
+        >
+          <el-input
+            v-model="ruleForm.nickName"
+            autocomplete="off"
+          ></el-input>
         </el-form-item>
-        <el-form-item label="头像" prop="avatar">
-          <img :src="ruleForm.avatar" alt="" style="width:100px;height:100px" @click="getClick()" />
+        <el-form-item
+          required
+          label="头像"
+          prop="avatar"
+        >
+          <img
+            :src="ruleForm.avatar"
+            alt=""
+            style="width:100px;height:100px"
+            @click="getClick()"
+          >
           <!-- 隐藏的文件输入框 -->
           <input type="file" ref="upload" style="display:none;" @change="handlderFile()" />
         </el-form-item>
-        <el-form-item label="手机号" prop="phoneNumber">
-          <el-input v-model.number="ruleForm.phoneNumber"></el-input>
+
+        <el-form-item
+          required
+          label="手机号"
+          prop="phoneNumber"
+        >
+          <el-input
+            oninput="value=value.replace(/[^\d]/g,'')"
+            v-model.number="ruleForm.phoneNumber"
+            @input="phoneChange1"
+          ></el-input>
         </el-form-item>
-        <el-form-item label="地址" prop="address">
+        <el-form-item
+          required
+          label="地址"
+          prop="address"
+        >
           <el-input v-model.number="ruleForm.address"></el-input>
         </el-form-item>
       </el-form>
@@ -32,13 +74,40 @@
       </span>
     </el-dialog>
     <!-- 增加弹出框 -->
-    <el-dialog class="dialog" :modal="false" title="添加账号" :visible.sync="addcenterDialogVisible" width="50%" center>
-      <el-form label-width="80px" :model="ruleForm1">
-        <el-form-item label="姓名" prop="userName">
+
+    <el-dialog
+      class="dialog"
+      :modal="false"
+      title="添加账号"
+      :visible.sync="addcenterDialogVisible"
+      width="30%"
+      height="300px"
+      center
+    >
+      <el-form
+        label-width="80px"
+        :model="ruleForm1"
+        :rules="rules"
+      >
+        <el-form-item
+          required
+          label="姓名"
+          prop="userName"
+        >
+
           <el-input v-model="ruleForm1.userName"></el-input>
         </el-form-item>
-        <el-form-item label="学号" prop="jobNumber">
-          <el-input v-model="ruleForm1.jobNumber"></el-input>
+        <el-form-item
+          required
+          label="学号"
+          prop="jobNumber"
+        >
+
+          <el-input
+            maxlength="13"
+            oninput="value=value.replace(/[^\d]/g,'')"
+            v-model="ruleForm1.jobNumber"
+          ></el-input>
         </el-form-item>
         <el-form-item label="班级" prop="clazzId">
           <el-select size="mini" v-model="selectValue" placeholder="请选择" class="statu-search ml-10">
@@ -48,10 +117,23 @@
         <el-form-item label="地址" prop="address">
           <el-input v-model="ruleForm1.address"></el-input>
         </el-form-item>
-        <el-form-item label="手机号" prop="phoneNumber">
-          <el-input v-model="ruleForm1.phoneNumber"></el-input>
+
+        <el-form-item
+          label="手机号"
+          prop="phoneNumber"
+        >
+          <el-input
+            oninput="value=value.replace(/[^\d]/g,'')"
+            v-model="ruleForm1.phoneNumber"
+            @input="phoneChange"
+          ></el-input>
         </el-form-item>
-        <el-form-item label="性别" prop="gender">
+        <el-form-item
+          required
+          label="性别"
+          prop="gender"
+        >
+
           <template>
             <el-radio v-model="radio" label="男"></el-radio>
             <el-radio v-model="radio" label="女"></el-radio>
@@ -69,11 +151,23 @@
         <el-button type="primary" @click="confirmAdd">确 定</el-button>
       </span>
     </el-dialog>
-    <el-row type="flex" class="ml-20 mt-10">
-      <el-input size="mini" v-model="input" placeholder="请输入内容" class="blur-search" @input="filterSearch()"></el-input>
-      <el-button type="success" size="mini" @click="searchAppInfoByCreate()" class="ml-10" icon="el-icon-search" v-if="searchShow"
-        >搜索</el-button
-      >
+    <el-row
+      type="flex"
+      class="ml-20 mt-10"
+    >
+      <el-input
+        size="mini"
+        v-model="input"
+        placeholder="请输入内容"
+        class="blur-search"
+        @input="filterSearch()"
+      ></el-input>
+      <el-button
+        type="success"
+        size="mini"
+        class="ml-10"
+        icon="el-icon-search"
+      >搜索</el-button>
     </el-row>
     <el-row class="df-jr-ac ml-20 mt-10">
       <el-col class="tl">
@@ -101,10 +195,30 @@
           <el-table-column label="账号" min-width="10%">
             <template slot-scope="scope">{{ scope.row.userAccount }}</template>
           </el-table-column>
-          <el-table-column prop="nickname" label="昵称" min-width="15%"></el-table-column>
-          <el-table-column prop="role" label="角色" min-width="15%"></el-table-column>
-          <el-table-column prop="phoneNumber" label="手机号" show-overflow-tooltip min-width="15%"> </el-table-column>
-          <el-table-column prop="status" label="状态" show-overflow-tooltip min-width="15%">
+          <el-table-column
+            prop="nickname"
+            label="昵称"
+            min-width="15%"
+          ></el-table-column>
+          <el-table-column
+            prop="role"
+            label="角色"
+            min-width="15%"
+            :formatter="roleChange"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="phoneNumber"
+            label="手机号"
+            show-overflow-tooltip
+            min-width="15%"
+          > </el-table-column>
+          <el-table-column
+            prop="status"
+            label="状态"
+            show-overflow-tooltip
+            min-width="15%"
+          >
             <template slot-scope="scope">
               <el-switch
                 v-model="scope.row.status"
@@ -154,9 +268,22 @@
 
 <script>
 const API = require('../utils/api')
+
 export default {
-  name: 'Permmission',
   data() {
+    var checkPhone = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('手机号不能为空'))
+      } else {
+        const reg = /^1[3|4|5|7|8][0-9]\d{8}$/
+        console.log(reg.test(value))
+        if (reg.test(value)) {
+          callback()
+        } else {
+          return callback(new Error('请输入正确的手机号'))
+        }
+      }
+    }
     return {
       time: '',
       value: true,
@@ -193,7 +320,10 @@ export default {
       updatecenterDialogVisible: false,
       file: '',
       delarr: [], //存放删除的数据
-      batchdelVisible: false
+      batchdelVisible: false,
+      rules: {
+        phoneNumber: [{ validator: checkPhone, trigger: 'blur' }]
+      }
     }
   },
   created() {
@@ -209,6 +339,32 @@ export default {
     total: function() {}
   },
   methods: {
+    // eslint-disable-next-line no-unused-vars
+    roleChange: function(row, column) {
+      return row.role == 1 ? '学生' : row.role == 2 ? '教师' : ''
+    },
+    phoneChange() {
+      this.ruleForm1.phoneNumber = this.ruleForm1.phoneNumber.replace(/[^\d]/g, '')
+      if (this.ruleForm1.phoneNumber.length > 11) {
+        this.ruleForm1.phoneNumber = this.ruleForm1.phoneNumber.substr(0, 11)
+      }
+      //如果依赖element的表单校验，就到这里就OK了，如果单单用了el-input不用element的表单校验，那继续往下
+      var reg = /^1[3456789]\d{9}$/
+      if (this.ruleForm1.phoneNumber.length >= 11 && !reg.test(this.ruleForm1.phoneNumber)) {
+        alert('请输入正确的手机号码格式')
+      }
+    },
+    phoneChange1() {
+      this.ruleForm.phoneNumber = this.ruleForm.phoneNumber.replace(/[^\d]/g, '')
+      if (this.ruleForm.phoneNumber.length > 11) {
+        this.ruleForm.phoneNumber = this.ruleForm.phoneNumber.substr(0, 11)
+      }
+      //如果依赖element的表单校验，就到这里就OK了，如果单单用了el-input不用element的表单校验，那继续往下
+      var reg = /^1[3456789]\d{9}$/
+      if (this.ruleForm.phoneNumber.length >= 11 && !reg.test(this.ruleForm.phoneNumber)) {
+        alert('请输入正确的手机号码格式')
+      }
+    },
     // 编辑
     handleEdit(row) {
       console.log(row)
@@ -234,7 +390,8 @@ export default {
       this.delVisible = true
     },
     async deleteRow() {
-      this.data = { filed1: String(this.msg.pkUserAccountId) }
+      console.log(this.msg.pkUserAccountId)
+      this.data = { filed1: this.msg.pkUserAccountId }
       this.url = '/userAccount/deletion'
       this.result = await API.init(this.url, this.data, 'post')
       this.getuserAccount()
@@ -276,17 +433,7 @@ export default {
     },
     //新增账号
     async confirmAdd() {
-      // eslint-disable-next-line no-unused-vars
-      let userAccount = {
-        userName: this.ruleForm1.userName,
-        jobNumber: this.ruleForm1.jobNumber,
-        role: this.radio1,
-        gender: this.radio,
-        address: this.ruleForm1.address,
-        clazzId: this.selectValue,
-        phoneNumber: this.ruleForm1.phoneNumber
-      }
-      console.log(this.selectValue)
+      console.log(this.data)
       this.data = {
         userName: this.ruleForm1.userName,
         jobNumber: this.ruleForm1.jobNumber,

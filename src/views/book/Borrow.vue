@@ -77,19 +77,16 @@
         size="mini"
         @input="filterSearch()"
       ></el-input>
-      <el-select
-        size="mini"
-        v-model="selectValue"
-        placeholder="请选择"
-        class="statu-search ml-10"
+      <el-date-picker
+        v-model="time"
+        type="daterange"
+        range-separator=":"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期"
+        class="date-input-search ml-10"
+        value-format="yyyy-MM-dd"
       >
-        <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        > </el-option>
-      </el-select>
+      </el-date-picker>
       <el-button
         type="success"
         size="mini"
@@ -300,7 +297,8 @@ export default {
         borrowBookName: '',
         borrowBookId: ''
       },
-      file: ''
+      file: '',
+      time: []
     }
   },
   created() {

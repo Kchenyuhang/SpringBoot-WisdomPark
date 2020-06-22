@@ -19,7 +19,8 @@
           prop="balance"
         >
           <el-input
-            type="number"
+            max="5"
+            oninput="value=value.replace(/[^\d]/g,'')"
             v-model.number="ruleForm.balance"
           ></el-input>
         </el-form-item>
@@ -226,7 +227,7 @@ export default {
       currentPageSize: 100,
       currentPage: 1,
       currentPageSizeA: 6,
-      currentPageA: 0,
+      currentPageA: 1,
       visible: false,
       delVisible: false,
       updatecenterDialogVisible: false,
@@ -299,11 +300,11 @@ export default {
     },
     // eslint-disable-next-line no-unused-vars
     statusChange: function(row, column) {
-      return row.status == 1 ? '已支付' : row.status == 0 ? '未支付' : 'aaa'
+      return row.status == 1 ? '已支付' : row.status == 0 ? '未支付' : ''
     },
     // 分页查询所有
     async getOrderAll() {
-      this.data = { currentPage: this.currentPage, pageSize: this.PageSize }
+      this.data = { currentPage: this.currentPage, pageSize: this.currentPageSize }
       this.url = '/order/all'
       this.result = await API.init(this.url, this.data, 'post')
       this.tableData = this.result.data
