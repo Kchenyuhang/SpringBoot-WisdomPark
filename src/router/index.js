@@ -180,6 +180,7 @@ const routes = [
         name: 'Order',
         component: () => import('../views/flea/Order.vue')
       },
+      /**跑腿 */
       {
         path: 'pdelivery',
         name: 'pdelivery',
@@ -189,6 +190,11 @@ const routes = [
         path: 'puser',
         name: 'puser',
         component: () => import('../views/errands/Puer.vue')
+      },
+      {
+        path: 'passErrends',
+        name: 'passErrends',
+        component: () => import('../views/errands/passErrends.vue')
       }
     ]
   },
