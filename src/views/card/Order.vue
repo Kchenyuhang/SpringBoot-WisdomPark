@@ -1,6 +1,47 @@
 /* eslint-disable prettier/prettier */
 <template>
   <div style="width:100%">
+    <!-- 修改弹出框 -->
+    <el-dialog
+      :modal="false"
+      title="编辑一卡通"
+      :visible.sync="updatecenterDialogVisible"
+      width="30%"
+      left
+    >
+      <el-form
+        :model="ruleForm"
+        status-icon
+        label-width="80px"
+      >
+        <el-form-item
+          label="余额"
+          prop="balance"
+        >
+          <el-input
+            type="number"
+            v-model.number="ruleForm.balance"
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          label="缴费描述"
+          prop="description"
+        >
+          <el-input v-model.number="ruleForm.description"></el-input>
+        </el-form-item>
+      </el-form>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="updatecenterDialogVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="confirmUpdate"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+
     <el-row
       type="flex"
       class="ml-20 mt-10"
@@ -8,24 +49,21 @@
       <el-input
         size="mini"
         v-model="input"
+        type="text"
+        @input="filterSearch()"
         placeholder="请输入内容"
         class="blur-search"
       ></el-input>
       <el-button
         type="success"
         size="mini"
-        @click="search()"
         class="ml-10"
+        @click="filterSearch()"
         icon="el-icon-search"
       >搜索</el-button>
     </el-row>
     <el-row class="df-jr-ac ml-20 mt-10">
       <el-col class="tl">
-        <el-button
-          type="primary"
-          icon="el-icon-plus"
-          size="small"
-        ><span>新增</span></el-button>
         <el-button
           type="success"
           icon="el-icon-edit"
@@ -51,7 +89,7 @@
         class="ml-20 mt-10"
       >
         <el-table
-          :data="tableData"
+          :data="tableData.slice(start,end)"
           border
           style="width: 100%"
         >
@@ -75,6 +113,14 @@
             label="类型"
             min-width="15%"
           >
+            <template slot-scope="{row,$index}">
+              <input
+                class="edit-cell"
+                v-if="showEdit[$index]"
+                v-model="row.orderType"
+              >
+              <span v-if="!showEdit[$index]">{{row.orderType}}</span>
+            </template>
           </el-table-column>
           <el-table-column
             prop="orderMoney"
@@ -111,13 +157,9 @@
           >
             <template slot-scope="scope">
               <el-button
-                @click="handleClick(scope.row)"
                 type="text"
                 size="small"
-              >查看</el-button>
-              <el-button
-                type="text"
-                size="small"
+                @click="handleUpdate(scope.$index, scope.row)"
               >编辑</el-button>
               <el-button
                 slot="reference"
@@ -137,16 +179,19 @@
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="[6, 12, 18, 24]"
+        :current-page="currentPageA"
+        :page-sizes="[6,12,18]"
         :page-size="pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
+        layout="total, prev, pager, next, sizes,jumper"
+        :total="tableData.length"
+        @prev-click="prevPage()"
+        @next-click="nextPage()"
       >
       </el-pagination>
     </div>
     <!-- 删除提示框 -->
     <el-dialog
+      :modal="false"
       title="提示"
       :visible.sync="delVisible"
       width="300px"
@@ -168,33 +213,75 @@
 </template>
 
 <script>
+const API = require('../utils/api')
 export default {
   name: 'Order',
   data() {
     return {
       tableData: [],
-      total: 72,
-      currentPage: 1,
+      tableData1: [],
+      start: 0,
+      end: 6,
       pageSize: 6,
+      currentPageSize: 100,
+      currentPage: 1,
+      currentPageSizeA: 6,
+      currentPageA: 0,
       visible: false,
-      delVisible: false
+      delVisible: false,
+      updatecenterDialogVisible: false,
+      ruleForm: {
+        balance: '',
+        description: '',
+        type: ''
+      },
+      showEdit: [], //显示编辑框
+      showBtn: [],
+      showBtnOrdinary: true,
+      input: ''
     }
   },
   components: {},
   created() {
     this.getOrderAll()
   },
-  watch: {
-    pageSize: function() {
-      this.getOrderAll()
-    },
-    currentPage: function() {
-      this.getOrderAll()
-    },
-    total: function() {}
-  },
   mounted() {},
   methods: {
+    //下一页
+    nextPage() {
+      this.currentPageA += 1
+      this.start += this.pageSize
+      this.end += this.pageSize
+    },
+    //上一页
+    prevPage() {
+      this.currentPageA -= 1
+      this.start -= this.pageSize
+      this.end -= this.pageSize
+    },
+    //改变页的数据条数
+    handleSizeChange(val) {
+      this.start = (this.currentPageA - 1) * val
+      this.end = this.currentPageA * val
+      this.pageSize = val
+    },
+    //选择分页
+    handleCurrentChange(val) {
+      this.currentPageA = val
+      this.start = (this.currentPageA - 1) * this.pageSize
+      this.end = this.currentPageA * this.pageSize
+    },
+    // eslint-disable-next-line no-unused-vars
+    handleEdit(index, row) {
+      this.$set(this.showEdit, index, true)
+      this.$set(this.showBtn, index, true)
+    },
+    //取消编辑
+    // eslint-disable-next-line no-unused-vars
+    handelCancel(index, row) {
+      this.$set(this.showEdit, index, false)
+      this.$set(this.showBtn, index, false)
+    },
     //单行删除
     handleDelete(index, row) {
       this.idx = index
@@ -202,66 +289,58 @@ export default {
       this.delVisible = true
     },
     // 确定删除
-    deleteRow() {
-      this.axios({
-        method: 'post',
-        url: 'http://localhost:8080/order/id',
-        data: {
-          field: this.msg.pkOrderId
-        }
-      })
-        .then((res) => {
-          if (res.data) {
-            this.getOrderAll()
-            this.$message.success('删除成功')
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-          this.$message.error('订单信息删除失败')
-        })
+    async deleteRow() {
+      this.data = { fleaRewardId: this.msg.pkOrderId }
+      this.url = '/order/id'
+      this.result = await API.init(this.url, this.data, 'post')
+      this.getOrderAll()
+      this.$message.success('信息删除成功')
       this.delVisible = false //关闭删除提示模态框
-    },
-    //时间格式化
-    dateFormat: function(row, column) {
-      var date = row[column.property]
-      if (date == undefined) {
-        return ''
-      }
-      // eslint-disable-next-line no-undef
-      return moment(date).format('YYYY-MM-DD HH:mm:ss')
     },
     // eslint-disable-next-line no-unused-vars
     statusChange: function(row, column) {
       return row.status == 1 ? '已支付' : row.status == 0 ? '未支付' : 'aaa'
     },
-    //获取所有订单消息
-    getOrderAll() {
-      this.axios({
-        method: 'post',
-        url: 'http://localhost:8080/order/all',
-        data: {
-          currentPage: this.currentPage,
-          pageSize: this.pageSize
+    // 分页查询所有
+    async getOrderAll() {
+      this.data = { currentPage: this.currentPage, pageSize: this.PageSize }
+      this.url = '/order/all'
+      this.result = await API.init(this.url, this.data, 'post')
+      this.tableData = this.result.data
+      this.tableData1 = this.result.data
+      for (let i = 0; i < this.tableData.length; i++) {
+        this.tableData[i].gmtCreate = this.formatDate(this.tableData[i].gmtCreate)
+      }
+    },
+    //编辑
+    handleUpdate(index, row) {
+      this.idx = index
+      this.msg = row //每一条数据的记录
+      this.updatecenterDialogVisible = true
+    },
+    //修改订单信息
+    async confirmUpdate() {
+      this.data = {
+        pkCardId: this.msg.pkCardId,
+        description: this.ruleForm.description,
+        cardBalance: this.ruleForm.balance
+      }
+      this.url = '/order/modification'
+      this.result = await API.init(this.url, this.data, 'post')
+      this.updatecenterDialogVisible = false
+      this.getOrderAll()
+      this.$message.success('信息修改成功')
+    },
+    //过滤搜索
+    filterSearch() {
+      // 获取输入框的值
+      let search = this.input
+      //数组元素按条件过滤
+      this.tableData = this.tableData1.filter((v) => {
+        if (JSON.stringify(v).includes(search)) {
+          return v
         }
       })
-        .then((res) => {
-          this.tableData = res.data.data
-          for (let i = 0; i < this.tableData.length; i++) {
-            this.tableData[i].gmtCreate = this.formatDate(this.tableData[i].gmtCreate)
-          }
-        })
-        .catch(function(error) {
-          console.log(error)
-        })
-    },
-    // 当前页展示数据
-    handleSizeChange: function(pageSize) {
-      this.pageSize = pageSize
-    },
-    // 当前页
-    handleCurrentChange: function(currentPage) {
-      this.currentPage = currentPage
     },
     formatDate(value) {
       let date = new Date(value)

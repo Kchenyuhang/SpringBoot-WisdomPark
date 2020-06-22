@@ -1,5 +1,36 @@
 <template>
   <div style="width:100%">
+    <!-- 增加弹出框 -->
+    <el-dialog
+      title="新增一卡通挂失"
+      :visible.sync="addcenterDialogVisible"
+      width="30%"
+      :modal="false"
+      center
+    >
+      <el-form
+        label-width="80px"
+        :model="ruleForm1"
+      >
+        <el-form-item
+          required
+          label="卡号"
+          prop="cardNumber"
+        >
+          <el-input v-model="ruleForm1.cardNumber"></el-input>
+        </el-form-item>
+      </el-form>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="addcenterDialogVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="confirmAdd"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
     <el-row
       type="flex"
       class="ml-20 mt-10"
@@ -9,6 +40,7 @@
         v-model="input"
         placeholder="请输入内容"
         class="blur-search"
+        @input="filterSearch()"
       ></el-input>
       <el-select
         size="mini"
@@ -37,6 +69,7 @@
           type="primary"
           icon="el-icon-plus"
           size="small"
+          @click="addcenterDialogVisible = true"
         ><span>新增</span></el-button>
         <el-button
           type="success"
@@ -69,7 +102,7 @@
       >
         <el-table
           ref="multipleTable"
-          :data="tableData"
+          :data="tableData.slice(start, end)"
           tooltip-effect="dark"
           style="width: 100%;"
           @selection-change="handleSelectionChange"
@@ -152,21 +185,24 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPageA"
-        :page-sizes="[2, 4, 6, 8, 10]"
-        :page-size="pageSizeA"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
+        :page-sizes="[6,12,18]"
+        :page-size="pageSize"
+        layout="total, prev, pager, next, sizes,jumper"
+        :total="tableData.length"
+        @prev-click="prevPage()"
+        @next-click="nextPage()"
       >
       </el-pagination>
     </div>
     <!-- 申请挂失弹出框 -->
     <el-dialog
+      :modal="false"
       title="提示"
       :visible.sync="statusVisible"
       width="300px"
       center
     >
-      <div class="del-dialog-cnt">该一卡通正在申请挂失，是否确定挂失</div>
+      <div class="del-dialog-cnt">该一卡通挂失正在申请挂失，是否确定挂失</div>
       <span
         slot="footer"
         class="dialog-footer"
@@ -180,6 +216,7 @@
     </el-dialog>
     <!-- 删除提示框 -->
     <el-dialog
+      :modal="false"
       title="提示"
       :visible.sync="delVisible"
       width="300px"
@@ -201,18 +238,27 @@
 </template>
 
 <script>
+const API = require('../utils/api')
 export default {
   name: 'ReportLoss',
   data() {
     return {
       tableData: [],
+      tableData1: [],
+      start: 0,
+      end: 6,
+      pageSize: 6,
+      currentPageSize: 12,
       currentPage: 0,
-      pageSize: 1000,
-      pageSizeA: 4,
-      total: '',
+      currentPageSizeA: 12,
       currentPageA: 0,
+      input: '',
       delVisible: false,
-      statusVisible: false
+      statusVisible: false,
+      addcenterDialogVisible: false,
+      ruleForm1: {
+        cardNumber: ''
+      }
     }
   },
   components: {},
@@ -221,6 +267,30 @@ export default {
   },
   mounted() {},
   methods: {
+    //下一页
+    nextPage() {
+      this.currentPageA += 1
+      this.start += this.pageSize
+      this.end += this.pageSize
+    },
+    //上一页
+    prevPage() {
+      this.currentPageA -= 1
+      this.start -= this.pageSize
+      this.end -= this.pageSize
+    },
+    //改变页的数据条数
+    handleSizeChange(val) {
+      this.start = (this.currentPageA - 1) * val
+      this.end = this.currentPageA * val
+      this.pageSize = val
+    },
+    //选择分页
+    handleCurrentChange(val) {
+      this.currentPageA = val
+      this.start = (this.currentPageA - 1) * this.pageSize
+      this.end = this.currentPageA * this.pageSize
+    },
     // eslint-disable-next-line no-unused-vars
     statusChange: function(row, column) {
       return row.lossStatus == 1 ? '已挂失' : row.lossStatus == 0 ? '申请挂失中' : 'aaa'
@@ -228,32 +298,16 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
-    watch: {
-      pageSizeA: function() {
-        this.getLossAll()
-      },
-      currentPageA: function() {
-        this.getLossAll()
-      },
-      total: function() {}
-    },
-    //分页查询
-    getLossAll() {
-      this.axios({
-        method: 'post',
-        url: 'http://localhost:8080/loss/all',
-        data: {
-          currentPage: this.currentPage,
-          pageSize: this.pageSize
-        }
-      })
-        .then((res) => {
-          this.tableData = res.data.data
-          this.total = this.tableData.length
-        })
-        .catch(function(error) {
-          console.log(error)
-        })
+    // 分页查询所有
+    async getLossAll() {
+      this.data = { currentPage: this.currentPage, pageSize: this.currentPageSize }
+      this.url = '/loss/all'
+      this.result = await API.init(this.url, this.data, 'post')
+      this.tableData = this.result.data
+      this.tableData1 = this.result.data
+      for (let i = 0; i < this.tableData.length; i++) {
+        this.tableData[i].gmtCreate = this.formatDate(this.tableData[i].gmtCreate)
+      }
     },
     //申请挂失
     handleStatus(index, row) {
@@ -262,27 +316,15 @@ export default {
       if (this.msg.lossStatus == false) {
         this.statusVisible = true
       } else {
-        this.$message.success('该一卡通已挂失')
+        this.$message.success('该一卡通挂失已挂失')
       }
     },
-    changeStatus() {
-      console.log(this.msg.pkReportLossId)
-      this.axios({
-        method: 'post',
-        url: 'http://localhost:8080/loss/statuschange',
-        data: {
-          field: this.msg.pkReportLossId,
-          status: true
-        }
-      })
-        // eslint-disable-next-line no-unused-vars
-        .then((res) => {
-          this.getLossAll()
-          this.$message.success('挂失成功')
-        })
-        .catch(function(error) {
-          console.log(error)
-        })
+    async changeStatus() {
+      this.data = { field: this.msg.pkReportLossId, status: true }
+      this.url = '/loss/statuschange'
+      this.result = await API.init(this.url, this.data, 'post')
+      this.getLossAll()
+      this.$message.success('挂失成功')
       this.statusVisible = false
     },
     //单行删除
@@ -292,25 +334,61 @@ export default {
       this.delVisible = true
     },
     // 确定删除
-    deleteRow() {
-      this.axios({
-        method: 'post',
-        url: 'http://localhost:8080/loss/deletion/{pk_card_id}',
-        data: {
-          field: this.msg.pkReportLossId
+    async deleteRow() {
+      this.data = { field: this.msg.pkReportLossId }
+      this.url = '/loss/deletion/{pk_card_id}'
+      this.result = await API.init(this.url, this.data, 'post')
+      if (this.data) {
+        this.getLossAll()
+        this.$message.success('删除成功')
+      } else {
+        this.$message.error('挂失信息删除失败')
+      }
+      this.delVisible = false //关闭删除提示模态框
+    },
+    //新增一卡通挂失
+    async confirmAdd() {
+      this.data = {
+        ids: this.ruleForm1.cardNumber
+      }
+      this.url = '/increase'
+      this.result = await API.init(this.url, this.data, 'post')
+      console.log(this.result)
+      this.addcenterDialogVisible = false
+      this.getLossAll()
+      if (this.result.code == 50001) {
+        this.$message.success('该账号不存在，挂失失败')
+      } else if (this.result.code == 20006) {
+        this.$message.success('该账号已挂失')
+      } else {
+        this.$message.success('挂失成功')
+      }
+    },
+    formatDate(value) {
+      let date = new Date(value)
+      let y = date.getFullYear()
+      let MM = date.getMonth() + 1
+      MM = MM < 10 ? '0' + MM : MM
+      let d = date.getDate()
+      d = d < 10 ? '0' + d : d
+      let h = date.getHours()
+      h = h < 10 ? '0' + h : h
+      let m = date.getMinutes()
+      m = m < 10 ? '0' + m : m
+      let s = date.getSeconds()
+      s = s < 10 ? '0' + s : s
+      return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s
+    },
+    //过滤搜索
+    filterSearch() {
+      // 获取输入框的值
+      let search = this.input
+      //数组元素按条件过滤
+      this.tableData = this.tableData1.filter((v) => {
+        if (JSON.stringify(v).includes(search)) {
+          return v
         }
       })
-        .then((res) => {
-          if (res.data) {
-            this.getLossAll()
-            this.$message.success('删除成功')
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-          this.$message.error('挂失信息删除失败')
-        })
-      this.delVisible = false //关闭删除提示模态框
     }
   },
   computed: {}

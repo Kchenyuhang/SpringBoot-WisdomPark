@@ -3,6 +3,7 @@
     <!-- 修改弹出框 -->
     <el-dialog
       title="编辑一卡通"
+      :modal="false"
       :visible.sync="updatecenterDialogVisible"
       width="30%"
       left
@@ -65,6 +66,7 @@
       title="新增一卡通"
       :visible.sync="addcenterDialogVisible"
       width="30%"
+      :modal="false"
       center
     >
       <el-form
@@ -122,6 +124,7 @@
       :visible.sync="datailcenterDialogVisible"
       width="30%"
       left
+      :modal="false"
     >
       <el-form
         status-icon
@@ -230,11 +233,6 @@
             >确 定</el-button>
           </span>
         </el-dialog>
-        <el-button
-          type="warning"
-          icon="el-icon-download"
-          size="small"
-        >导出</el-button>
       </el-col>
       <el-col class="tr mr-20">
         <el-button
@@ -326,7 +324,7 @@
           <el-table-column
             label="操作"
             show-overflow-tooltip
-            min-width="23%"
+            min-width="26%"
           >
             <template slot-scope="scope">
               <el-button
@@ -355,6 +353,7 @@
       :visible.sync="delVisible"
       width="300px"
       center
+      :modal="false"
     >
       <div class="del-dialog-cnt">一卡通信息删除不可恢复，是否确定删除？</div>
       <span
@@ -414,7 +413,7 @@ export default {
       cardList1: [],
       detailList: [],
       currentPage: 0,
-      total: 40,
+      total: 46,
       pageSize: 8,
       updatecenterDialogVisible: false,
       addcenterDialogVisible: false,
@@ -458,16 +457,12 @@ export default {
     total: function() {}
   },
   methods: {
-    load() {
-      this.cardList.length += 2
-    },
     // 分页查询所有
     async getCardAll() {
       this.data = { currentPage: this.currentPage, pageSize: this.pageSize }
       this.url = '/card/list'
       this.result = await API.init(this.url, this.data, 'post')
       this.cardList = this.result.data
-      console.log(this.result.data)
       this.cardList1 = this.result.data
       for (let i = 0; i < this.cardList.length; i++) {
         this.cardList[i].gmtCreate = this.formatDate(this.cardList[i].gmtCreate)
@@ -650,5 +645,17 @@ el-input {
 }
 .el-input__inner {
   height: 30px;
+}
+.dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
 }
 </style>

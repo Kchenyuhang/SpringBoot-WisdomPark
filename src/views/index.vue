@@ -1,12 +1,13 @@
 <template>
   <el-container class="container">
     <Side :menuList="menuList" style="position: relative; top: 0;height: 100%"></Side>
-    <div style="flex: 1 1 auto;" class="body" :class="{ body1: !isCollapse }">
+    <div class="body1">
+    <!-- <div class="body1" :class="{ body1: !isCollapse }"> -->
       <Nav></Nav>
-      <div style="height: 20px;line-height: 20px;margin-top: 100px; background-color: #f8f8f8; padding-left: 10px" class="tl ">
+      <div style="height: 20px;line-height: 20px;margin-top: 100px;background-color: #f8f8f8; padding-left: 10px" class="tl ">
         <!-- <span>推荐歌曲</span> -->
       </div>
-      <router-view />
+      <router-view :style="{ width: screenWidth - 220 + `px` }" />
     </div>
   </el-container>
 </template>
@@ -19,7 +20,8 @@ export default {
   data() {
     return {
       menuList: [],
-      isCollapse: true
+      isCollapse: true,
+      screenWidth: document.documentElement.clientWidth
     }
   },
   components: {
@@ -28,6 +30,7 @@ export default {
   },
   created() {
     this.getMenuList()
+    console.log(this.screenWidth)
   },
   mounted() {
     var _this = this
@@ -47,7 +50,8 @@ export default {
       let phoneNumber = JSON.parse(localStorage.getItem('user')).sysUserPhoneNumber
       this.axios({
         method: 'get',
-        url: 'http://localhost:8080/sysUser/menus',
+        // url: 'http://localhost:8081/sysUser/menus',
+        url: 'http://120.26.177.51:8081/sysUser/menus',
         params: {
           phoneNumber: phoneNumber
         },
@@ -80,7 +84,7 @@ export default {
 
 .body1 {
   z-index: 100;
-  margin-left: 200px;
+  margin-left: 202px;
   transition: margin-left 0.3s;
 }
 

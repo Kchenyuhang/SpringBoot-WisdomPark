@@ -229,28 +229,34 @@ export default {
       this.adminInfo.phoneNumber = ''
       this.adminInfo.isEnabled = ''
     },
+    //改变用户账号状态
     async changeEnabled(item) {
       this.$confirm('此操作将修改该用户账号状态, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.axios({
-          method: 'post',
-          url: 'http://localhost:8080/sysUser/single/id',
-          data: {
-            field: item.sys_user_id,
-            status: item.is_enabled
-          }
-        }).then((res) => {
-          if (res.data.code == 1) {
-            this.$message({
-              message: '修改成功',
-              type: 'success'
-            })
-          }
-        })
+        let data = {
+          field: item.sys_user_id,
+          status: item.is_enabled
+        }
+        let res = API.init('/sysUser/single/id', data, 'post')
+        // this.axios({
+        //   method: 'post',
+        //   url: 'http://localhost:8080/sysUser/single/id',
+        //   data: {
+        //     field: item.sys_user_id,
+        //     status: item.is_enabled
+        //   }
+        // }).then((res) => {
+        if (res.data.code == 1) {
+          this.$message({
+            message: '修改成功',
+            type: 'success'
+          })
+        }
       })
+      // })
     },
     //搜索
     search() {
@@ -262,7 +268,7 @@ export default {
           status = true
         }
         this.adminInfos = this.admins.filter((admin) => {
-          if ((admin.is_enabled == status)) {
+          if (admin.is_enabled == status) {
             //console.log(status)
             return admin
           }
@@ -327,7 +333,7 @@ export default {
         }
       }
     },
-    /* 修改room信息 */
+    /* 修改admin信息 */
     updaeAdminInfo(row) {
       this.msg = '修改'
       this.adminInfo.name = row.sys_user_name
@@ -336,8 +342,6 @@ export default {
           this.adminInfo.role = role.pkRoleId
         }
       })
-      console.log('用户信息>>>>>>>>>>>>>>>>>>>>>>')
-      console.log(row)
       this.adminInfo.phoneNumber = row.sys_user_phone_number
       this.adminInfo.userId = row.sys_user_id
       if (row.is_enabled == true) {
@@ -355,23 +359,21 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.axios({
-          method: 'post',
-          url: 'http://localhost:8080/sysUser/deletion/phoneNumber',
-          data: {
-            field: item.sys_user_phone_number
-          }
-        }).then((res) => {
-          if (res.data.code == 1) {
-            this.$message({
-              message: '删除成功',
-              type: 'success'
-            })
-            let index = this.admins.indexOf(item)
-            this.admins.splice(index, 1)
-          }
-        })
+        let data = {
+          field: item.sys_user_phone_number
+        }
+        let res = API.init('/sysUser/deletion/phoneNumber', data, 'post')
+        if (res.data.code == 1) {
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          })
+          let index = this.admins.indexOf(item)
+          this.admins.splice(index, 1)
+        }
+
       })
+      // })
     },
     //刷新数据
     flush() {
@@ -445,7 +447,7 @@ export default {
 
 >>> .el-input__icon {
   color: #ddd;
-  margin-bottom: 10px;
+  margin-top: -5px;
 }
 
 .el-button--success {
@@ -456,12 +458,23 @@ export default {
   background-color: #f4f4f5;
 }
 
+>>> .el-input__prefix {
+  display: flex;
+  height: 30px;
+  line-height: 30px;
+}
+
+>>> .el-icon-date {
+  margin-bottom: 10px;
+}
+
 .search-btn:hover {
   background-color: #909399;
 }
 
 >>> .el-input__inner {
   height: 30px;
+  line-height: 30px;
 }
 
 >>> .el-icon-edit {
@@ -480,22 +493,13 @@ export default {
   color: #f7fbff;
 }
 
->>> .el-range-separator {
-  margin-bottom: 10px;
-}
-
 /* >>> .el-icon-search {
   color: #f7fbff;
 } */
 
->>> .el-input__prefix {
-  display: flex;
-  align-items: center;
-}
-
->>> .el-select__caret {
+/* >>> .el-select__caret {
   margin-top: 5px;
-}
+} */
 
 /* >>> .el-input__suffix-inner {
   display: flex;
@@ -540,15 +544,8 @@ export default {
   width: 100px;
 }
 
-el-input {
-  height: 30px;
-}
-
 .search-btn {
   height: 30px;
   width: 80px;
-}
-.el-input__inner {
-  height: 30px;
 }
 </style>

@@ -71,6 +71,11 @@ const routes = [
         component: () => import('../views/base/Clazz.vue')
       },
       {
+        path: 'course',
+        name: 'Course',
+        component: () => import('../views/base/Course.vue')
+      },
+      {
         path: 'student',
         name: 'Student',
         component: () => import('../views/base/Student.vue')

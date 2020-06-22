@@ -1,4 +1,8 @@
 <template>
+  <!-- <el-row type="flex" style="width: 100%">
+      <el-col span="4" class="tl"> -->
+  <!-- <el-input prefix-icon="el-icon-search" v-model="input" placeholder="请输入内容" class="blur-search mt-10"></el-input> -->
+  <!-- <el-tree :data="towers" :props="defaultProps" @node-click="handleNodeClick" class="mt-20"></el-tree> -->
   <div class="room-container" style="width: 100%">
     <el-row type="flex" style="width: 100%">
       <el-col span="4" class="tl">
@@ -9,19 +13,6 @@
         <!-- 操作按钮 -->
         <el-row type="flex" class="ml-20 mt-10">
           <el-input v-model="input" prefix-icon="el-icon-search" placeholder="请输入内容" class="blur-search" v-if="searchShow"></el-input>
-          <el-date-picker
-            v-model="time"
-            type="daterange"
-            range-separator=":"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            class="date-input-search ml-10"
-            value-format="yyyy-MM-dd"
-            v-if="searchShow"
-          ></el-date-picker>
-          <el-select v-model="selectValue" placeholder="请选择" v-if="searchShow" class="statu-search ml-10">
-            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
-          </el-select>
           <el-button v-if="searchShow" type="success" size="mini" @click="search()" class="ml-10 bg-green" icon="">
             <i class="el-icon-search" style="color: rgb(247, 251, 255)"></i>
             <span class="light-font-color">搜索</span>
@@ -53,7 +44,7 @@
         <el-row>
           <el-table
             ref="multipleTable"
-            :data="rooms.slice(start, end)"
+            :data="roomsList.slice(start, end)"
             tooltip-effect="dark"
             style="width: 100%"
             class="light-small-font"
@@ -64,7 +55,7 @@
               <template slot-scope="scope">{{ scope.row.towerName }}</template>
             </el-table-column>
             <el-table-column label="单元" min-width="15%">
-              <template slot-scope="scope">{{ scope.row.unitId }}</template>
+              <template slot-scope="scope">{{ scope.row.unitName }}</template>
             </el-table-column>
             <el-table-column label="房间号" min-width="15%">
               <template slot-scope="scope">{{ scope.row.roomName }}</template>
@@ -97,78 +88,57 @@
             :page-sizes="[10, 20]"
             :page-size="100"
             layout="total, prev, pager, next, sizes"
-            :total="rooms.length"
+            :total="roomsList.length"
             @prev-click="prevPage()"
             @next-click="nextPage()"
           ></el-pagination>
         </el-row>
         <!-- 新增页面 -->
-        <el-dialog :visible.sync="dialogFormVisible" width="400px" center="true">
+        <div class="dialog" v-if="dialogFormVisible">
           <h2>新增房间信息</h2>
-          <el-form class="mt-10" :model="room" style="border-radius: 5px">
-            <el-form-item label="楼栋" required :label-width="formLabelWidth">
-              <el-select v-model="room.towerName" placeholder="请选择楼栋">
-                <el-option label="雪松苑" value="shanghai"></el-option>
-                <el-option label="求真楼" value="beijing"></el-option>
+          <el-form class="mt-10 dialog-form dc-jc-ac" :model="room" style="border-radius: 5px">
+            <el-form-item label="楼栋" required style="width: 80%">
+              <el-select v-model="room.towerName" placeholder="请选择楼栋" @change="getTowerUnits" style="width: 80%">
+                <el-option
+                  v-for="(item, index) in units"
+                  :key="index"
+                  :label="item.name"
+                  :value="item.pk_tower_id"
+                  @click="getTowerUnits(item)"
+                ></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item required label="单元" :label-width="formLabelWidth">
-              <el-select v-model="room.towerName" placeholder="请选择活动区域">
-                <el-option label="A4" value="shanghai"></el-option>
-                <el-option label="A5" value="beijing"></el-option>
+            <el-form-item required label="单元" style="width: 80%">
+              <el-select v-model="room.towerUnit" placeholder="请选择活动区域" style="width: 55%">
+                <el-option v-for="(item, index) in towerUnits" :key="index" :label="item.name" :value="item.unit_id"></el-option>
               </el-select>
-              <span style="color: red" class="ml-10">* 仅限宿舍</span>
+              <span style="color: red; width: 45%" class="ml-10">* 仅限宿舍</span>
             </el-form-item>
-            <el-form-item required label="房间" :label-width="formLabelWidth">
-              <el-input v-model="room.name" autocomplete="off" placeholder="请输入房间号" style="width: 40%"></el-input>
+            <el-form-item required label="房间" style="width: 80%">
+              <el-input v-model="room.name" autocomplete="off" placeholder="请输入房间号" style="width: 80%"></el-input>
+            </el-form-item>
+            <el-form-item class="tr" style="width: 80%">
+              <el-button @click="dialogFormVisible = false" size="mini">取 消</el-button>
+              <el-button type="primary" @click="addRoomInfo(tag)" size="mini">确定</el-button>
             </el-form-item>
           </el-form>
-          <!-- <p class="df-jl-ac">
+        </div>
+        <!-- <p class="df-jl-ac">
           <span class="mr-10">房间 </span>
           <el-input v-model="room.name" autocomplete="off" placeholder="请输入房间号" style="width: 40%"></el-input>
           </p> -->
-          <div slot="footer" class="dialog-footer">
-            <el-button @click="dialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="addRoomInfo(tag)">确定</el-button>
-          </div>
-        </el-dialog>
       </el-col>
     </el-row>
   </div>
 </template>
 
 <script>
+const API = require('../utils/api.js')
 export default {
   name: 'Room',
   data() {
     return {
-      towers: [
-        {
-          name: '教学楼',
-          children: [
-            {
-              name: '教四'
-            },
-            {
-              name: '教1'
-            },
-            {
-              name: '教2'
-            }
-          ]
-        },
-        {
-          name: '宿舍楼',
-          children: [
-            {
-              name: '雪松苑'
-            },
-            {
-              name: '青松苑'
-            }
-          ]
-        }
-      ],
+      towers: [],
       start: 0,
       end: 10,
       searchShow: true,
@@ -176,92 +146,143 @@ export default {
       pageSize: 10,
       currentPageSize: 10,
       defaultProps: {
-        children: 'children',
+        children: 'childTowers',
         label: 'name'
       },
+      units: [],
+      towerUnits: [],
       dialogFormVisible: false,
       multipleSelection: [],
       rooms: [],
+      roomsList: [],
+      roomsList1: [],
       room: {
         name: '',
-        towerName: ''
+        towerName: '',
+        towerUnit: ''
       },
+      input: '',
+      towerName: -1,
       tag: 1,
       currentPage: 1
     }
   },
   created() {
     this.getRoom()
+    this.getTowers()
+    this.getAllTowersUnits()
   },
   mounted() {},
   methods: {
-    getRoom() {
-      this.axios({
-        method: 'get',
-        url: 'http://localhost:8080/room/list'
-      }).then((res) => {
-        this.rooms = res.data.data
-        for (let i = 0, len = this.rooms.length; i < len; i++) {
-          this.rooms[i].gmtGreate = this.global.formatDate(this.rooms[i].gmtGreate)
-        }
-        console.log(this.rooms)
-      })
+    async getRoom() {
+      let res = await API.init('/room/list', null, 'post')
+      // this.axios({
+      //   method: 'get',
+      //   url: 'http://localhost:8080/room/list'
+      console.log(res.data)
+      // }).then((res) => {
+      this.rooms = res.data
+      for (let i = 0, len = this.rooms.length; i < len; i++) {
+        this.rooms[i].gmtGreate = this.global.formatDate(this.rooms[i].gmtGreate)
+      }
+      this.roomsList = this.rooms
+      this.roomsList1 = this.rooms
+      // })
+    },
+    //获取所有楼栋信息
+    async getTowers() {
+      let result = (await API.init('/tower/list/type', null, 'post')).data
+      this.towers = result
     },
     /* 新增room */
     addRoom() {
       this.tag = 1
       this.dialogFormVisible = true
+      this.getAllTowersUnits()
     },
-    //新增房间消息
-    addRoomInfo(tag) {
-      if (tag == 1) {
-        this.axios({
-          method: 'post',
-          url: 'http://localhost:8080/room',
-          data: {
-            name: this.room.name,
-            towerId: 1
-          }
-        }).then((res) => {
-          console.log(res)
-          if (res.data.code == 1) {
-            this.$message({
-              type: 'success',
-              message: '新增成功!'
-            })
-            this.dialogFormVisible = false
-          }
-        })
-      } else {
-        this.updateRoom()
-      }
+    //查询所有楼栋及楼栋的所有单元信息
+    async getAllTowersUnits() {
+      this.units = (await API.init('/tower/units/list', null, 'post')).data
     },
-    /* 修改room信息 */
     updateRoomInfo(row) {
       this.room.name = row.roomName
       this.room.towerName = row.towerName
+      this.room.towerUnit = row.unitName
+      this.flag = 2
       this.dialogFormVisible = true
-      this.tag = 2
     },
-    //修改房间信息
-    updateRoom() {
-      this.axios({
-        method: 'put',
-        url: 'http://localhost:8080/room/id',
-        data: {
-          name: this.room.name,
-          towerId: 1
+    //新增房间消息
+    async addRoomInfo(tag) {
+      let roomInfo = {
+        name: this.room.name,
+        towerId: this.room.towerName,
+        unitId: this.room.towerUnit
+      }
+      if (tag == 1) {
+        let result = await API.init('/room', roomInfo, 'post')
+        if (result.code == 1) {
+          this.$message({
+            type: 'success',
+            message: '新增成功!'
+          })
+          this.dialogFormVisible = false
         }
-      }).then((res) => {
-        console.log(res)
-        if (res.data.code == 1) {
+      } else {
+        let result = await API.init('/modification/id', roomInfo, 'post')
+        if (result.code == 1) {
           this.$message({
             type: 'success',
             message: '修改成功!'
           })
           this.dialogFormVisible = false
         }
+      }
+    },
+    //点击获取所有楼栋的单元
+    getTowerUnits(val) {
+      let towerUnits = this.units.filter((unit) => {
+        if (unit.pk_tower_id == val) {
+          console.log(unit)
+          return unit
+        }
       })
+      this.towerUnits = towerUnits[0].childUnit
+      this.room.towerUnit = this.towerUnits[0].name
+    },
+    //点击节点
+    handleNodeClick(val) {
+      if (val.name == '教学楼') {
+        return
+      }
+      if (val.name == '宿舍楼') {
+        return
+      }
+      this.filterSearch(val.name)
+    },
+    //修改房间信息
+    async updateRoom() {
+      let data = {
+        name: this.room.name,
+        towerId: 1
+      }
+      let res = await API.init('/room/id', data, 'post')
+      // this.axios({
+      //   method: 'put',
+      //   url: 'http://localhost:8080/room/id',
+      //   data: {
+      //     name: this.room.name,
+      //     towerId: 1
+      //   }
+      // }).then((res) => {
+      console.log(res)
+      if (res.data.code == 1) {
+        this.$message({
+          type: 'success',
+          message: '修改成功!'
+        })
+        this.dialogFormVisible = false
+      }
+      // })
     },
     //刷新数据
     flush() {
@@ -269,26 +290,27 @@ export default {
     },
     //删除房间信息
     handleDelete(row) {
-      console.log(row)
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.axios({
-          method: 'delete',
-          url: 'http://localhost:8080/room/id/' + row.roomId
-        }).then((res) => {
-          if (res.data.code == 1) {
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            })
-            let index = this.rooms.indexOf(row)
-            this.room.splice(index, 1)
-          }
-        })
+        let res = API.init('/room/id/' + row.roomId, null, 'post')
+
+        // this.axios({
+        //   method: 'delete',
+        //   url: 'http://localhost:8080/room/id/' + row.roomId
+        // }).then((res) => {
+        if (res.data.code == 1) {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+          let index = this.rooms.indexOf(row)
+          this.room.splice(index, 1)
+        }
       })
+      // })
     },
     //下一页
     nextPage() {
@@ -317,6 +339,26 @@ export default {
     searchOver() {
       alert(1)
       this.iconColor = '#f1f1df'
+    },
+    //模糊搜索
+    search() {
+      //数组元素按条件过滤
+      this.roomsList = this.roomsList1.filter((v) => {
+        if (JSON.stringify(v).indexOf(this.input) != -1) {
+          return v
+        }
+      })
+    },
+    handleSelectionChange() {},
+    //过滤搜索
+    filterSearch(name) {
+      //数组元素按条件过滤
+      this.roomsList = this.roomsList1.filter((v) => {
+        if (v.towerName === name) {
+          console.log(v)
+          return v
+        }
+      })
     }
   },
   computed: {}
@@ -447,5 +489,26 @@ el-input {
 
 .el-select__caret {
   margin-top: 5px;
+}
+
+/* 遮罩层 */
+.dialog-form {
+  border-radius: 5px;
+  background-color: white;
+  width: 400px;
+  height: 300px;
+}
+
+.dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
 }
 </style>
