@@ -2,6 +2,7 @@
   <div style="width:100%">
     <!-- 增加弹出框 -->
     <el-dialog
+      :modal="false"
       title="新增借阅"
       :visible.sync="addcenterDialogVisible"
       width="50%"
@@ -112,6 +113,7 @@
         >批量删除</el-button>
         <!-- 删除提示框 -->
         <el-dialog
+          :modal="false"
           title="提示"
           :visible.sync="batchdelVisible"
           width="300px"
@@ -195,8 +197,7 @@
             show-overflow-tooltip
             min-width="13%"
             :formatter="statusChange"
-          >
-          </el-table-column>
+          > </el-table-column>
 
           <el-table-column
             label="借阅时间"
@@ -213,8 +214,7 @@
             show-overflow-tooltip
             min-width="18%"
             :formatter="timeChange"
-          >
-          </el-table-column>
+          > </el-table-column>
           <el-table-column
             label="操作"
             show-overflow-tooltip
@@ -238,6 +238,7 @@
     </el-row>
     <!-- 删除提示框 -->
     <el-dialog
+      :modal="false"
       title="提示"
       :visible.sync="delVisible"
       width="300px"

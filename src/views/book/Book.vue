@@ -2,10 +2,12 @@
   <div style="width:100%">
     <!-- 修改弹出框 -->
     <el-dialog
+      class="dialog"
       title="编辑图书"
       :visible.sync="updatecenterDialogVisible"
       width="30%"
       left
+      :modal="false"
     >
       <el-form
         :model="ruleForm"
@@ -17,6 +19,7 @@
           label="书名"
           prop="bookName"
         >
+
           <el-input v-model="ruleForm.bookName"></el-input>
         </el-form-item>
         <el-form-item
@@ -47,31 +50,19 @@
           required
           label="封面"
         >
-          <el-upload
-            ref="file"
-            class="upload-demo"
-            action=""
-            :file-list="file"
-            list-type="picture"
-            :auto-upload="false"
+          <img
+            :src="ruleForm.cover"
+            alt=""
+            style="width:100px;height:100px"
+            @click="getClick()"
           >
-            <el-button
-              size="small"
-              type="primary"
-              @click="selectavatar()"
-            >点击上传</el-button>
-            <div
-              slot="tip"
-              class="el-upload__tip"
-            >只能上传一张jpg/png文件，且不超过500kb</div>
-            <!-- 隐藏的文件输入框 -->
-            <input
-              type="file"
-              ref="upload"
-              style="display:none;"
-              @change="handlderFile()"
-            />
-          </el-upload>
+          <!-- 隐藏的文件输入框 -->
+          <input
+            type="file"
+            ref="upload"
+            style="display:none;"
+            @change="handlderFile()"
+          >
         </el-form-item>
         <el-form-item
           required
@@ -102,6 +93,8 @@
 
     <!-- 增加弹出框 -->
     <el-dialog
+      class="dialog"
+      :modal="false"
       title="新增图书"
       :visible.sync="addcenterDialogVisible"
       width="50%"
@@ -116,6 +109,7 @@
           label="书名"
           prop="bookName"
         >
+
           <el-input v-model="ruleForm1.bookName"></el-input>
         </el-form-item>
         <el-form-item
@@ -145,32 +139,21 @@
         <el-form-item
           required
           label="封面"
+          prop="cover"
         >
-          <el-upload
-            ref="file"
-            class="upload-demo"
-            action=""
-            :file-list="file"
-            list-type="picture"
-            :auto-upload="false"
+          <img
+            :src="ruleForm1.cover"
+            alt=""
+            style="width:100px;height:100px"
+            @click="getClick()"
           >
-            <el-button
-              size="small"
-              type="primary"
-              @click="selectavatar()"
-            >点击上传</el-button>
-            <div
-              slot="tip"
-              class="el-upload__tip"
-            >只能上传一张jpg/png文件，且不超过500kb</div>
-            <!-- 隐藏的文件输入框 -->
-            <input
-              type="file"
-              ref="upload"
-              style="display:none;"
-              @change="handlderFile()"
-            />
-          </el-upload>
+          <!-- 隐藏的文件输入框 -->
+          <input
+            type="file"
+            ref="upload"
+            style="display:none;"
+            @change="handlderFile()"
+          >
         </el-form-item>
         <el-form-item
           required
@@ -246,11 +229,14 @@
         >批量删除</el-button>
         <!-- 删除提示框 -->
         <el-dialog
+          class="dialog"
+          :modal="false"
           title="提示"
           :visible.sync="batchdelVisible"
           width="300px"
           center
         >
+
           <div class="del-dialog-cnt">批量删除图书信息后不可恢复，是否确定删除？</div>
           <span
             slot="footer"
@@ -382,7 +368,9 @@
     </el-row>
     <!-- 删除提示框 -->
     <el-dialog
+      class="dialog"
       title="提示"
+      :modal="false"
       :visible.sync="delVisible"
       width="300px"
       center
@@ -460,7 +448,7 @@ export default {
       ruleForm: {
         author: '',
         type: '',
-        cover: '',
+        cover: 'https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png',
         description: '',
         bookNumber: '',
         bookResidueNumber: '',
@@ -469,7 +457,7 @@ export default {
       ruleForm1: {
         author: '',
         type: '',
-        cover: '',
+        cover: 'https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png',
         description: '',
         bookNumber: '',
         bookResidueNumber: '',
@@ -607,9 +595,8 @@ export default {
         this.$message.success('图书添加成功')
       }
     },
-    // 上传图片
-    selectavatar() {
-      this.$refs.file.click()
+    getClick() {
+      this.$refs.upload.click()
     },
     handlderFile() {
       this.getClient()
@@ -635,6 +622,19 @@ export default {
         accessKeySecret: '5WPkPJ4JY0nWciRfDpMFxzScm3oJn2',
         bucket: 'zhent-img'
       })
+    },
+    //新增资讯
+    async confirmAdd() {
+      this.data = {
+        text: this.ruleForm1.text,
+        title: this.ruleForm1.title,
+        cover: this.ruleForm1.cover
+      }
+      this.url = '/info/insert'
+      this.result = await API.init(this.url, this.data, 'post')
+      this.addcenterDialogVisible = false
+      this.getinfoAll()
+      this.$message.success('资讯添加成功')
     },
     formatDate(value) {
       let date = new Date(value)
@@ -689,5 +689,17 @@ el-input {
 }
 .el-input__inner {
   height: 30px;
+}
+.dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
 }
 </style>

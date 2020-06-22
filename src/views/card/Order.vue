@@ -2,208 +2,81 @@
 <template>
   <div style="width:100%">
     <!-- 修改弹出框 -->
-    <el-dialog
-      title="编辑一卡通"
-      :visible.sync="updatecenterDialogVisible"
-      width="30%"
-      left
-    >
-      <el-form
-        :model="ruleForm"
-        status-icon
-        label-width="80px"
-      >
-        <el-form-item
-          label="类型"
-          prop="type"
-        >
-          <el-input v-model.number="ruleForm.type"></el-input>
+    <el-dialog :modal="false" title="编辑一卡通" :visible.sync="updatecenterDialogVisible" width="30%" left>
+      <el-form :model="ruleForm" status-icon label-width="80px">
+        <el-form-item label="余额" prop="balance">
+          <el-input type="number" v-model.number="ruleForm.balance"></el-input>
         </el-form-item>
-        <el-form-item
-          label="余额"
-          prop="balance"
-        >
-          <el-input v-model.number="ruleForm.balance"></el-input>
-        </el-form-item>
-        <el-form-item
-          label="缴费描述"
-          prop="description"
-        >
+        <el-form-item label="缴费描述" prop="description">
           <el-input v-model.number="ruleForm.description"></el-input>
         </el-form-item>
       </el-form>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
+      <span slot="footer" class="dialog-footer">
         <el-button @click="updatecenterDialogVisible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="confirmUpdate"
-        >确 定</el-button>
+        <el-button type="primary" @click="confirmUpdate">确 定</el-button>
       </span>
     </el-dialog>
 
-    <el-row
-      type="flex"
-      class="ml-20 mt-10"
-    >
-      <el-input
-        size="mini"
-        v-model="input"
-        placeholder="请输入内容"
-        class="blur-search"
-      ></el-input>
-      <el-button
-        type="success"
-        size="mini"
-        @click="search()"
-        class="ml-10"
-        icon="el-icon-search"
-      >搜索</el-button>
+    <el-row type="flex" class="ml-20 mt-10">
+      <el-input size="mini" v-model="input" type="text" @input="filterSearch()" placeholder="请输入内容" class="blur-search"></el-input>
+      <el-button type="success" size="mini" class="ml-10" @click="filterSearch()" icon="el-icon-search">搜索</el-button>
     </el-row>
     <el-row class="df-jr-ac ml-20 mt-10">
       <el-col class="tl">
-        <el-button
-          type="success"
-          icon="el-icon-edit"
-          size="small"
-        >批量删除</el-button>
-        <el-button
-          type="warning"
-          icon="el-icon-download"
-          size="small"
-        >导出</el-button>
+        <el-button type="success" icon="el-icon-edit" size="small">批量删除</el-button>
+        <el-button type="warning" icon="el-icon-download" size="small">导出</el-button>
       </el-col>
       <el-col class="tr mr-20">
-        <el-button
-          icon="el-icon-refresh"
-          size="small"
-        ></el-button>
+        <el-button icon="el-icon-refresh" size="small"></el-button>
       </el-col>
     </el-row>
     <el-row>
       <el-col span="1"></el-col>
-      <el-col
-        span="23"
-        class="ml-20 mt-10"
-      >
-        <el-table
-          :data="tableData"
-          border
-          style="width: 100%"
-        >
-          <el-table-column
-            type="selection"
-            min-width="5%"
-          ></el-table-column>
-          <el-table-column
-            prop="gmtCreate"
-            fixed
-            label="日期"
-            min-width="17%"
-          > </el-table-column>
-          <el-table-column
-            prop="orderNumber"
-            label="订单号"
-            min-width="10%"
-          > </el-table-column>
-          <el-table-column
-            prop="orderType"
-            label="类型"
-            min-width="15%"
-          >
-            <template slot-scope="{row,$index}">
-              <input
-                class="edit-cell"
-                v-if="showEdit[$index]"
-                v-model="row.orderType"
-              >
-              <span v-if="!showEdit[$index]">{{row.orderType}}</span>
+      <el-col span="23" class="ml-20 mt-10">
+        <el-table :data="tableData.slice(start, end)" border style="width: 100%">
+          <el-table-column type="selection" min-width="5%"></el-table-column>
+          <el-table-column prop="gmtCreate" fixed label="日期" min-width="17%"> </el-table-column>
+          <el-table-column prop="orderNumber" label="订单号" min-width="10%"> </el-table-column>
+          <el-table-column prop="orderType" label="类型" min-width="15%">
+            <template slot-scope="{ row, $index }">
+              <input class="edit-cell" v-if="showEdit[$index]" v-model="row.orderType" />
+              <span v-if="!showEdit[$index]">{{ row.orderType }}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="orderMoney"
-            label="金额"
-            min-width="10%"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="jobNumber"
-            label="卡号"
-            min-width="10%"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="description"
-            label="缴费描述"
-            min-width="10%"
-          > </el-table-column>
-          <el-table-column
-            prop="payMethod"
-            label="支付方式"
-            min-width="13%"
-          > </el-table-column>
-          <el-table-column
-            prop="status"
-            label="状态"
-            min-width="10%"
-            :formatter="statusChange"
-          > </el-table-column>
-          <el-table-column
-            fixed="right"
-            label="操作"
-            min-width="12%"
-          >
+          <el-table-column prop="orderMoney" label="金额" min-width="10%"> </el-table-column>
+          <el-table-column prop="jobNumber" label="卡号" min-width="10%"> </el-table-column>
+          <el-table-column prop="description" label="缴费描述" min-width="10%"> </el-table-column>
+          <el-table-column prop="payMethod" label="支付方式" min-width="13%"> </el-table-column>
+          <el-table-column prop="status" label="状态" min-width="10%" :formatter="statusChange"> </el-table-column>
+          <el-table-column fixed="right" label="操作" min-width="12%">
             <template slot-scope="scope">
-              <el-button
-                type="text"
-                size="small"
-                @click="handleUpdate(scope.$index, scope.row)"
-              >编辑</el-button>
-              <el-button
-                slot="reference"
-                type="text"
-                size="small"
-                @click="handleDelete(scope.$index, scope.row)"
-              >删除</el-button>
+              <el-button type="text" size="small" @click="handleUpdate(scope.$index, scope.row)">编辑</el-button>
+              <el-button slot="reference" type="text" size="small" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
       </el-col>
     </el-row>
-    <div
-      class="block"
-      style="margin-top:2%"
-    >
+    <div class="block" style="margin-top:2%">
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="[6, 12, 18, 24]"
+        :current-page="currentPageA"
+        :page-sizes="[6, 12, 18]"
         :page-size="pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
+        layout="total, prev, pager, next, sizes,jumper"
+        :total="tableData.length"
+        @prev-click="prevPage()"
+        @next-click="nextPage()"
       >
       </el-pagination>
     </div>
     <!-- 删除提示框 -->
-    <el-dialog
-      title="提示"
-      :visible.sync="delVisible"
-      width="300px"
-      center
-    >
+    <el-dialog :modal="false" title="提示" :visible.sync="delVisible" width="300px" center>
       <div class="del-dialog-cnt">订单信息删除不可恢复，是否确定删除？</div>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
+      <span slot="footer" class="dialog-footer">
         <el-button @click="delVisible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="deleteRow"
-        >确 定</el-button>
+        <el-button type="primary" @click="deleteRow">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -216,9 +89,14 @@ export default {
   data() {
     return {
       tableData: [],
-      total: 72,
-      currentPage: 1,
+      tableData1: [],
+      start: 0,
+      end: 6,
       pageSize: 6,
+      currentPageSize: 100,
+      currentPage: 1,
+      currentPageSizeA: 6,
+      currentPageA: 0,
       visible: false,
       delVisible: false,
       updatecenterDialogVisible: false,
@@ -229,24 +107,40 @@ export default {
       },
       showEdit: [], //显示编辑框
       showBtn: [],
-      showBtnOrdinary: true
+      showBtnOrdinary: true,
+      input: ''
     }
   },
   components: {},
   created() {
     this.getOrderAll()
   },
-  watch: {
-    pageSize: function() {
-      this.getOrderAll()
-    },
-    currentPage: function() {
-      this.getOrderAll()
-    },
-    total: function() {}
-  },
   mounted() {},
   methods: {
+    //下一页
+    nextPage() {
+      this.currentPageA += 1
+      this.start += this.pageSize
+      this.end += this.pageSize
+    },
+    //上一页
+    prevPage() {
+      this.currentPageA -= 1
+      this.start -= this.pageSize
+      this.end -= this.pageSize
+    },
+    //改变页的数据条数
+    handleSizeChange(val) {
+      this.start = (this.currentPageA - 1) * val
+      this.end = this.currentPageA * val
+      this.pageSize = val
+    },
+    //选择分页
+    handleCurrentChange(val) {
+      this.currentPageA = val
+      this.start = (this.currentPageA - 1) * this.pageSize
+      this.end = this.currentPageA * this.pageSize
+    },
     // eslint-disable-next-line no-unused-vars
     handleEdit(index, row) {
       this.$set(this.showEdit, index, true)
@@ -258,28 +152,20 @@ export default {
       this.$set(this.showEdit, index, false)
       this.$set(this.showBtn, index, false)
     },
+    //单行删除
+    handleDelete(index, row) {
+      this.idx = index
+      this.msg = row //每一条数据的记录
+      this.delVisible = true
+    },
     // 确定删除
     async deleteRow() {
-      this.data = { field: this.msg.pkOrderId }
+      this.data = { fleaRewardId: this.msg.pkOrderId }
       this.url = '/order/id'
       this.result = await API.init(this.url, this.data, 'post')
-      if (this.data) {
-        this.getCardAll()
-        this.$message.success('删除成功')
-      } else {
-        this.$message.error('订单信息删除失败')
-      }
+      this.getOrderAll()
+      this.$message.success('信息删除成功')
       this.delVisible = false //关闭删除提示模态框
-    },
-
-    //时间格式化
-    dateFormat: function(row, column) {
-      var date = row[column.property]
-      if (date == undefined) {
-        return ''
-      }
-      // eslint-disable-next-line no-undef
-      return moment(date).format('YYYY-MM-DD HH:mm:ss')
     },
     // eslint-disable-next-line no-unused-vars
     statusChange: function(row, column) {
@@ -287,7 +173,7 @@ export default {
     },
     // 分页查询所有
     async getOrderAll() {
-      this.data = { currentPage: this.currentPage, pageSize: this.pageSize }
+      this.data = { currentPage: this.currentPage, pageSize: this.PageSize }
       this.url = '/order/all'
       this.result = await API.init(this.url, this.data, 'post')
       this.tableData = this.result.data
@@ -295,14 +181,6 @@ export default {
       for (let i = 0; i < this.tableData.length; i++) {
         this.tableData[i].gmtCreate = this.formatDate(this.tableData[i].gmtCreate)
       }
-    },
-    // 当前页展示数据
-    handleSizeChange: function(pageSize) {
-      this.pageSize = pageSize
-    },
-    // 当前页
-    handleCurrentChange: function(currentPage) {
-      this.currentPage = currentPage
     },
     //编辑
     handleUpdate(index, row) {
@@ -314,19 +192,25 @@ export default {
     async confirmUpdate() {
       this.data = {
         pkCardId: this.msg.pkCardId,
-        orderType: this.ruleForm.orderType,
         description: this.ruleForm.description,
         cardBalance: this.ruleForm.balance
       }
-      this.url = '/card/modification'
+      this.url = '/order/modification'
       this.result = await API.init(this.url, this.data, 'post')
       this.updatecenterDialogVisible = false
-      this.getCardAll()
-      if (this.result.data == null) {
-        this.$message.success('该一卡通未激活，信息修改失败')
-      } else {
-        this.$message.success('信息修改成功')
-      }
+      this.getOrderAll()
+      this.$message.success('信息修改成功')
+    },
+    //过滤搜索
+    filterSearch() {
+      // 获取输入框的值
+      let search = this.input
+      //数组元素按条件过滤
+      this.tableData = this.tableData1.filter((v) => {
+        if (JSON.stringify(v).includes(search)) {
+          return v
+        }
+      })
     },
     formatDate(value) {
       let date = new Date(value)

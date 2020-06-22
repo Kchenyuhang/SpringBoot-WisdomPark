@@ -295,8 +295,8 @@ export default {
   border-radius: 5px;
   background-color: white;
 
-  width: 80%;
-  height: 60%;
+  width: 40%;
+  height: 50%;
 }
 .fromc {
   margin-top: 50px;

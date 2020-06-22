@@ -12,13 +12,23 @@
     <div class="table">
       <el-table ref="RewardId" :data="rewardShow" @selection-change="handleSelectionChange">
         <el-table-column prop="pkFleaRewardId" type="selection" width="50%"></el-table-column>
-        <el-table-column prop="title" label="标题 " width="200%"> </el-table-column>
-        <el-table-column prop="description" label="描述 " width="250%"> </el-table-column>
-        <el-table-column prop="nickname" label="发布人昵称 " width="150%"> </el-table-column>
-        <el-table-column prop="sex" label="性别" width="100%"> </el-table-column>
+        <el-table-column prop="title" label="标题 " width="200%" show-overflow-tooltip> </el-table-column>
+        <el-table-column prop="description" label="描述 " width="200%" show-overflow-tooltip>
+          <template slot-scope="scope">
+            <!-- <i class="el-icon-time"></i> -->
+            <span>{{ rewardShow[scope.$index].description }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="nickname" label="发布人昵称 " width="130%"> </el-table-column>
+        <el-table-column prop="sex" label="性别" width="130%"> </el-table-column>
         <el-table-column prop="username" label="发布人姓名" width="150%"> </el-table-column>
-        <el-table-column prop="createTime" label="发布时间" width="200%"> </el-table-column>
-        <el-table-column label="状态">
+        <el-table-column prop="createTime" label="发布时间" width="170%" sortable show-overflow-tooltip>
+          <template slot-scope="scope">
+            <i class="el-icon-time"></i>
+            <span>{{ rewardShow[scope.$index].createTime }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="状态" width="100%">
           <template slot-scope="scope">
             <p v-if="rewardShow[scope.$index].isDeleted == 0" style="color: blue">已发布</p>
             <p v-if="rewardShow[scope.$index].isDeleted == 1" style="color: red">已下架</p>
@@ -112,7 +122,13 @@ export default {
       MM = MM < 10 ? '0' + MM : MM
       let d = date.getDate()
       d = d < 10 ? '0' + d : d
-      return y + '年' + MM + '月' + d + '日'
+      let h = date.getHours()
+      h = h < 10 ? '0' + h : h
+      let m = date.getMinutes()
+      m = m < 10 ? '0' + m : m
+      let s = date.getSeconds()
+      s = s < 10 ? '0' + s : s
+      return y + '年' + MM + '月' + d + '日' + h + ':' + m + ':' + s
     },
     //当前页展示数据
     handleSizeChange: function(pageSize) {
@@ -187,8 +203,7 @@ export default {
   margin: 20px;
   .input {
     width: 400px;
-    margin-right: 20px;
-    margin-left: -70%;
+    margin-right: 69%;
   }
 }
 .table {
