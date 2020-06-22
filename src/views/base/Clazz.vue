@@ -213,13 +213,12 @@ export default {
   },
   mounted() {},
   methods: {
-<<<<<<< HEAD
     async getClazz() {
       let pageDto = {
         currenPage: this.currentPage,
         pageSize: this.pageSize
-=======
-    load() {
+      }
+    /* load() {
       this.clazzList.length += 2
     },
     // 分页查询所有
@@ -232,8 +231,7 @@ export default {
       this.clazzList1 = this.result.data
       for (let i = 0; i < this.clazzList.length; i++) {
         this.clazzList[i].gmtCreate = this.formatDate(this.clazzList[i].gmtCreate)
->>>>>>> efaa9fd76fab95babe9048acd31fbd12403b6b28
-      }
+      } */
       let res = await API.init('/clazz/all', pageDto, 'post')
       this.clazzList = res.data
       for (let i = 0, len = this.clazzList.length; i < len; i++) {
@@ -364,7 +362,6 @@ export default {
         })
       })
     },
-<<<<<<< HEAD
     //分配学生
     changeStudent(student) {
       this.newStudentInfos.push(student)
@@ -389,8 +386,7 @@ export default {
           let index = this.addStudents.indexOf(item)
           this.addStudents.splice(index, 1)
         }
-=======
-    async deleteRow() {
+   /*  async deleteRow() {
       this.data = { field: this.msg.pkAppVersionId }
       this.url = '/app/deletion'
       this.result = await API.init(this.url, this.data, 'post')
@@ -398,8 +394,7 @@ export default {
         this.getClazzAll()
         this.$message.success('删除成功')
       } else {
-        this.$message.error('App版本信息删除失败')
->>>>>>> efaa9fd76fab95babe9048acd31fbd12403b6b28
+        this.$message.error('App版本信息删除失败') */
       }
     },
     //取消

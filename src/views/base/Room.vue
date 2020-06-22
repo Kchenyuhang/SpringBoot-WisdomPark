@@ -1,114 +1,43 @@
 <template>
-<<<<<<< HEAD
+  <!-- <el-row type="flex" style="width: 100%">
+      <el-col span="4" class="tl"> -->
+  <!-- <el-input prefix-icon="el-icon-search" v-model="input" placeholder="请输入内容" class="blur-search mt-10"></el-input> -->
+  <!-- <el-tree :data="towers" :props="defaultProps" @node-click="handleNodeClick" class="mt-20"></el-tree> -->
   <div class="room-container" style="width: 100%">
     <el-row type="flex" style="width: 100%">
       <el-col span="4" class="tl">
-        <!-- <el-input prefix-icon="el-icon-search" v-model="input" placeholder="请输入内容" class="blur-search mt-10"></el-input> -->
+        <el-input prefix-icon="el-icon-search" v-model="input" placeholder="请输入内容" class="blur-search mt-10"></el-input>
         <el-tree :data="towers" :props="defaultProps" @node-click="handleNodeClick" class="mt-20"></el-tree>
-=======
-  <div
-    class="room-container"
-    style="width: 100%"
-  >
-    <el-row
-      type="flex"
-      style="width: 100%"
-    >
-      <el-col
-        span="4"
-        class="tl"
-      >
-        <el-input
-          prefix-icon="el-icon-search"
-          v-model="input"
-          placeholder="请输入内容"
-          class="blur-search mt-10"
-        ></el-input>
-        <el-tree
-          :data="towers"
-          :props="defaultProps"
-          @node-click="handleNodeClick"
-          class="mt-20"
-        ></el-tree>
->>>>>>> efaa9fd76fab95babe9048acd31fbd12403b6b28
       </el-col>
       <el-col span="20">
         <!-- 操作按钮 -->
-        <el-row
-          type="flex"
-          class="ml-20 mt-10"
-        >
-          <el-input
-            v-model="input"
-            prefix-icon="el-icon-search"
-            placeholder="请输入内容"
-            class="blur-search"
-            v-if="searchShow"
-          ></el-input>
-          <el-button
-            v-if="searchShow"
-            type="success"
-            size="mini"
-            @click="search()"
-            class="ml-10 bg-green"
-            icon=""
-          >
-            <i
-              class="el-icon-search"
-              style="color: rgb(247, 251, 255)"
-            ></i>
+        <el-row type="flex" class="ml-20 mt-10">
+          <el-input v-model="input" prefix-icon="el-icon-search" placeholder="请输入内容" class="blur-search" v-if="searchShow"></el-input>
+          <el-button v-if="searchShow" type="success" size="mini" @click="search()" class="ml-10 bg-green" icon="">
+            <i class="el-icon-search" style="color: rgb(247, 251, 255)"></i>
             <span class="light-font-color">搜索</span>
           </el-button>
         </el-row>
         <el-row class="df-jr-ac ml-20 mt-10">
           <el-col class="tl">
-            <el-button
-              type="primary"
-              icon="el-icon-plus"
-              @click="dialogFormVisible = true"
-              size="mini"
-            >
+            <el-button type="primary" icon="el-icon-plus" @click="dialogFormVisible = true" size="mini">
               <span class="light-font-color">新增</span>
             </el-button>
-            <el-button
-              type="success"
-              icon="el-icon-edit"
-              size="mini"
-            >
+            <el-button type="success" icon="el-icon-edit" size="mini">
               <span class="light-font-color">修改</span>
             </el-button>
-            <el-button
-              type="danger"
-              icon="el-icon-delete"
-              size="mini"
-            >
+            <el-button type="danger" icon="el-icon-delete" size="mini">
               <span class="light-font-color">删除</span>
             </el-button>
-            <el-button
-              type="warning"
-              icon="el-icon-download"
-              size="mini"
-            >
+            <el-button type="warning" icon="el-icon-download" size="mini">
               <span class="light-font-color">导出</span>
             </el-button>
           </el-col>
           <el-col class="tr mr-20">
-            <el-button
-              size="small"
-              class="search-btn"
-              @click="searchShow = !searchShow"
-              @mouseover="searchOver()"
-            >
-              <i
-                class="el-icon-search"
-                style="color: white"
-              ></i>
+            <el-button size="small" class="search-btn" @click="searchShow = !searchShow" @mouseover="searchOver()">
+              <i class="el-icon-search" style="color: white"></i>
             </el-button>
-            <el-button
-              icon="el-icon-refresh"
-              size="small"
-              @click="flush()"
-            ></el-button>
+            <el-button icon="el-icon-refresh" size="small" @click="flush()"></el-button>
           </el-col>
         </el-row>
         <!-- 表格 -->
@@ -121,62 +50,29 @@
             class="light-small-font"
             @selection-change="handleSelectionChange"
           >
-            <el-table-column
-              type="selection"
-              min-width="5%"
-            ></el-table-column>
-            <el-table-column
-              label="楼栋"
-              min-width="10%"
-            >
+            <el-table-column type="selection" min-width="5%"></el-table-column>
+            <el-table-column label="楼栋" min-width="10%">
               <template slot-scope="scope">{{ scope.row.towerName }}</template>
             </el-table-column>
-            <el-table-column
-              label="单元"
-              min-width="15%"
-            >
+            <el-table-column label="单元" min-width="15%">
               <template slot-scope="scope">{{ scope.row.unitName }}</template>
             </el-table-column>
-            <el-table-column
-              label="房间号"
-              min-width="15%"
-            >
+            <el-table-column label="房间号" min-width="15%">
               <template slot-scope="scope">{{ scope.row.roomName }}</template>
             </el-table-column>
-            <el-table-column
-              label="电费余额"
-              min-width="20%"
-            >
+            <el-table-column label="电费余额" min-width="20%">
               <template slot-scope="scope">{{ scope.row.electricityBalance }}</template>
             </el-table-column>
-            <el-table-column
-              label="创建时间"
-              show-overflow-tooltip
-              min-width="10%"
-            >
+            <el-table-column label="创建时间" show-overflow-tooltip min-width="10%">
               <template slot-scope="scope">{{ scope.row.gmtGreate }}</template>
             </el-table-column>
-            <el-table-column
-              label="操作"
-              align="center"
-              min-width="25%"
-            >
+            <el-table-column label="操作" align="center" min-width="25%">
               <template slot-scope="scope">
                 <p style="text-align:center">
-                  <el-button
-                    size="mini"
-                    icon="el-icon-edit"
-                    type="primary"
-                    @click="updateRoomInfo(scope.row)"
-                  >
+                  <el-button size="mini" icon="el-icon-edit" type="primary" @click="updateRoomInfo(scope.row)">
                     <span class="light-font-color">编辑</span>
                   </el-button>
-                  <el-button
-                    size="mini"
-                    icon="el-icon-delete"
-                    type="danger"
-                    @click="handleDelete(scope.row)"
-                  >
+                  <el-button size="mini" icon="el-icon-delete" type="danger" @click="handleDelete(scope.row)">
                     <span class="light-font-color">删除</span>
                   </el-button>
                 </p>
@@ -198,27 +94,11 @@
           ></el-pagination>
         </el-row>
         <!-- 新增页面 -->
-        <div
-          class="dialog"
-          v-if="dialogFormVisible"
-        >
+        <div class="dialog" v-if="dialogFormVisible">
           <h2>新增房间信息</h2>
-          <el-form
-            class="mt-10 dialog-form dc-jc-ac"
-            :model="room"
-            style="border-radius: 5px"
-          >
-            <el-form-item
-              label="楼栋"
-              required
-              style="width: 80%"
-            >
-              <el-select
-                v-model="room.towerName"
-                placeholder="请选择楼栋"
-                @change="getTowerUnits"
-                style="width: 80%"
-              >
+          <el-form class="mt-10 dialog-form dc-jc-ac" :model="room" style="border-radius: 5px">
+            <el-form-item label="楼栋" required style="width: 80%">
+              <el-select v-model="room.towerName" placeholder="请选择楼栋" @change="getTowerUnits" style="width: 80%">
                 <el-option
                   v-for="(item, index) in units"
                   :key="index"
@@ -228,53 +108,18 @@
                 ></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item
-              required
-              label="单元"
-              style="width: 80%"
-            >
-              <el-select
-                v-model="room.towerUnit"
-                placeholder="请选择活动区域"
-                style="width: 55%"
-              >
-                <el-option
-                  v-for="(item, index) in towerUnits"
-                  :key="index"
-                  :label="item.name"
-                  :value="item.unit_id"
-                ></el-option>
+            <el-form-item required label="单元" style="width: 80%">
+              <el-select v-model="room.towerUnit" placeholder="请选择活动区域" style="width: 55%">
+                <el-option v-for="(item, index) in towerUnits" :key="index" :label="item.name" :value="item.unit_id"></el-option>
               </el-select>
-              <span
-                style="color: red; width: 45%"
-                class="ml-10"
-              >* 仅限宿舍</span>
+              <span style="color: red; width: 45%" class="ml-10">* 仅限宿舍</span>
             </el-form-item>
-            <el-form-item
-              required
-              label="房间"
-              style="width: 80%"
-            >
-              <el-input
-                v-model="room.name"
-                autocomplete="off"
-                placeholder="请输入房间号"
-                style="width: 80%"
-              ></el-input>
+            <el-form-item required label="房间" style="width: 80%">
+              <el-input v-model="room.name" autocomplete="off" placeholder="请输入房间号" style="width: 80%"></el-input>
             </el-form-item>
-            <el-form-item
-              class="tr"
-              style="width: 80%"
-            >
-              <el-button
-                @click="dialogFormVisible = false"
-                size="mini"
-              >取 消</el-button>
-              <el-button
-                type="primary"
-                @click="addRoomInfo(tag)"
-                size="mini"
-              >确定</el-button>
+            <el-form-item class="tr" style="width: 80%">
+              <el-button @click="dialogFormVisible = false" size="mini">取 消</el-button>
+              <el-button type="primary" @click="addRoomInfo(tag)" size="mini">确定</el-button>
             </el-form-item>
           </el-form>
         </div>

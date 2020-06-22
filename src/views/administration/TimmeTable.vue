@@ -890,7 +890,6 @@ export default {
      * 获取所有班级和学期数据
      */
     async getAllInfo() {
-<<<<<<< HEAD
       let pageDto = {
         pageSize: 100,
         currentPage: 0
@@ -903,11 +902,9 @@ export default {
       this.clazzList = clazzRes
       this.semesterList = semesterRes
       /* for (let i = 0; i < clazzRes.data.length; i++) {
-=======
       let clazzRes = await API.init('/clazz/all', null, 'post')
       let semesterRes = await API.init('/semester/all', null, 'post')
       for (let i = 0; i < clazzRes.data.length; i++) {
->>>>>>> efaa9fd76fab95babe9048acd31fbd12403b6b28
         this.clazzList.push({
           name: clazzRes.data[i].name,
           id: clazzRes.data[i].pkClazzId
