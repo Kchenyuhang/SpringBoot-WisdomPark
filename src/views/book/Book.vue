@@ -1,19 +1,33 @@
 <template>
   <div style="width:100%">
     <!-- 修改弹出框 -->
-    <el-dialog title="编辑一卡通" :visible.sync="updatecenterDialogVisible" width="30%" left>
-      <el-form :model="ruleForm" status-icon :rules="rules" label-width="80px">
-        <el-form-item label="密码" prop="pass">
-          <el-input type="password" v-model="ruleForm.pass" autocomplete="off" placeholder="123456"></el-input>
+    <el-dialog title="编辑图书" :visible.sync="updatecenterDialogVisible" width="30%" left>
+      <el-form :model="ruleForm" status-icon label-width="80px">
+        <el-form-item required label="书名" prop="bookName">
+          <el-input v-model="ruleForm.bookName"></el-input>
         </el-form-item>
-        <el-form-item label="确认密码" prop="checkPass">
-          <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off" placeholder="123456"></el-input>
+        <el-form-item required label="作者" prop="author">
+          <el-input v-model="ruleForm.author"></el-input>
         </el-form-item>
-        <el-form-item label="绑定号码" prop="job_number">
-          <el-input v-model.number="ruleForm.jobnumber"></el-input>
+        <el-form-item required label="类型" prop="jobNumber">
+          <el-input v-model="ruleForm.jobNumber"></el-input>
         </el-form-item>
-        <el-form-item label="余额" prop="balance">
-          <el-input v-model.number="ruleForm.balance"></el-input>
+        <el-form-item required label="简介" prop="description">
+          <el-input v-model="ruleForm.description" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item required label="封面">
+          <el-upload ref="file" class="upload-demo" action="" :file-list="file" list-type="picture" :auto-upload="false">
+            <el-button size="small" type="primary" @click="selectavatar()">点击上传</el-button>
+            <div slot="tip" class="el-upload__tip">只能上传一张jpg/png文件，且不超过500kb</div>
+            <!-- 隐藏的文件输入框 -->
+            <input type="file" ref="upload" style="display:none;" @change="handlderFile()" />
+          </el-upload>
+        </el-form-item>
+        <el-form-item required label="总数" prop="bookNumber">
+          <el-input v-model="ruleForm.bookNumber"></el-input>
+        </el-form-item>
+        <el-form-item required label="库存量" prop="bookResidueNumber">
+          <el-input v-model="ruleForm.bookResidueNumber"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -23,56 +37,38 @@
     </el-dialog>
 
     <!-- 增加弹出框 -->
-    <el-dialog title="新增一卡通" :visible.sync="addcenterDialogVisible" width="30%" center>
+    <el-dialog title="新增图书" :visible.sync="addcenterDialogVisible" width="50%" center>
       <el-form label-width="80px" :model="ruleForm1">
-        <el-form-item required label="卡号" prop="cardNumber">
-          <el-input v-model="ruleForm1.cardNumber"></el-input>
+        <el-form-item required label="书名" prop="bookName">
+          <el-input v-model="ruleForm1.bookName"></el-input>
         </el-form-item>
-        <el-form-item required label="绑定卡号" prop="jobNumber">
+        <el-form-item required label="作者" prop="author">
+          <el-input v-model="ruleForm1.author"></el-input>
+        </el-form-item>
+        <el-form-item required label="类型" prop="jobNumber">
           <el-input v-model="ruleForm1.jobNumber"></el-input>
         </el-form-item>
-        <el-form-item required label="卡号密码" prop="cardPassword">
-          <el-input type="password" v-model="ruleForm1.cardPassword" autocomplete="off"></el-input>
+        <el-form-item required label="简介" prop="description">
+          <el-input v-model="ruleForm1.description" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item required label="余额" prop="cardbalance1">
-          <el-input v-model="ruleForm1.cardbalance1"></el-input>
+        <el-form-item required label="封面">
+          <el-upload ref="file" class="upload-demo" action="" :file-list="file" list-type="picture" :auto-upload="false">
+            <el-button size="small" type="primary" @click="selectavatar()">点击上传</el-button>
+            <div slot="tip" class="el-upload__tip">只能上传一张jpg/png文件，且不超过500kb</div>
+            <!-- 隐藏的文件输入框 -->
+            <input type="file" ref="upload" style="display:none;" @change="handlderFile()" />
+          </el-upload>
+        </el-form-item>
+        <el-form-item required label="总数" prop="bookNumber">
+          <el-input v-model="ruleForm1.bookNumber"></el-input>
+        </el-form-item>
+        <el-form-item required label="库存量" prop="bookResidueNumber">
+          <el-input v-model="ruleForm1.bookResidueNumber"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="addcenterDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="confirmAdd">确 定</el-button>
-      </span>
-    </el-dialog>
-
-    <!-- 流水明细 -->
-    <el-dialog title="流水查询" :visible.sync="datailcenterDialogVisible" width="30%" left>
-      <el-form status-icon label-width="80px" style="height:400px;overflow:auto">
-        <el-collapse accordion>
-          <div v-for="(item, index) in detailList" :key="index">
-            <el-collapse-item>
-              <template slot="title">
-                {{ item.gmtCreate }}<i class="el-icon-s-shop" style="margin-left:15%"></i>{{ item.description }} -{{ item.orderMoney }}
-              </template>
-              <div><i class="el-icon-s-shop"></i>{{ item.description }}</div>
-              <div>
-                <h4>-{{ item.orderMoney }}</h4>
-              </div>
-              <div>交易成功</div>
-              <div>
-                <span style="margin-left:-10%">付款方式</span> <span style="margin-left:25%">{{ item.payMethod }}</span>
-              </div>
-              <div>
-                <span style="margin-left:-10%">交易流水号</span><span style="margin-left:25%">{{ item.orderNumber }}</span>
-              </div>
-              <div>
-                <span style="margin-left:-5%"> 创建时间</span><span style="margin-left:18%">{{ item.gmtCreate }}</span>
-              </div>
-            </el-collapse-item>
-          </div>
-        </el-collapse>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="datailcenterDialogVisible = false">取 消</el-button>
       </span>
     </el-dialog>
     <el-row type="flex" class="ml-20 mt-10">
@@ -88,7 +84,7 @@
         <el-button type="danger" icon="el-icon-delete" size="small" @click="delAll()">批量删除</el-button>
         <!-- 删除提示框 -->
         <el-dialog title="提示" :visible.sync="batchdelVisible" width="300px" center>
-          <div class="del-dialog-cnt">批量删除一卡通信息后不可恢复，是否确定删除？</div>
+          <div class="del-dialog-cnt">批量删除图书信息后不可恢复，是否确定删除？</div>
           <span slot="footer" class="dialog-footer">
             <el-button @click="batchdelVisible = false">取 消</el-button>
             <el-button type="primary" @click="deleteBatch()">确 定</el-button>
@@ -117,10 +113,15 @@
           </el-table-column>
           <el-table-column label="封面" show-overflow-tooltip min-width="15%">
             <template slot-scope="scope">
-              <el-popover placement="right" title="" trigger="hover">
+              <el-popover placement="right" trigger="hover">
                 <img :src="scope.row.cover" />
-                <img slot="reference" :src="scope.row.cover" :alt="scope.row.cover" style="max-height: 50px;max-width: 130px" />
+                <img slot="reference" :src="scope.row.cover" style="max-height: 50px;max-width: 130px" />
               </el-popover>
+            </template>
+          </el-table-column>
+          <el-table-column label="类型" show-overflow-tooltip min-width="13%">
+            <template slot-scope="scope">
+              <span>{{ scope.row.type }}</span>
             </template>
           </el-table-column>
           <el-table-column label="简介" show-overflow-tooltip min-width="13%">
@@ -128,19 +129,7 @@
               <span>{{ scope.row.description }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="状态" show-overflow-tooltip min-width="15%">
-            <template slot-scope="scope">
-              <el-switch
-                v-model="scope.row.status"
-                active-color="#13ce66"
-                :disabled="scope.row.status == 1"
-                inactive-color="#ff4949"
-                @change="changeSwitchA($event, scope.row, scope.$index)"
-              >
-                >
-              </el-switch>
-            </template>
-          </el-table-column>
+          <el-table-column label="是否还有库存" show-overflow-tooltip min-width="15%" :formatter="statusChange"> </el-table-column>
           <el-table-column label="创建时间" show-overflow-tooltip min-width="18%">
             <template slot-scope="scope">
               <i class="el-icon-time"></i>
@@ -158,7 +147,7 @@
     </el-row>
     <!-- 删除提示框 -->
     <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
-      <div class="del-dialog-cnt">一卡通信息删除不可恢复，是否确定删除？</div>
+      <div class="del-dialog-cnt">图书信息删除不可恢复，是否确定删除？</div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="delVisible = false">取 消</el-button>
         <el-button type="primary" @click="deleteRow">确 定</el-button>
@@ -178,7 +167,7 @@
     </div>
   </div>
 </template>
-
+<script src="https://gosspublic.alicdn.com/aliyun-oss-sdk.min.js"></script>
 <script>
 const API = require('../utils/api')
 export default {
@@ -218,20 +207,26 @@ export default {
       multipleSelection: [],
       value1: '',
       input: '',
-      gmtTime: '',
       msg: '', //记录每一条的信息，便于取id
       ruleForm: {
-        pass: '',
-        checkPass: '',
-        balance: '',
-        jobnumber: ''
+        author: '',
+        type: '',
+        cover: '',
+        description: '',
+        bookNumber: '',
+        bookResidueNumber: '',
+        bookName: ''
       },
       ruleForm1: {
-        jobNumber: '',
-        cardNumber: '',
-        cardPassword: '',
-        cardbalance1: ''
+        author: '',
+        type: '',
+        cover: '',
+        description: '',
+        bookNumber: '',
+        bookResidueNumber: '',
+        bookName: ''
       },
+      file: '',
       rules: {
         pass: [{ validator: validatePass, trigger: 'blur' }],
         checkPass: [{ validator: validatePass2, trigger: 'blur' }]
@@ -251,8 +246,9 @@ export default {
     total: function() {}
   },
   methods: {
-    load() {
-      this.bookList.length += 2
+    // eslint-disable-next-line no-unused-vars
+    statusChange: function(row, column) {
+      return row.bookResidueNumber > 0 ? '有库存' : row.bookResidueNumber == 0 ? '无库存' : 'aaa'
     },
     // 分页查询所有
     async getBookAll() {
@@ -281,14 +277,14 @@ export default {
       this.delVisible = true
     },
     async deleteRow() {
-      this.data = { field: this.msg.pkCardId }
-      this.url = '/card/id'
+      this.data = { field: this.msg.pkBookId }
+      this.url = '/book/id'
       this.result = await API.init(this.url, this.data, 'post')
       if (this.data) {
         this.getBookAll()
         this.$message.success('删除成功')
       } else {
-        this.$message.error('一卡通信息删除失败')
+        this.$message.error('图书信息删除失败')
       }
       this.delVisible = false //关闭删除提示模态框
     },
@@ -297,7 +293,7 @@ export default {
       this.batchdelVisible = true //显示删除弹框
       const length = this.multipleSelection.length
       for (let i = 0; i < length; i++) {
-        this.delarr.push(this.multipleSelection[i].pkCardId)
+        this.delarr.push(this.multipleSelection[i].pkBookId)
       }
     },
     //操作多选
@@ -307,25 +303,15 @@ export default {
     //批量删除
     async deleteBatch() {
       this.data = { ids: String(this.delarr) }
-      this.url = '/card/deletionBath'
+      this.url = '/book/deletion/batch'
       this.result = await API.init(this.url, this.data, 'post')
       if (this.data) {
         this.getBookAll()
         this.$message.success('批量删除成功')
       } else {
-        this.$message.error('App版本信息批量删除失败')
+        this.$message.error('图书信息批量删除失败')
       }
       this.batchdelVisible = false //关闭删除提示模态框
-    },
-    async changeSwitchA(index, row) {
-      this.idx = index
-      this.msg = row //每一条数据的记录
-      console.log(this.msg.pkCardId)
-      this.data = { field: this.msg.pkCardId, status: true }
-      this.url = '/card/statuschange'
-      this.result = await API.init(this.url, this.data, 'post')
-      this.$message.success('激活成功')
-      this.getBookAll()
     },
     //编辑
     handleUpdate(index, row) {
@@ -333,62 +319,73 @@ export default {
       this.msg = row //每一条数据的记录
       this.updatecenterDialogVisible = true
     },
-    //修改一卡通信息
+    //修改图书信息
     async confirmUpdate() {
       this.data = {
-        pkCardId: this.msg.pkCardId,
-        status: this.msg.status,
-        cardPassword: this.ruleForm.checkPass,
-        jobNumber: this.ruleForm.jobnumber,
-        cardBalance: this.ruleForm.balance
+        pkBookId: this.msg.pkBookId,
+        author: this.ruleForm1.author,
+        cover: this.ruleForm1.cover,
+        type: this.ruleForm1.type,
+        description: this.ruleForm1.description,
+        bookNumber: this.ruleForm1.bookNumber,
+        bookResidueNumber: this.ruleForm1.bookResidueNumber,
+        bookName: this.ruleForm1.bookName
       }
-      this.url = '/card/modification'
+      this.url = '/book/updation'
       this.result = await API.init(this.url, this.data, 'post')
       this.updatecenterDialogVisible = false
       this.getBookAll()
-      if (this.result.data == null) {
-        this.$message.success('该一卡通未激活，信息修改失败')
-      } else {
-        this.$message.success('信息修改成功')
-      }
+      this.$message.success('信息修改成功')
     },
-    //新增一卡通
+    //新增图书
     async confirmAdd() {
       this.data = {
-        cardNumber: this.ruleForm1.cardNumber,
-        cardPassword: this.ruleForm1.cardPassword,
-        jobNumber: this.ruleForm1.jobNumber,
-        cardBalance: this.ruleForm1.cardbalance1
+        author: this.ruleForm1.author,
+        cover: this.ruleForm1.cover,
+        type: this.ruleForm1.type,
+        description: this.ruleForm1.description,
+        bookNumber: this.ruleForm1.bookNumber,
+        bookResidueNumber: this.ruleForm1.bookResidueNumber,
+        bookName: this.ruleForm1.bookName
       }
-      this.url = '/card/increase'
+      this.url = '/book/increased'
       this.result = await API.init(this.url, this.data, 'post')
       this.addcenterDialogVisible = false
       this.getBookAll()
       if (this.result.data == null) {
-        this.$message.success('该一卡通账号已存在，请勿重复新增')
+        this.$message.success('该图书账号已存在，请勿重复新增')
       } else {
-        this.$message.success('一卡通添加成功')
+        this.$message.success('图书添加成功')
       }
     },
-
-    //明细
-    handleDetail(index, row) {
-      this.idx = index
-      this.msg = row //每一条数据的记录
-      this.datailcenterDialogVisible = true
-      this.getDetail()
+    // 上传图片
+    selectavatar() {
+      this.$refs.file.click()
     },
-    //清单明细
-    async getDetail() {
-      this.data = {
-        field: this.msg.jobNumber
+    handlderFile() {
+      this.getClient()
+      this.file = this.$refs.upload.files[0]
+      var _this = this
+      async function put() {
+        try {
+          let result = await _this.client.put(_this.$refs.upload.files[0].name, _this.file)
+          _this.ruleForm1.cover = result.url
+          _this.update()
+        } catch (e) {
+          alert('文件上传成功')
+          console.log(e)
+        }
       }
-      this.url = '/card/consume'
-      this.result = await API.init(this.url, this.data, 'post')
-      this.detailList = this.result.data
-      for (let i = 0; i < this.detailList.length; i++) {
-        this.detailList[i].gmtCreate = this.formatDate(this.detailList[i].gmtCreate)
-      }
+      put()
+    },
+    getClient() {
+      let OSS = require('ali-oss')
+      this.client = new OSS({
+        region: 'oss-cn-beijing',
+        accessKeyId: 'LTAIaG9RkwvVwXq6',
+        accessKeySecret: '5WPkPJ4JY0nWciRfDpMFxzScm3oJn2',
+        bucket: 'zhent-img'
+      })
     },
     formatDate(value) {
       let date = new Date(value)
@@ -403,7 +400,7 @@ export default {
       m = m < 10 ? '0' + m : m
       let s = date.getSeconds()
       s = s < 10 ? '0' + s : s
-      return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s
+      return y + '年' + MM + '月' + d + '日' + h + ':' + m + ':' + s
     },
     //过滤搜索
     filterSearch() {

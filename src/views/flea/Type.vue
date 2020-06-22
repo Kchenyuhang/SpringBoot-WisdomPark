@@ -26,10 +26,10 @@
                 >{{ subitem.typeName }}</el-menu-item
               >
             </div>
-            <el-menu-item index="index" :click="addSecondType">添加</el-menu-item>
-          </el-submenu> 
+            <el-menu-item index="index" @click="addSecondType">添加</el-menu-item>
+          </el-submenu>
 
-          <el-menu-item index="4" :click="addFirstType">
+          <el-menu-item index="4" @click="addFirstType">
             <i class="el-icon-setting"></i>
             <span slot="title">添加</span>
           </el-menu-item>
@@ -44,23 +44,38 @@
             <el-input v-model="typeShow.typeUrl"></el-input>
           </el-form-item>
           <el-form-item label="类型图标" prop="typeUrl">
-            <img :src="typeShow.typeCoverUrl" style="width:300px;" />
+            <img :src="typeShow.typeCoverUrl" style="width:300px;" class="avatar" @click="selectavatar()" />
           </el-form-item>
         </el-form>
       </div>
-      <div class="typeBtn">
+      <div class="typeBtn" v-if="isTypeAdd">
+        <el-button size="medium" type="primary" @click="increasedType">保存</el-button>
+        <el-button size="medium" type="danger" @click="resetAddType">重置</el-button>
+      </div>
+      <div class="typeBtn" v-else>
         <el-button size="medium" type="primary" @click="changeType">修改</el-button>
         <el-button size="medium" type="danger" @click="deleteTypeById">删除</el-button>
       </div>
+
       <div class="tab">
+        <br />
         <span>管理的艺术在于沟通的技巧和真诚。</span>
+        <br />
+        <br />
         <el-divider content-position="left"><i class="el-icon-place"></i></el-divider>
-        <span></span>
+        <br />
+        <br />
         <el-divider><i class="el-icon-monitor"></i></el-divider>
+        <br />
+        <br />
         <span>夫为治有体，上下不可相侵!</span>
+        <br />
+        <br />
         <el-divider content-position="right">易之思之</el-divider>
       </div>
     </el-row>
+    <!-- 设置可以被引用  引用名为file  不可见 -->
+    <input ref="file" v-show="false" type="file" @change="uploadAvatar($event)" />
   </div>
 </template>
 <script>
@@ -72,6 +87,7 @@ export default {
       typeMenu: [],
       showTypeId: 0,
       parentId: 0,
+      isTypeAdd: false,
       typeShow: {
         parentId: 0,
         pkFleaTypeId: 0,
@@ -101,8 +117,19 @@ export default {
       this.changeShowType(this.typeMenu[0].subTypes[0].pkFleaTypeId)
     },
     handleOpen(key, keyPath) {
+      this.$refs['typeShow'].clearValidate()
       console.log(key, keyPath)
       for (let i = 0; i < this.typeMenu.length; i++) {
+        for (let j = 0; j < this.typeMenu[i].subTypes.length; j++) {
+          if (this.showTypeId === this.typeMenu[i].subTypes[j].pkFleaTypeId) {
+            this.typeShow.parentId = this.typeMenu[i].subTypes[j].parentId
+            this.typeShow.pkFleaTypeId = this.typeMenu[i].subTypes[j].pkFleaTypeId
+            this.typeShow.subTypes = this.typeMenu[i].subTypes[j].subTypes
+            this.typeShow.typeCoverUrl = this.typeMenu[i].subTypes[j].typeCoverUrl
+            this.typeShow.typeName = this.typeMenu[i].subTypes[j].typeName
+            this.typeShow.typeUrl = this.typeMenu[i].subTypes[j].typeUrl
+          }
+        }
         if (key === this.typeMenu[i].typeName) {
           this.parentId = this.typeMenu[i].pkFleaTypeId
           break
@@ -111,9 +138,11 @@ export default {
     },
     handleClose(key, keyPath) {
       console.log(key, keyPath)
+      this.isTypeAdd = false
     },
     changeShowType(type) {
       this.showTypeId = type
+      this.isTypeAdd = false
       for (let i = 0; i < this.typeMenu.length; i++) {
         for (let j = 0; j < this.typeMenu[i].subTypes.length; j++) {
           if (this.showTypeId === this.typeMenu[i].subTypes[j].pkFleaTypeId) {
@@ -161,8 +190,6 @@ export default {
                       console.log('该路径已存在')
                       urlFlag = false
                       break
-                    } else {
-                      console.log('路径校验成功')
                     }
                   } else {
                     urlFlag = false
@@ -215,16 +242,21 @@ export default {
     },
     addFirstType() {
       this.parentId = 0
-      // this.typeShow.typeCoverUrl = ''  
-      // this.typeShow.typeName = ''
-      // this.typeShow.typeUrl = ''
+      console.log(this.parentId)
+      this.isTypeAdd = true
+      this.resetAddType()
     },
     addSecondType() {
-      // this.typeShow.typeCoverUrl = ''
-      // this.typeShow.typeName = ''
-      // this.typeShow.typeUrl = ''
+      console.log(this.parentId)
+      this.isTypeAdd = true
+      this.resetAddType()
     },
-    async addType() {
+    resetAddType() {
+      this.typeShow.typeCoverUrl = ''
+      this.typeShow.typeName = ''
+      this.typeShow.typeUrl = ''
+    },
+    async increasedType() {
       let date = {
         //pkFleaTypeId可为任意值，后端不用
         parentId: this.parentId,
@@ -233,7 +265,36 @@ export default {
         typeUrl: this.typeShow.typeUrl
       }
       console.log(date)
-      // await API.init('flea/type/increased', date, 'post')
+      let res = await API.init('flea/type/increased', date, 'post')
+      console.log(res)
+      if (res.code === 1) {
+        this.$message.success('添加成功!')
+      } else {
+        this.$message.error('添加失败')
+      }
+    },
+    selectavatar() {
+      this.$refs.file.click()
+    },
+    uploadAvatar(event) {
+      const OSS = require('ali-oss')
+      let client = new OSS({
+        region: 'oss-cn-beijing',
+        //云账号的AccessKey所有的API访问权限，
+        //建议遵循阿里云安全最佳实践没部署在服务器端使用RAM子账号
+        accessKeyId: 'LTAI4GD8r7BPa4ik89fSdFws',
+        accessKeySecret: 'H5uLKRHHYnndxuHctQjPPBJj5vRWSH',
+        bucket: 'nttbucket'
+      })
+      let timestamp = Date.parse(new Date())
+      let imgUrl = 'img/' + timestamp
+      var file = event.target.files[0] //获取文件流
+      //因为在内部方法中，this无效
+      var _this = this
+      client.multipartUpload(imgUrl, file).then(function(result) {
+        let img = result.res.requestUrls[0].split('?')[0]
+        _this.typeShow.typeCoverUrl = img
+      })
     }
   }
 }
@@ -265,7 +326,10 @@ export default {
   display: inline-block;
   float: left;
   width: 27%;
-  margin-top: 5%;
-  margin-left: -1%;
+  margin-top: 4%;
+  margin-left: -5%;
+}
+.avatar {
+  cursor: pointer;
 }
 </style>

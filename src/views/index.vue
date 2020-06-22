@@ -47,7 +47,8 @@ export default {
       let phoneNumber = JSON.parse(localStorage.getItem('user')).sysUserPhoneNumber
       this.axios({
         method: 'get',
-        url: 'http://localhost:8080/sysUser/menus',
+        // url: 'http://localhost:8081/sysUser/menus',
+        url: 'http://120.26.177.51:8081/sysUser/menus',
         params: {
           phoneNumber: phoneNumber
         },
