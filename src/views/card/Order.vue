@@ -2,10 +2,34 @@
 <template>
   <div style="width:100%">
     <!-- 修改弹出框 -->
+<<<<<<< HEAD
     <el-dialog :modal="false" title="编辑一卡通" :visible.sync="updatecenterDialogVisible" width="30%" left>
       <el-form :model="ruleForm" status-icon label-width="80px">
         <el-form-item label="余额" prop="balance">
           <el-input type="number" v-model.number="ruleForm.balance"></el-input>
+=======
+    <el-dialog
+      :modal="false"
+      title="编辑一卡通"
+      :visible.sync="updatecenterDialogVisible"
+      width="30%"
+      left
+    >
+      <el-form
+        :model="ruleForm"
+        status-icon
+        label-width="80px"
+      >
+        <el-form-item
+          label="余额"
+          prop="balance"
+        >
+          <el-input
+            max="5"
+            oninput="value=value.replace(/[^\d]/g,'')"
+            v-model.number="ruleForm.balance"
+          ></el-input>
+>>>>>>> d0f6d2f2c40c8b1d1ba5cdd9d8c8d8dfdeb48906
         </el-form-item>
         <el-form-item label="缴费描述" prop="description">
           <el-input v-model.number="ruleForm.description"></el-input>
@@ -96,7 +120,7 @@ export default {
       currentPageSize: 100,
       currentPage: 1,
       currentPageSizeA: 6,
-      currentPageA: 0,
+      currentPageA: 1,
       visible: false,
       delVisible: false,
       updatecenterDialogVisible: false,
@@ -169,11 +193,11 @@ export default {
     },
     // eslint-disable-next-line no-unused-vars
     statusChange: function(row, column) {
-      return row.status == 1 ? '已支付' : row.status == 0 ? '未支付' : 'aaa'
+      return row.status == 1 ? '已支付' : row.status == 0 ? '未支付' : ''
     },
     // 分页查询所有
     async getOrderAll() {
-      this.data = { currentPage: this.currentPage, pageSize: this.PageSize }
+      this.data = { currentPage: this.currentPage, pageSize: this.currentPageSize }
       this.url = '/order/all'
       this.result = await API.init(this.url, this.data, 'post')
       this.tableData = this.result.data
