@@ -1,13 +1,7 @@
 <template>
   <div style="width:100%">
     <!-- 修改弹出框 -->
-    <el-dialog
-      title="编辑资讯内容"
-      :visible.sync="updatecenterDialogVisible"
-      width="98%"
-      :modal="false"
-      left
-    >
+    <el-dialog title="编辑资讯内容" :visible.sync="updatecenterDialogVisible" width="98%" :modal="false" left>
       <template>
         <quill-editor
           v-model="content"
@@ -19,65 +13,23 @@
           @change="onEditorChange($event)"
         ></quill-editor>
       </template>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
+      <span slot="footer" class="dialog-footer">
         <el-button @click="updatecenterDialogVisible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="confirmUpdate"
-        >确 定</el-button>
+        <el-button type="primary" @click="confirmUpdate">确 定</el-button>
       </span>
     </el-dialog>
 
     <!-- 增加弹出框 -->
-    <el-dialog
-      title="新增资讯信息"
-      :visible.sync="addcenterDialogVisible"
-      width="30%"
-      :modal="false"
-      center
-    >
-      <el-form
-        label-width="80px"
-        :model="ruleForm1"
-      >
-        <el-form-item
-          required
-          label="标题"
-          prop="title"
-        >
-          <el-input
-            type="textarea"
-            :rows="2"
-            placeholder="请输入内容"
-            v-model="ruleForm1.title"
-          ></el-input>
+    <el-dialog title="新增资讯信息" :visible.sync="addcenterDialogVisible" width="30%" :modal="false" center>
+      <el-form label-width="80px" :model="ruleForm1">
+        <el-form-item required label="标题" prop="title">
+          <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="ruleForm1.title"></el-input>
         </el-form-item>
-        <el-form-item
-          required
-          label="内容"
-          prop="text"
-        >
-          <el-input
-            type="textarea"
-            :rows="4"
-            placeholder="请输入内容"
-            v-model="ruleForm1.text"
-          ></el-input>
+        <el-form-item required label="内容" prop="text">
+          <el-input type="textarea" :rows="4" placeholder="请输入内容" v-model="ruleForm1.text"></el-input>
         </el-form-item>
-        <el-form-item
-          required
-          label="封面"
-          prop="cover"
-        >
-          <img
-            :src="ruleForm1.cover"
-            alt=""
-            style="width:100px;height:100px"
-            @click="getClick()"
-          >
+        <el-form-item required label="封面" prop="cover">
+          <img :src="ruleForm1.cover" alt="" style="width:100px;height:100px" @click="getClick()" />
           <!-- 隐藏的文件输入框 -->
           <input
             type="file"
@@ -85,221 +37,123 @@
             accept="image/gif,image/jpeg,image/jpg,image/png,image/svg"
             style="display:none;"
             @change="handlderFile()"
-          >
+          />
         </el-form-item>
       </el-form>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
+      <span slot="footer" class="dialog-footer">
         <el-button @click="addcenterDialogVisible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="confirmAdd"
-        >确 定</el-button>
+        <el-button type="primary" @click="confirmAdd">确 定</el-button>
       </span>
     </el-dialog>
 
-    <el-row
-      type="flex"
-      class="ml-20 mt-10"
-    >
-      <el-input
-        v-model="input"
-        clearable
-        size="mini"
-        placeholder="请输入内容"
-        class="blur-search"
-        @input="filterSearch()"
-      ></el-input>
+    <el-row type="flex" class="ml-20 mt-10">
+      <el-input v-model="input" clearable size="mini" placeholder="请输入内容" class="blur-search" @input="filterSearch()"></el-input>
 
-      <el-button
-        type="success"
-        size="mini"
-        class="ml-10"
-        icon="el-icon-search"
-        @click="searchOption()"
-      >搜索</el-button>
+      <el-button type="success" size="mini" class="ml-10" @click="searchOption()">
+        <i class="el-icon-search" style="color: rgb(247, 251, 255)"></i>
+        <span class="light-font-color">搜索</span>
+      </el-button>
     </el-row>
     <el-row class="df-jr-ac ml-20 mt-10">
       <el-col class="tl">
-        <el-button
-          type="primary"
-          icon="el-icon-plus"
-          size="small"
-          @click="addcenterDialogVisible = true"
-        ><span>新增</span></el-button>
-        <el-button
-          type="danger"
-          icon="el-icon-delete"
-          size="small"
-          @click="delAll()"
-        >批量删除</el-button>
-        <!-- 删除提示框 -->
-        <el-dialog
-          title="提示"
-          :visible.sync="batchdelVisible"
-          width="300px"
-          center
-          :modal="false"
+        <el-button type="primary" icon="el-icon-plus" size="small" @click="addcenterDialogVisible = true"
+          ><span class="light-font-color">新增</span></el-button
         >
+        <el-button type="danger" icon="el-icon-delete" size="small" @click="delAll()"
+          ><span class="light-font-color">批量删除</span></el-button
+        >
+        <!-- 删除提示框 -->
+        <el-dialog title="提示" :visible.sync="batchdelVisible" width="300px" center :modal="false">
           <div class="del-dialog-cnt">批量删除资讯类型后不可恢复，是否确定删除？</div>
-          <span
-            slot="footer"
-            class="dialog-footer"
-          >
+          <span slot="footer" class="dialog-footer">
             <el-button @click="batchdelVisible = false">取 消</el-button>
-            <el-button
-              type="primary"
-              @click="deleteBatch()"
-            >确 定</el-button>
+            <el-button type="primary" @click="deleteBatch()">确 定</el-button>
           </span>
         </el-dialog>
       </el-col>
       <el-col class="tr mr-20">
-        <el-button
-          icon="el-icon-refresh"
-          size="small"
-        ></el-button>
+        <el-button icon="el-icon-refresh" size="small"></el-button>
       </el-col>
     </el-row>
     <!-- 表格展示 -->
     <el-row>
       <el-col span="1"></el-col>
-      <el-col
-        span="23"
-        class="ml-20 mt-10"
-      >
+      <el-col span="23" class="ml-20 mt-10">
         <el-table
           :data="infoList"
           stripe="true"
           style="width: 100%;"
+          class="light-small-font p-a-20"
           @selection-change="handleSelectionChange"
         >
-          <el-table-column
-            type="selection"
-            min-width="10%"
-          > </el-table-column>
-          <el-table-column
-            label="资讯标题"
-            show-overflow-tooltip
-            min-width="15%"
-          >
+          <el-table-column type="selection" min-width="10%"> </el-table-column>
+          <el-table-column label="资讯标题" show-overflow-tooltip min-width="15%">
             <template slot-scope="scope">
               <span v-html="scope.row.title"></span>
             </template>
           </el-table-column>
-          <el-table-column
-            label="资讯封面"
-            show-overflow-tooltip
-            min-width="15%"
-          >
+          <el-table-column label="资讯封面" show-overflow-tooltip min-width="15%">
             <template slot-scope="scope">
-              <el-popover
-                placement="right"
-                trigger="hover"
-              >
-                <img :src="scope.row.cover" />
-                <img
-                  slot="reference"
-                  :src="scope.row.cover"
-                  style="max-height: 50px;max-width: 80px"
-                >
+              <el-popover placement="right" trigger="hover">
+                <img :src="scope.row.cover" style="width: 300px; height: 400px" />
+                <img slot="reference" :src="scope.row.cover" style="max-height: 50px;max-width: 80px" />
               </el-popover>
             </template>
           </el-table-column>
-          <el-table-column
-            label="内容"
-            show-overflow-tooltip
-            min-width="15%"
-          >
+          <el-table-column label="内容" min-width="15%">
             <template slot-scope="scope">
-              <el-button
-                type="text"
-                @click="handleUpdate(scope.$index, scope.row)"
-                v-html="scope.row.text "
-              >
-              </el-button>
+              <el-popover placement="top" trigger="hover">
+                <p type="text" v-html="scope.row.text" style="min-width: 300px; max-width: 800px"></p>
+                <p slot="reference" class="text-ellipsis" type="text" @click="handleUpdate(scope.$index, scope.row)" v-html="scope.row.text"></p>
+              </el-popover>
             </template>
           </el-table-column>
           <el-table-column
             label="是否置顶"
             show-overflow-tooltip
             min-width="10%"
-            :filters="[{ text: '已置顶', value: true }, { text: '未置顶', value: false }]"
+            :filters="[
+              { text: '已置顶', value: true },
+              { text: '未置顶', value: false }
+            ]"
             :filter-method="filterTag"
             filter-placement="bottom-end"
           >
             <template slot-scope="scope">
-              <el-tag
-                type="success"
-                v-if="scope.row.isTop"
-              >已置顶</el-tag>
-              <el-tag
-                type="info"
-                v-else
-              >未置顶</el-tag>
+              <el-tag type="success" v-if="scope.row.isTop">已置顶</el-tag>
+              <el-tag type="info" v-else>未置顶</el-tag>
             </template>
           </el-table-column>
-          <el-table-column
-            label="创建时间"
-            show-overflow-tooltip
-            min-width="15%"
-          >
+          <el-table-column label="创建时间" show-overflow-tooltip min-width="15%">
             <template slot-scope="scope">
               <span>{{ scope.row.gmtCreate }}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            label="操作"
-            show-overflow-tooltip
-            min-width="20%"
-          >
+          <el-table-column label="操作" show-overflow-tooltip min-width="20%">
             <template slot-scope="scope">
-              <el-button
-                size="mini"
-                type="success"
-                @click="handleUpdate(scope.$index, scope.row)"
-              >编辑</el-button>
-              <el-button
-                size="mini"
-                type="primary"
-                @click="handleTop(scope.$index, scope.row)"
-              >置顶</el-button>
-              <el-button
-                size="mini"
-                type="danger"
-                @click="handleDelete(scope.$index, scope.row)"
-              >删除</el-button>
+              <el-button size="mini" type="success" @click="handleUpdate(scope.$index, scope.row)">
+                <span class="light-font-color">编辑</span></el-button
+              >
+              <el-button size="mini" type="primary" @click="handleTop(scope.$index, scope.row)">
+                <span class="light-font-color">置顶</span></el-button
+              >
+              <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">
+                <span class="light-font-color">删除</span></el-button
+              >
             </template>
           </el-table-column>
         </el-table>
       </el-col>
     </el-row>
     <!-- 删除提示框 -->
-    <el-dialog
-      title="提示"
-      :visible.sync="delVisible"
-      width="300px"
-      :modal="false"
-      center
-    >
+    <el-dialog title="提示" :visible.sync="delVisible" width="300px" :modal="false" center>
       <div class="del-dialog-cnt">删除资讯类型号后不可恢复，是否确定删除？</div>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
+      <span slot="footer" class="dialog-footer">
         <el-button @click="delVisible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="deleteRow"
-        >确 定</el-button>
+        <el-button type="primary" @click="deleteRow">确 定</el-button>
       </span>
     </el-dialog>
-    <div
-      class="block"
-      style="margin-top:2%"
-    >
+    <div class="block" style="margin-top:2%">
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -347,6 +201,15 @@ export default {
   },
   created() {
     this.getinfoAll()
+  },
+  filters: {
+    ellipsis(value) {
+      if (!value) return ''
+      if (value.length > 10) {
+        return value.slice(0, 6) + '...'
+      }
+      return value
+    }
   },
   watch: {
     pageSize: function() {
@@ -536,7 +399,7 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .top-input {
   width: 200px;
   height: 30px;
@@ -565,5 +428,21 @@ el-input {
   background-color: white;
   width: 500px;
   height: 400px;
+}
+
+>>> .el-icon-edit {
+  color: #f7fbff;
+}
+
+>>> .el-icon-plus {
+  color: #f7fbff;
+}
+
+>>> .el-icon-delete {
+  color: #f7fbff;
+}
+
+>>> .el-icon-download {
+  color: #f7fbff;
 }
 </style>

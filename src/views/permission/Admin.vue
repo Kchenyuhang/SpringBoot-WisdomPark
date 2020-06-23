@@ -574,22 +574,6 @@ export default {
   line-height: 30px;
 }
 
-.el-icon-edit {
-  color: #f7fbff;
-}
-
-.el-icon-plus {
-  color: #f7fbff;
-}
-
-.el-icon-delete {
-  color: #f7fbff;
-}
-
-.el-icon-download {
-  color: #f7fbff;
-}
-
 /* >>> .el-icon-search {
   color: #f7fbff;
 } */
@@ -644,5 +628,59 @@ export default {
 .search-btn {
   height: 30px;
   width: 80px;
+}
+
+>>> .el-input__icon {
+  color: #eee;
+  margin-bottom: 10px;
+}
+
+.el-button--success {
+  background-color: #13ce66;
+}
+
+.search-btn {
+  background-color: #f4f4f5;
+}
+
+.search-btn:hover {
+  background-color: #909399;
+}
+
+>>> .el-input__inner {
+  height: 30px;
+}
+
+>>> .el-icon-edit {
+  color: #f7fbff;
+}
+
+>>> .el-icon-plus {
+  color: #f7fbff;
+}
+
+>>> .el-icon-delete {
+  color: #f7fbff;
+}
+
+>>> .el-icon-download {
+  color: #f7fbff;
+}
+
+>>> .el-range-separator {
+  margin-bottom: 10px;
+}
+
+/* >>> .el-icon-search {
+  color: #f7fbff;
+} */
+
+>>> .el-input__prefix {
+  display: flex;
+  align-items: center;
+}
+
+>>> .el-select__caret {
+  margin-top: 5px;
 }
 </style>

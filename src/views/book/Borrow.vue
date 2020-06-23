@@ -36,12 +36,17 @@
         value-format="yyyy-MM-dd"
       >
       </el-date-picker>
-      <el-button type="success" size="mini" class="ml-10" icon="el-icon-search">搜索</el-button>
+      <el-button type="success" size="mini" class="ml-10">
+        <i class="el-icon-search" style="color: rgb(247, 251, 255)"></i>
+        <span class="light-font-color">搜索</span></el-button>
     </el-row>
     <el-row class="df-jr-ac ml-20 mt-10">
       <el-col class="tl">
-        <el-button type="primary" icon="el-icon-plus" size="small" @click="addcenterDialogVisible = true"><span>新增</span></el-button>
-        <el-button type="danger" icon="el-icon-delete" size="small" @click="delAll()">批量删除</el-button>
+        <el-button type="primary" icon="el-icon-plus" size="small" @click="addcenterDialogVisible = true"><span class="light-font-color">新增</span></el-button>
+        <el-button type="danger" icon="el-icon-delete" size="small" @click="delAll()">
+          <span class="light-font-color">批量删除
+          </span>
+        </el-button>
         <!-- 删除提示框 -->
         <el-dialog :modal="false" title="提示" :visible.sync="batchdelVisible" width="300px" center>
           <div class="del-dialog-cnt">批量删除借阅信息后不可恢复，是否确定删除？</div>
@@ -59,7 +64,7 @@
     <el-row>
       <el-col span="1"></el-col>
       <el-col span="23" class="ml-20 mt-10">
-        <el-table :data="bookBorrowList" stripe="true" style="width: 100%;" @selection-change="handleSelectionChange">
+        <el-table :data="bookBorrowList" stripe="true" class="light-small-font" style="width: 100%;" @selection-change="handleSelectionChange">
           <el-table-column type="selection" min-width="10%"> </el-table-column>
           <el-table-column label="书名" show-overflow-tooltip min-width="13%">
             <template slot-scope="scope">
@@ -90,10 +95,11 @@
             </template>
           </el-table-column>
           <el-table-column label="归还时间" show-overflow-tooltip min-width="18%" :formatter="timeChange"> </el-table-column>
-          <el-table-column label="操作" show-overflow-tooltip min-width="23%">
+          <el-table-column label="操作" show-overflow-tooltip min-width="23%" align="center">
             <template slot-scope="scope">
-              <el-button size="mini" type="success" @click="handleUpdate(scope.$index, scope.row)">归还处理</el-button>
-              <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+              <el-button size="mini" type="success" @click="handleUpdate(scope.$index, scope.row)">
+                <span class="light-font-color">归还处理</span></el-button>
+              <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)"><span class="light-font-color">删除</span></el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -298,7 +304,7 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .top-input {
   width: 200px;
   height: 30px;
@@ -321,5 +327,42 @@ el-input {
 }
 .el-input__inner {
   height: 30px;
+}
+
+>>> .el-input__inner {
+  height: 30px;
+}
+
+>>> .el-icon-edit {
+  color: #f7fbff;
+}
+
+>>> .el-icon-plus {
+  color: #f7fbff;
+}
+
+>>> .el-icon-delete {
+  color: #f7fbff;
+}
+
+>>> .el-icon-download {
+  color: #f7fbff;
+}
+
+>>> .el-range-separator {
+  margin-bottom: 10px;
+}
+
+/* >>> .el-icon-search {
+  color: #f7fbff;
+} */
+
+>>> .el-input__prefix {
+  display: flex;
+  align-items: center;
+}
+
+>>> .el-select__caret {
+  margin-top: 5px;
 }
 </style>

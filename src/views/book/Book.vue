@@ -70,12 +70,19 @@
       <el-select size="mini" v-model="selectValue" placeholder="请选择" class="statu-search ml-10">
         <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
       </el-select>
-      <el-button type="success" size="mini" class="ml-10" icon="el-icon-search">搜索</el-button>
+      <el-button type="success" size="mini" class="ml-10">
+        <i class="el-icon-search" style="color: rgb(247, 251, 255)"></i>
+        <span class="light-font-color">搜索</span>
+      </el-button>
     </el-row>
     <el-row class="df-jr-ac ml-20 mt-10">
       <el-col class="tl">
-        <el-button type="primary" icon="el-icon-plus" size="small" @click="addcenterDialogVisible = true"><span>新增</span></el-button>
-        <el-button type="danger" icon="el-icon-delete" size="small" @click="delAll()">批量删除</el-button>
+        <el-button type="primary" icon="el-icon-plus" size="small" @click="addcenterDialogVisible = true"
+          ><span class="light-font-color">新增</span></el-button
+        >
+        <el-button type="danger" icon="el-icon-delete" size="small" @click="delAll()"
+          ><span class="light-font-color">批量删除</span></el-button
+        >
         <!-- 删除提示框 -->
         <el-dialog class="dialog" :modal="false" title="提示" :visible.sync="batchdelVisible" width="300px" center>
           <div class="del-dialog-cnt">批量删除图书信息后不可恢复，是否确定删除？</div>
@@ -93,7 +100,7 @@
     <el-row>
       <el-col span="1"></el-col>
       <el-col span="23" class="ml-20 mt-10">
-        <el-table :data="bookList" stripe="true" style="width: 100%;" @selection-change="handleSelectionChange">
+        <el-table :data="bookList" stripe="true" style="width: 100%;" class="light-small-font" @selection-change="handleSelectionChange">
           <el-table-column type="selection" min-width="10%"> </el-table-column>
           <el-table-column label="图书名" show-overflow-tooltip min-width="13%">
             <template slot-scope="scope">
@@ -107,7 +114,7 @@
           </el-table-column>
           <el-table-column label="封面" show-overflow-tooltip min-width="15%">
             <template slot-scope="scope">
-              <el-popover placement="right" trigger="hover">
+              <el-popover placement="right" width="300px" trigger="hover">
                 <img :src="scope.row.cover" />
                 <img slot="reference" :src="scope.row.cover" style="max-height: 50px;max-width: 130px" />
               </el-popover>
@@ -118,10 +125,14 @@
               <span>{{ scope.row.type }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="简介" show-overflow-tooltip min-width="13%">
-            <template slot-scope="scope">
-              <span>{{ scope.row.description }}</span>
-            </template>
+            
+          <el-table-column label="简介" min-width="13%">
+              <template slot-scope="scope">
+                <el-popover placement="top" max-width="300px" trigger="hover">
+                <span style="display:block; width: 600px;">{{ scope.row.description }}</span>
+                <span slot="reference" class="text-ellipsis">{{ scope.row.description }}</span>
+            </el-popover>
+              </template>
           </el-table-column>
           <el-table-column label="是否还有库存" show-overflow-tooltip min-width="15%" :formatter="statusChange"> </el-table-column>
           <el-table-column label="创建时间" show-overflow-tooltip min-width="18%">
@@ -130,10 +141,14 @@
               <span>{{ scope.row.gmtCreate }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" show-overflow-tooltip min-width="23%">
+          <el-table-column label="操作" align="center" show-overflow-tooltip min-width="23%">
             <template slot-scope="scope">
-              <el-button size="mini" type="success" @click="handleUpdate(scope.$index, scope.row)">编辑</el-button>
-              <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+              <el-button size="mini" type="success" @click="handleUpdate(scope.$index, scope.row)"
+                ><span class="light-font-color">编辑</span></el-button
+              >
+              <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)"
+                ><span class="light-font-color">删除</span></el-button
+              >
             </template>
           </el-table-column>
         </el-table>
@@ -238,6 +253,15 @@ export default {
       this.getBookAll()
     },
     total: function() {}
+  },
+  filters: {
+    ellipsis(value) {
+      if (!value) return ''
+      if (value.length > 10) {
+        return value.slice(0, 6) + '...'
+      }
+      return value
+    }
   },
   methods: {
     // eslint-disable-next-line no-unused-vars
@@ -423,7 +447,7 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .top-input {
   width: 200px;
   height: 30px;
@@ -458,5 +482,42 @@ el-input {
   justify-content: center;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.7);
+}
+
+>>> .el-input__inner {
+  height: 30px;
+}
+
+>>> .el-icon-edit {
+  color: #f7fbff;
+}
+
+>>> .el-icon-plus {
+  color: #f7fbff;
+}
+
+>>> .el-icon-delete {
+  color: #f7fbff;
+}
+
+>>> .el-icon-download {
+  color: #f7fbff;
+}
+
+>>> .el-range-separator {
+  margin-bottom: 10px;
+}
+
+/* >>> .el-icon-search {
+  color: #f7fbff;
+} */
+
+>>> .el-input__prefix {
+  display: flex;
+  align-items: center;
+}
+
+>>> .el-select__caret {
+  margin-top: 5px;
 }
 </style>

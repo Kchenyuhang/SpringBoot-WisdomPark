@@ -16,19 +16,6 @@
             v-if="searchShow"
             @input="filterSearch"
           ></el-input>
-          <!-- <el-date-picker
-            v-model="time"
-            type="daterange"
-            range-separator=":"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            class="date-input-search ml-10"
-            value-format="yyyy-MM-dd"
-            v-if="searchShow"
-          ></el-date-picker> -->
-          <!-- <el-select v-model="searchs.statu" placeholder="请选择" v-if="searchShow" class="statu-search ml-10">
-            <el-option v-for="item in status" :key="item.value" :label="item.label" :value="item.value"></el-option>
-          </el-select> -->
           <el-button v-if="searchShow" type="success" size="mini" @click="search()" class="ml-10 bg-green" icon="">
             <i class="el-icon-search" style="color: rgb(247, 251, 255)"></i>
             <span class="light-font-color">搜索</span>

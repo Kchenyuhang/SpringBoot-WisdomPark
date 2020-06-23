@@ -466,38 +466,42 @@ el-input {
   height: 30px;
 }
 
-.el-input__icon {
-  color: #ddd;
+>>> .el-input__inner {
+  height: 30px;
 }
 
-.el-button--success {
-  background-color: #13ce66;
-}
-
-.search-btn {
-  background-color: #f4f4f5;
-}
-
-.search-btn:hover {
-  background-color: #909399;
-}
-
-.el-icon-edit {
+>>> .el-icon-edit {
   color: #f7fbff;
 }
 
-.el-icon-plus {
+>>> .el-icon-plus {
   color: #f7fbff;
 }
 
-.el-icon-delete {
+>>> .el-icon-delete {
   color: #f7fbff;
 }
 
-.el-icon-download {
+>>> .el-icon-download {
   color: #f7fbff;
 }
 
+>>> .el-range-separator {
+  margin-bottom: 10px;
+}
+
+/* >>> .el-icon-search {
+  color: #f7fbff;
+} */
+
+>>> .el-input__prefix {
+  display: flex;
+  align-items: center;
+}
+
+>>> .el-select__caret {
+  margin-top: 5px;
+}
 .el-range-separator {
   margin-bottom: 10px;
 }
