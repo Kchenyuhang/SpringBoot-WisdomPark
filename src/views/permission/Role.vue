@@ -1,31 +1,20 @@
 <template>
-  <div
-    class="room-container"
-    style="width: 100%"
-  >
-    <el-row
-      type="flex"
-      style="width: 100%"
-    >
+  <div class="room-container" style="width: 100%">
+    <el-row type="flex" style="width: 100%">
       <!-- <el-col span="4" class="tl">
         <el-input prefix-icon="el-icon-search" v-model="input" placeholder="请输入内容" class="blur-search mt-10"></el-input>
         <el-tree :data="towers" :props="defaultProps" @node-click="handleNodeClick" class="mt-20"></el-tree>
       </el-col> -->
-      <el-col
-        span="15"
-        class="mr-20"
-      >
+      <el-col span="15" class="mr-20">
         <!-- 操作按钮 -->
-        <el-row
-          type="flex"
-          class="ml-20 mt-10"
-        >
+        <el-row type="flex" class="ml-20 mt-10">
           <el-input
             v-model="blurSearch"
             prefix-icon="el-icon-search"
-            placeholder="请输入内容"
+            placeholder="根据角色名称查询"
             class="blur-search"
             v-if="searchShow"
+            @input="filterSearch"
           ></el-input>
           <!-- <el-date-picker
             v-model="time"
@@ -40,51 +29,23 @@
           <!-- <el-select v-model="searchs.statu" placeholder="请选择" v-if="searchShow" class="statu-search ml-10">
             <el-option v-for="item in status" :key="item.value" :label="item.label" :value="item.value"></el-option>
           </el-select> -->
-          <el-button
-            v-if="searchShow"
-            type="success"
-            size="mini"
-            @click="search()"
-            class="ml-10 bg-green"
-            icon=""
-          >
-            <i
-              class="el-icon-search"
-              style="color: rgb(247, 251, 255)"
-            ></i>
+          <el-button v-if="searchShow" type="success" size="mini" @click="search()" class="ml-10 bg-green" icon="">
+            <i class="el-icon-search" style="color: rgb(247, 251, 255)"></i>
             <span class="light-font-color">搜索</span>
           </el-button>
         </el-row>
         <el-row class="df-jr-ac ml-20 mt-10">
           <el-col class="tl">
-            <el-button
-              type="primary"
-              icon="el-icon-plus"
-              @click="openDialog"
-              size="mini"
-            >
+            <el-button type="primary" icon="el-icon-plus" @click="openDialog" size="mini">
               <span class="light-font-color">新增</span>
             </el-button>
-            <el-button
-              type="success"
-              icon="el-icon-edit"
-              size="mini"
-            >
+            <el-button type="success" icon="el-icon-edit" size="mini">
               <span class="light-font-color">修改</span>
             </el-button>
-            <el-button
-              type="danger"
-              icon="el-icon-delete"
-              size="mini"
-            >
+            <el-button type="danger" icon="el-icon-delete" size="mini">
               <span class="light-font-color">删除</span>
             </el-button>
-            <el-button
-              type="warning"
-              icon="el-icon-download"
-              disabled
-              size="mini"
-            >
+            <el-button type="warning" icon="el-icon-download" disabled size="mini">
               <span class="light-font-color">导出</span>
             </el-button>
           </el-col>
@@ -92,22 +53,12 @@
             <el-button size="small" class="search-btn" style="width: 40px" @click="searchShow = !searchShow" @mouseover="searchOver()">
               <i class="el-icon-search" style="color: white"></i>
             </el-button>
-            <el-button
-              icon="el-icon-refresh"
-              size="small"
-              @click="flush()"
-            ></el-button>
+            <el-button icon="el-icon-refresh" size="small" @click="flush()"></el-button>
           </el-col>
         </el-row>
         <!-- 表格 -->
-        <el-row
-          style="border: 1px solid #e6ebf5"
-          class="mt-20  ml-20"
-        >
-          <p
-            class="tl fw mt-10 "
-            style="border-bottom: 1px solid #e6ebf5; padding-bottom: 10px"
-          >
+        <el-row style="border: 1px solid #e6ebf5" class="mt-20  ml-20">
+          <p class="tl fw mt-10 " style="border-bottom: 1px solid #e6ebf5; padding-bottom: 10px">
             <span class="ml-10">角色列表 </span>
           </p>
           <el-table
@@ -120,45 +71,21 @@
             class="light-small-font p-a-20"
             @row-click="getRoleMenus"
           >
-            <el-table-column
-              type="selection"
-              min-width="5%"
-            ></el-table-column>
-            <el-table-column
-              label="角色名"
-              min-width="15%"
-            >
+            <el-table-column type="selection" min-width="5%"></el-table-column>
+            <el-table-column label="角色名" min-width="15%">
               <template slot-scope="scope">{{ scope.row.roleName }}</template>
             </el-table-column>
             <el-table-column label="角色描述" min-width="15%">
               <template slot-scope="scope">{{ scope.row.roleDescription }}</template>
             </el-table-column>
-            <el-table-column
-              label="创建时间"
-              show-overflow-tooltip
-              min-width="10%"
-            >
+            <el-table-column label="创建时间" show-overflow-tooltip min-width="10%">
               <template slot-scope="scope">{{ scope.row.gmtCreate }}</template>
             </el-table-column>
-            <el-table-column
-              label="操作"
-              align="center"
-              min-width="20%"
-            >
+            <el-table-column label="操作" align="center" min-width="20%">
               <template slot-scope="scope">
                 <p style="text-align:center">
-                  <el-button
-                    size="mini"
-                    icon="el-icon-edit"
-                    type="primary"
-                    @click="updaeRoleInfo(scope.row)"
-                  > </el-button>
-                  <el-button
-                    size="mini"
-                    icon="el-icon-delete"
-                    type="danger"
-                    @click="handleDelete(scope.row)"
-                  > </el-button>
+                  <el-button size="mini" icon="el-icon-edit" type="primary" @click="updaeRoleInfo(scope.row)"> </el-button>
+                  <el-button size="mini" icon="el-icon-delete" type="danger" @click="handleDelete(scope.row)"> </el-button>
                 </p>
               </template>
             </el-table-column>
@@ -178,37 +105,19 @@
           ></el-pagination>
         </el-row>
         <!-- 新增页面 -->
-        <div
-          class="dialog"
-          v-if="dialogFormVisible"
-        >
-          <el-form
-            class="mt-10 dialog-form dc-jc-ac"
-            :model="roleInfo"
-            style="padding: 0px 20px;"
-          >
-            <p
-              style="width: 90%;"
-              class="dark-large-font tl"
-            >{{ msg }}角色</p>
-            <el-form-item
-              required
-              label="角色名"
-              class="mt-20"
-              :label-width="formLabelWidth"
-              style="width: 90%;"
-            >
-              <el-input
-                v-model="roleInfo.roleName"
-                autocomplete="off"
-                placeholder="请输入角色名"
-                style="width: 80%"
-              ></el-input>
+        <div class="dialog" v-if="dialogFormVisible">
+          <el-form class="mt-10 dialog-form dc-jc-ac" :model="roleInfo" style="padding: 0px 20px;">
+            <p style="width: 90%;" class="dark-large-font tl">{{ msg }}角色</p>
+            <el-form-item required label="角色名" class="mt-20" :label-width="formLabelWidth" style="width: 90%; height: 70px">
+              <el-input v-model="roleInfo.roleName" autocomplete="off" placeholder="请输入角色名" style="width: 80%"></el-input>
+              <p style="width: 90%; display:flex">
+                <span style="display: block; width: 20%"></span>
+                <span style="display: block; height: 20px; margin-top: 0; width: 80%; color:red;" v-if="rules.roleErrorShow" class="tl"
+                  >{{ roleErrorInfo }}
+                </span>
+              </p>
             </el-form-item>
-            <el-form-item
-              label="角色描述"
-              style="width:90%"
-            >
+            <el-form-item label="角色描述" style="width:90%">
               <el-input
                 type="textarea"
                 placeholder="请输入内容"
@@ -219,19 +128,9 @@
               >
               </el-input>
             </el-form-item>
-            <p
-              class="mt-20 tr"
-              style="width: 90%"
-            >
-              <el-button
-                @click="dialogFormVisible = false"
-                size="small"
-              >取 消</el-button>
-              <el-button
-                type="primary"
-                @click="addRoleInfo(tag)"
-                size="small"
-              >确定</el-button>
+            <p class="mt-20 tr" style="width: 90%">
+              <el-button @click="dialogFormVisible = false" size="small">取 消</el-button>
+              <el-button type="primary" @click="addRoleInfo(tag)" size="small">确定</el-button>
             </p>
           </el-form>
           <!-- <div slot="footer" class="dialog-footer">
@@ -311,6 +210,10 @@ export default {
         children: 'subMenus',
         label: 'name'
       },
+      rules: {
+        roleErrorShow: false
+      },
+      roleErrorInfo: '',
       roleId: -1
     }
   },
@@ -334,6 +237,8 @@ export default {
     openDialog() {
       this.dialogFormVisible = true
       this.tag = 1
+      this.rules.roleErrorShow = false
+      this.roleErrorInfo = ''
       this.msg = ' 新增 '
       this.roleInfo.roleName = ''
       this.roleInfo.roleDescription = ''
@@ -423,13 +328,13 @@ export default {
     //获取指定角色的所有权限
     async getRoleMenus(row) {
       this.getAllMenus()
+      this.roleMenus = []
       let roleMenus = []
       let dto = {
         field: row.pkRoleId
       }
       this.roleId = row.pkRoleId
       let menus = (await API.init('/role/menus', dto, 'post')).data
-      console.log(menus)
       for (let i = 0, len = menus.length; i < len; i++) {
         let parentMenu = menus[i]
         roleMenus.push(parentMenu.pkMenuId)
@@ -443,40 +348,51 @@ export default {
         }
         this.roleMenus = roleMenus
       }
+      console.log("权限>>>>>>>>>>>>>>>>>>>")
+      console.log(this.roleMenus)
     },
     async getAllMenus() {
       this.menus = (await API.init('/menu/list', null, 'post')).data
     },
     //新增角色消息
     async addRoleInfo(tag) {
-      if (tag == 1) {
-        let result = await API.init('/role/increase', this.roleInfo, 'post')
-        if (result.code == 1) {
-          this.$message({
-            message: '新增成功',
-            type: 'success'
-          })
-          this.getRoles()
-          this.dialogFormVisible = false
-          this.roles.splice(0, 0, this.roleInfo)
+      if (this.roleInfo.roleName !== '') {
+        if (this.check.containSpecial(this.roleInfo.roleName)) {
+          this.roleErrorInfo = '不允许存在特殊符号'
+        } else {
+          if (tag == 1) {
+            let result = await API.init('/role/increase', this.roleInfo, 'post')
+            if (result.code == 1) {
+              this.$message({
+                message: '新增成功',
+                type: 'success'
+              })
+              this.getRoles()
+              this.dialogFormVisible = false
+              this.roles.splice(0, 0, this.roleInfo)
+            }
+          } else {
+            let result = await API.init('/role/modification', this.roleInfo, 'post')
+            if (result.code == 1) {
+              let roleInfo = this.roles.filter((role) => {
+                if (role.pkRoleId == this.roleInfo.pkRoleId) {
+                  return role
+                }
+              })
+              this.dialogFormVisible = false
+              this.$message({
+                message: '修改成功',
+                type: 'success'
+              })
+              //修改用户信息
+              let index = this.roles.indexOf(roleInfo[0])
+              this.roles.splice(index, 1, this.roleInfo)
+            }
+          }
         }
       } else {
-        let result = await API.init('/role/modification', this.roleInfo, 'post')
-        if (result.code == 1) {
-          let roleInfo = this.roles.filter((role) => {
-            if (role.pkRoleId == this.roleInfo.pkRoleId) {
-              return role
-            }
-          })
-          this.dialogFormVisible = false
-          this.$message({
-            message: '修改成功',
-            type: 'success'
-          })
-          //修改用户信息
-          let index = this.roles.indexOf(roleInfo[0])
-          this.roles.splice(index, 1, this.roleInfo)
-        }
+        this.rules.roleErrorShow = true
+        this.roleErrorInfo = '角色名不允许为空'
       }
     },
     /* 修改role信息 */
@@ -508,7 +424,14 @@ export default {
               type: 'success'
             })
             let index = this.roles.indexOf(item)
+            this.roleInfos.splice(index, 1)
+            //删除原数组中的数据
             this.roles.splice(index, 1)
+            /* this.roles = this.adminInfoList.filter((admin) => {
+              if (admin.sys_user_id !== item.sys_user_id) {
+                return admin
+              }
+            }) */
           }
         })
       })
@@ -553,6 +476,14 @@ export default {
     },
     searchOver() {
       this.iconColor = '#f1f1df'
+    },
+    //过滤搜搜
+    filterSearch() {
+      this.roleInfos = this.roles.filter((role) => {
+        if (role.roleName.indexOf(this.blurSearch) !== -1) {
+          return role
+        }
+      })
     }
   },
   computed: {}

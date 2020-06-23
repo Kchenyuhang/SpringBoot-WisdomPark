@@ -237,14 +237,14 @@ export default {
     //新增管理员消息
     async addAppVersionInfo(tag) {
       //定义临时变量，用于新增或修改
-      let appVersionInfo = {
+      /* let appVersionInfo = {
         pkAppVersionId: this.appVersionInfo.pkAppVersionId,
         appType: this.appVersionInfo.appType,
         currentVersion: this.appVersionInfo.currentVersion,
         maxVersion: this.appVersionInfo.maxVersion,
         versionDescription: this.appVersionInfo.versionDescription,
         downloadLink: this.appVersionInfo.downloadLink
-      }
+      } */
       if (tag == 1) {
         let result = await API.init('/app/increase', this.appVersionInfo, 'post')
         if (result.code == 1) {
@@ -253,24 +253,26 @@ export default {
             type: 'success'
           })
           this.dialogFormVisible = false
-          this.appList.splice(0, 0, appVersionInfo)
+          /* this.appList.splice(0, 0, appVersionInfo) */
+          this.getAppAll()
         }
       } else {
         let result = await API.init('/app/modification', this.appVersionInfo, 'post')
         if (result.code == 1) {
-          let appVersionInfos = this.appList1.filter((appVersion) => {
+          /* let appVersionInfos = this.appList1.filter((appVersion) => {
             if (appVersion.pkAppVersionId == this.appVersionInfo.pkAppVersionId) {
               return appVersion
             }
-          })
+          }) */
           this.dialogFormVisible = false
           this.$message({
             message: '修改成功',
             type: 'success'
           })
           //修改用户信息
-          let index = this.appList.indexOf(appVersionInfos[0])
-          this.appList.splice(index, 1, appVersionInfo)
+          /* let index = this.appList.indexOf(appVersionInfos[0])
+          this.appList.splice(index, 1, appVersionInfo) */
+          this.getAppAll()
         }
       }
     },
