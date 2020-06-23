@@ -29,7 +29,7 @@
                   </el-form-item>
                   <el-form-item label="手机号">
                     <span>{{ props.row.requesterPhonenumber }}</span>
-                  </el-form-item>
+                  </el-form-item>                  
                   <el-form-item label="状态">
                     <span>{{ props.row.status }}</span>
                   </el-form-item>
@@ -189,6 +189,7 @@ export default {
       console.log(this.orderList1)
       console.log(res)
       this.auditfrom = 0
+      this.$message.success("审核成功")
     },
     formatDate(value) {
       let date = new Date(value)
@@ -295,8 +296,8 @@ export default {
   border-radius: 5px;
   background-color: white;
 
-  width: 80%;
-  height: 60%;
+  width: 40%;
+  height: 50%;
 }
 .fromc {
   margin-top: 50px;

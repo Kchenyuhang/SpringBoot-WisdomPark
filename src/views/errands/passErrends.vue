@@ -1,11 +1,31 @@
 <template>
   <div>
     <div class="container">
+      <!-- 删除提示框 -->
+      <el-dialog class="dialog" :modal="false" title="提示" :visible.sync="batchdelVisible" width="300px" center>
+        <div class="del-dialog-cnt">批量删除账号信息后不可恢复，是否确定删除？</div>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="batchdelVisible = false">取 消</el-button>
+          <el-button type="primary" @click="deleteBatch()">确 定</el-button>
+        </span>
+      </el-dialog>
+
+      <!-- 删除提示框 -->
+      <el-dialog class="dialog" title="提示" :visible.sync="delVisible" width="300px" center :modal="false">
+        <div class="del-dialog-cnt">用户信息删除不可恢复，是否确定删除？</div>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="delVisible = false">取 消</el-button>
+          <el-button type="primary" @click="deleteRow">确 定</el-button>
+        </span>
+      </el-dialog>
       <div class="header">
         <el-row type="flex" class="ml-20 mt-10">
           <el-select size="mini" v-model="selectValue" placeholder="请选择" class="statu-search ml-10">
             <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
           </el-select>
+        </el-row>
+        <el-row class="df-jr-ac ml-20 mt-10">
+          <el-button type="danger" icon="el-icon-delete" size="small" @click="delAll()">批量删除</el-button>
         </el-row>
       </div>
       <div class="table" v-show="selectValue === 1 || selectValue === '通过'">
@@ -15,13 +35,26 @@
             :data="orderList1.slice(start, end)"
             style="width: 100%"
             :default-sort="{ prop: 'oderCreateTime', countOrder: 'descending' }"
+            @selection-change="handleSelectionChange"
           >
+            <el-table-column type="selection" width="55"> </el-table-column>
             <el-table-column label="工号" prop="jobNumber"> </el-table-column>
             <el-table-column label="姓名" prop="name"> </el-table-column>
             <el-table-column label="联系方式" prop="phoneNumber"> </el-table-column>
             <el-table-column label="订单量" sortable prop="countOrder"> </el-table-column>
-            <el-table-column label="状态" prop="status"> </el-table-column>
+                <el-table-column prop="status" label="状态" show-overflow-tooltip min-width="80%">
+            <template slot-scope="scope">
+              <el-switch @change="changeStatus(scope.row)" v-model="scope.row.status" active-color="#13ce66" inactive-color="#ff4949">
+              </el-switch>
+            </template>
+          </el-table-column>
             <el-table-column label="审核人" prop="reviewerName"> </el-table-column>
+            <el-table-column label="操作">
+              <template slot-scope="scope">
+                <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row.jobNumber)">删除</el-button>
+              </template>
+            </el-table-column>
           </el-table>
         </div>
       </div>
@@ -105,6 +138,8 @@ export default {
   data() {
     return {
       multipleSelection: [],
+      batchdelVisible: false,
+      delVisible: false,
       input: null,
       size: 100,
       options: [
@@ -125,7 +160,9 @@ export default {
       currentPage4: 0,
       start: 0,
       end: 5,
-      pageSize: 5
+      pageSize: 5,
+      jobnumber: '', //删除工号
+      delarr: [] //批量删除数组
     }
   },
   created() {
@@ -134,6 +171,9 @@ export default {
   },
 
   methods: {
+    changeStatus(){
+        this.$message.success("修改成功")
+    },
     async getFinshOrder(i) {
       if (this.currentPage4 - 1 < 0) {
         this.currentPage4 = 0
@@ -187,6 +227,31 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
+    async deleteBatch() {
+      this.data = { reqId: this.multipleSelection }
+      this.url = '/errends/delete/errends'
+      this.result = await API.init(this.url, this.data, 'post')
+      if (this.result.data === null) {
+        this.orderList1.splice(this.orderList1.indexOf(this.jobnumber), 1)
+        this.$message.success('批量删除成功')
+      } else {
+        this.$message.error('批量删除失败')
+      }
+
+      this.batchdelVisible = false //关闭删除提示模态框},
+    },
+    delAll() {
+      if (this.multipleSelection.length === 0) {
+        this.$message.warning('请选择要删除用户')
+      } else {
+        this.batchdelVisible = true //显示删除弹框
+
+        const length = this.multipleSelection.length
+        for (let i = 0; i < length; i++) {
+          this.delarr.push(this.multipleSelection[i].pkUserAccountId)
+        }
+      }
+    },
     handleSizeChange(val) {
       this.size = val
       this.end = this.size
@@ -207,6 +272,34 @@ export default {
         this.end = this.pageSize * this.currentPage4
         this.start = this.end - this.pageSize
       }
+    },
+    /**编辑 */
+    handleEdit(index, row) {
+      console.log(index, row)
+    },
+
+    /**删除 */
+    handleDelete(index, job) {
+      this.delVisible = true
+      console.log(this.batchdelVisible)
+      console.log(index, job)
+      this.multipleSelection = []
+      this.multipleSelection.push(job)
+      console.log(this.multipleSelection)
+      this.jobnumber = job
+    },
+    async deleteRow() {
+      this.data = { reqId: this.multipleSelection }
+      this.url = '/errends/delete/errends'
+      this.result = await API.init(this.url, this.data, 'post')
+      if (this.result.data === null) {
+        this.orderList1.splice(this.orderList1.indexOf(this.jobnumber), 1)
+        this.$message.success('删除成功')
+      } else {
+        this.$message.error('删除失败')
+      }
+
+      this.delVisible = false //关闭删除提示模态框
     }
   },
   watch: {
@@ -255,5 +348,17 @@ export default {
   width: 300px;
   height: 200px;
   border: black solid 1px;
+}
+.dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
 }
 </style>
