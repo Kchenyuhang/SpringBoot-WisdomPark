@@ -185,6 +185,21 @@ const routes = [
         name: 'Order',
         component: () => import('../views/flea/Order.vue')
       },
+
+      /**
+       * 校友圈相关路由
+       */
+      {
+        path: 'dynamic',
+        name: 'Dynamic',
+        component: () => import('../views/schoolmate/Dynamic.vue')
+      },
+      {
+        path: 'dynamicComment',
+        name: 'DynamicComment',
+        component: () => import('../views/schoolmate/DynamicComment.vue')
+      },
+
       /**跑腿 */
       {
         path: 'pdelivery',

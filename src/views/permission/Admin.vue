@@ -371,7 +371,6 @@ export default {
           let index = this.admins.indexOf(item)
           this.admins.splice(index, 1)
         }
-
       })
       // })
     },
@@ -445,7 +444,7 @@ export default {
   width: 100px;
 }
 
->>> .el-input__icon {
+.el-input__icon {
   color: #ddd;
   margin-top: -5px;
 }
@@ -458,13 +457,13 @@ export default {
   background-color: #f4f4f5;
 }
 
->>> .el-input__prefix {
+.el-input__prefix {
   display: flex;
   height: 30px;
   line-height: 30px;
 }
 
->>> .el-icon-date {
+.el-icon-date {
   margin-bottom: 10px;
 }
 
@@ -472,24 +471,24 @@ export default {
   background-color: #909399;
 }
 
->>> .el-input__inner {
+.el-input__inner {
   height: 30px;
   line-height: 30px;
 }
 
->>> .el-icon-edit {
+.el-icon-edit {
   color: #f7fbff;
 }
 
->>> .el-icon-plus {
+.el-icon-plus {
   color: #f7fbff;
 }
 
->>> .el-icon-delete {
+.el-icon-delete {
   color: #f7fbff;
 }
 
->>> .el-icon-download {
+.el-icon-download {
   color: #f7fbff;
 }
 
@@ -525,7 +524,7 @@ export default {
   background-color: rgba(0, 0, 0, 0.7);
 }
 
->>> .el-form-item__label {
+.el-form-item__label {
   color: #606266;
   font-weight: 600;
 }

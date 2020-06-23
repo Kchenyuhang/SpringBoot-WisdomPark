@@ -1,52 +1,27 @@
 <template>
   <div class="container">
-    <el-form
-      label-width="100px"
-      class="demo-dynamic login-form"
-    >
+    <el-form label-width="100px" class="demo-dynamic login-form">
       <el-row class="login-row">
         <el-col>
           <p class="login-form-title">智慧校园后台管理系统</p>
         </el-col>
         <el-col>
-          <el-input
-            v-model="user.account"
-            placeholder="请输入内容"
-            prefix-icon="el-icon-s-custom"
-          ></el-input>
+          <el-input v-model="user.account" placeholder="请输入内容" prefix-icon="el-icon-s-custom"></el-input>
         </el-col>
         <el-col>
-          <el-input
-            placeholder="请输入密码"
-            v-model="user.password"
-            show-password
-            prefix-icon="el-icon-s-goods"
-          ></el-input>
+          <el-input placeholder="请输入密码" v-model="user.password" show-password prefix-icon="el-icon-s-goods"></el-input>
         </el-col>
         <el-col style="display:flex; align-items: center;">
-          <el-input
-            style="width: 60%"
-            v-model="vertifyCode"
-            placeholder="请输入内容"
-            prefix-icon="el-icon-s-goods"
-          ></el-input>
+          <el-input style="width: 60%" v-model="vertifyCode" placeholder="请输入内容" prefix-icon="el-icon-s-goods"></el-input>
           <p style="width:38%;display:flex; margin-left: 10px; align-items: center;">
-            <img
-              src=""
-              ref="image"
-              alt=""
-            />
+            <img src="" ref="image" alt="" />
           </p>
         </el-col>
         <!-- <el-col style="text-align:left">
           <el-checkbox v-model="checked">记住我</el-checkbox>
         </el-col> -->
         <el-col>
-          <el-button
-            type="primary"
-            style="width: 100%;"
-            @click="login()"
-          >登录</el-button>
+          <el-button type="primary" style="width: 100%;" @click="login()">登录</el-button>
         </el-col>
       </el-row>
     </el-form>
@@ -111,7 +86,6 @@ export default {
 
         // url: 'http://120.26.177.51:80/sysUser/login',
         url: 'http://localhost:8081/sysUser/login',
-
 
         data: {
           account: this.user.account,

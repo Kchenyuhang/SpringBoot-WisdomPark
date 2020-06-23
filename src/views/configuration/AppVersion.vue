@@ -464,7 +464,7 @@ el-input {
   height: 30px;
 }
 
->>> .el-input__icon {
+.el-input__icon {
   color: #ddd;
 }
 
@@ -480,23 +480,23 @@ el-input {
   background-color: #909399;
 }
 
->>> .el-icon-edit {
+.el-icon-edit {
   color: #f7fbff;
 }
 
->>> .el-icon-plus {
+.el-icon-plus {
   color: #f7fbff;
 }
 
->>> .el-icon-delete {
+.el-icon-delete {
   color: #f7fbff;
 }
 
->>> .el-icon-download {
+.el-icon-download {
   color: #f7fbff;
 }
 
->>> .el-range-separator {
+.el-range-separator {
   margin-bottom: 10px;
 }
 
@@ -504,7 +504,7 @@ el-input {
   color: #f7fbff;
 } */
 
->>> .el-input__prefix {
+.el-input__prefix {
   display: flex;
   align-items: center;
 }
@@ -533,7 +533,7 @@ el-input {
   width: 260px;
 }
 
->>> .el-range-separator {
+.el-range-separator {
   margin-bottom: 10px;
 }
 </style>
