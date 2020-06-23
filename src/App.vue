@@ -20,8 +20,7 @@
   display: flex;
 }
 
-.content { 
+.content {
   position: absolute;
-  
 }
 </style>
