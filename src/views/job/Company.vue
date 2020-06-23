@@ -7,19 +7,19 @@
           <span class="light-font-color">新增</span>
         </el-button>
       </el-col>
-      <el-col class="tr mr-20">
+      <!-- <el-col class="tr mr-20">
         <el-button size="mini" style="width: 45px" class="search-btn" @click="searchShow = !searchShow" @mouseover="searchOver()">
           <i class="el-icon-search" style="color: white"></i>
         </el-button>
         <el-button icon="el-icon-refresh" size="small" @click="flush()"></el-button>
-      </el-col>
+      </el-col> -->
     </el-row>
     <!-- 表格 -->
     <el-row>
-      <el-col span="1"></el-col>
+      <!-- <el-col span="1"></el-col> -->
       <el-col span="23" class="ml-20 mt-10">
-        <el-table :data="items.slice(start, end)" stripe="true" style="width: 100%;">
-          <el-table-column type="selection" min-width="10%" @selection-change="handleSelectionChange"> </el-table-column>
+        <el-table :data="items.slice(start, end)" style="width: 100%;">
+          <!-- <el-table-column type="selection" min-width="10%" @selection-change="handleSelectionChange"> </el-table-column> -->
           <el-table-column label="公司名称" show-overflow-tooltip min-width="13%">
             <template slot-scope="scope">
               <span>{{ scope.row.name }}</span>
@@ -116,7 +116,7 @@
           <el-input v-model="company1.tag"></el-input>
         </el-form-item>
         <el-form-item required label="公司logo">
-          <el-button size="small" type="primary" @click="selectavatar">点击上传</el-button>
+          <el-button size="small" type="primary" @click="selectavatar">点击更换</el-button>
           <!-- 隐藏的文件输入框 -->
           <input type="file" ref="upload" style="display:none;" @change="handlderFile()" />
           <img :src="company1.logo" alt="" style="width: 50px; height: 50px; border-radius: 5px;" />
@@ -150,7 +150,7 @@
     </div>
     <!-- 删除提示框 -->
     <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
-      <div class="del-dialog-cnt">职位信息删除不可恢复，是否确定删除？</div>
+      <div class="del-dialog-cnt">公司信息删除不可恢复，是否确定删除？</div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="delVisible = false">取 消</el-button>
         <el-button type="primary" @click="deleteRow">确 定</el-button>
@@ -166,6 +166,7 @@ export default {
   data() {
     return {
       items: [],
+      items1: [],
       currentPage: 1,
       currentPageSize: 3,
       pageSize: 20,
@@ -222,7 +223,7 @@ export default {
       this.url = '/company/list'
       this.result = await API.init(this.url, this.data, 'post')
       this.items = this.result.data
-      console.log(this.items.length)
+      // console.log(this.items.length)
       for (let i = 0, len = this.items.length; i < len; i++) {
         this.items[i].gmtCreate = this.global.formatDate(this.items[i].gmtCreate)
       }
@@ -313,21 +314,21 @@ export default {
     },
     //删除
     handleDelete(index, row) {
-      // console.log(row.pkPartJobId)
-      this.removeId = index
+      this.removeId = this.items1.indexOf(row)
+      // alert(this.removeId)
       this.delVisible = true
       this.company1 = row //每一条数据的记录
     },
     async deleteRow() {
-      alert(this.removeId)
+      // alert(this.removeId)
       this.data = {
         id: this.company1.pkCompanyId
       }
       console.log(this.data)
       this.url = '/company/remove'
       this.result = await API.init(this.url, this.data, 'post')
-      this.delVisible = false
       this.items.splice(this.removeId, 1)
+      this.delVisible = false
     },
     //上传logo
     selectavatar() {

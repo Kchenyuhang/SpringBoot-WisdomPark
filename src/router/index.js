@@ -197,7 +197,7 @@ const routes = [
         component: () => import('../views/job/Job.vue')
       },
       {
-        path: 'type',
+        path: 'jobType',
         name: 'Type',
         component: () => import('../views/job/JobType.vue')
       }
