@@ -15,13 +15,13 @@
     >
       <el-table-column prop="pkFleaGoodsId" type="selection" width="50"></el-table-column>
       <el-table-column prop="pkFleaGoodsId" label="id" width="50"></el-table-column>
-      <el-table-column prop="goodsName" label="商品名" width="110"></el-table-column>
-      <el-table-column prop="goodsPrice" label="价格" width="200"></el-table-column>
-      <el-table-column prop="goodsDescription" label="描述" width="160"></el-table-column>
+      <el-table-column prop="goodsName" label="商品名" width="310"></el-table-column>
+      <el-table-column prop="goodsPrice" label="价格" width="60"></el-table-column>
+      <el-table-column prop="goodsDescription" label="描述" width="260"></el-table-column>
       <el-table-column prop="typeName" label="类型" width="50"></el-table-column>
       <el-table-column prop="goodsMark" label="标签" width="50"></el-table-column>
       <!-- <el-table-column prop="nickname" label="发布人昵称" width="50"></el-table-column> -->
-      <el-table-column prop="username" label="卖家" width="50"></el-table-column>
+      <el-table-column prop="username" label="卖家" width="80"></el-table-column>
       <el-table-column prop="goodsCreateTime" label="发布时间" width="130"></el-table-column>
       <!-- <el-table-column prop="goodsImgUrl" label="商品图片地址" width="130"></el-table-column> -->
 

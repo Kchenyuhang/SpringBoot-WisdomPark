@@ -51,11 +51,7 @@ export default {
       this.axios({
         method: 'get',
         url: 'http://localhost:8081/sysUser/menus',
-
-        // url: 'http://120.26.177.51:80/sysUser/menus',
-
         // url: 'http://120.26.177.51:8081/sysUser/menus',
-
         params: {
           phoneNumber: phoneNumber
         },

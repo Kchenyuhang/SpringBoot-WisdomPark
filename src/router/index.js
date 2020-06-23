@@ -215,6 +215,27 @@ const routes = [
         path: 'passErrends',
         name: 'passErrends',
         component: () => import('../views/errands/passErrends.vue')
+      },
+      /**校园聘管理*/
+      {
+        path: 'avocation',
+        name: 'Avocation',
+        component: () => import('../views/job/Avocation.vue')
+      },
+      {
+        path: 'company',
+        name: 'Company',
+        component: () => import('../views/job/Company.vue')
+      },
+      {
+        path: 'job',
+        name: 'Job',
+        component: () => import('../views/job/Job.vue')
+      },
+      {
+        path: 'jobType',
+        name: 'Type',
+        component: () => import('../views/job/JobType.vue')
       }
     ]
   },
