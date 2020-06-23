@@ -49,7 +49,7 @@ export default {
   },
   components: {},
   created() {
-    this.getAllUser() 
+    this.getAllUser()
   },
   mounted() {},
   methods: {
@@ -67,7 +67,7 @@ export default {
       console.log(data)
       let res = await API.init('/flea/user/all', data, 'post')
       console.log(res)
-      this.userAll=[]
+      this.userAll = []
       this.userAll = res.data.data.content
       this.total = res.data.total
       console.log(this.userAll)
@@ -82,7 +82,7 @@ export default {
         }
       }
     },
-     async findUserByContent() {
+    async findUserByContent() {
       if (this.currentPage - 1 < 0) {
         this.currentPage = 0
       } else {
@@ -125,6 +125,13 @@ export default {
           return v
         }
       })
+      for (let i = 0; i < this.userShow.length; i++) {
+        if (!this.userShow[i].isDeleted) {
+          this.userShow[i].isDeleted = '启用'
+        } else {
+          this.userShow[i].isDeleted = '禁用'
+        }
+      }
     },
     handleSelectionChange(val) {
       let ids = []

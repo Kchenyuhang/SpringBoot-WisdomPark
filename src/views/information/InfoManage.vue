@@ -82,6 +82,7 @@
           <input
             type="file"
             ref="upload"
+            accept="image/gif,image/jpeg,image/jpg,image/png,image/svg"
             style="display:none;"
             @change="handlderFile()"
           >
@@ -111,24 +112,13 @@
         class="blur-search"
         @input="filterSearch()"
       ></el-input>
-      <el-select
-        v-model="selectValue"
-        placeholder="请选择"
-        size="mini"
-        class="statu-search ml-10"
-      >
-        <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        > </el-option>
-      </el-select>
+
       <el-button
         type="success"
         size="mini"
         class="ml-10"
         icon="el-icon-search"
+        @click="searchOption()"
       >搜索</el-button>
     </el-row>
     <el-row class="df-jr-ac ml-20 mt-10">
@@ -151,6 +141,7 @@
           :visible.sync="batchdelVisible"
           width="300px"
           center
+          :modal="false"
         >
           <div class="del-dialog-cnt">批量删除资讯类型后不可恢复，是否确定删除？</div>
           <span
@@ -235,8 +226,20 @@
             label="是否置顶"
             show-overflow-tooltip
             min-width="10%"
-            :formatter="isTopchange"
+            :filters="[{ text: '已置顶', value: true }, { text: '未置顶', value: false }]"
+            :filter-method="filterTag"
+            filter-placement="bottom-end"
           >
+            <template slot-scope="scope">
+              <el-tag
+                type="success"
+                v-if="scope.row.isTop"
+              >已置顶</el-tag>
+              <el-tag
+                type="info"
+                v-else
+              >未置顶</el-tag>
+            </template>
           </el-table-column>
           <el-table-column
             label="创建时间"
@@ -330,7 +333,6 @@ export default {
       input: '',
       gmtTime: '',
       msg: '',
-      selectValue: '',
       delarr: [], //存放删除的数据
       multipleSelection: [],
       dialogFormVisible: false,
@@ -340,16 +342,6 @@ export default {
         cover: 'https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png'
       },
       file: '',
-      options: [
-        {
-          value: '选项1',
-          label: '未置顶'
-        },
-        {
-          value: '选项2',
-          label: '未指定'
-        }
-      ],
       editFormVisible: false
     }
   },
@@ -366,13 +358,14 @@ export default {
     total: function() {}
   },
   methods: {
+    filterTag(value, row) {
+      return row.isTop === value
+      // eslint-disable-next-line no-unreachable
+      this.getinfoAll()
+    },
     handleEdit: function(index, row) {
       this.editFormVisible = true
       this.editForm = Object.assign({}, row)
-    },
-    // eslint-disable-next-line no-unused-vars
-    isTopchange: function(row, column) {
-      return row.isTop == 1 ? '已置顶' : row.isTop == 0 ? '未置顶' : 'aaa'
     },
     // 查询所有
     async getinfoAll() {
@@ -413,28 +406,20 @@ export default {
     },
     //单个删除
     async deleteRow() {
-      this.data = { field: this.msg.pkInfoManageId }
-      this.url = '/info/deletion'
+      this.data = { pkId: this.msg.pkInfoManageId }
+      this.url = '/info/deletion/id'
       this.result = await API.init(this.url, this.data, 'post')
-      if (this.data) {
-        this.getinfoAll()
-        this.$message.success('删除成功')
-      } else {
-        this.$message.error('资讯信息删除失败')
-      }
+      this.getinfoAll()
+      this.$message.success('删除成功')
       this.delVisible = false //关闭删除提示模态框
     },
     //批量删除
     async deleteBatch() {
       this.data = { ids: String(this.delarr) }
-      this.url = '/info/deletionBath/'
+      this.url = '/info/deletionBath/ids'
       this.result = await API.init(this.url, this.data, 'post')
-      if (this.data) {
-        this.getinfoAll()
-        this.$message.success('批量删除成功')
-      } else {
-        this.$message.error('资讯信息批量删除失败')
-      }
+      this.getinfoAll()
+      this.$message.success('批量删除成功')
       this.batchdelVisible = false //关闭删除提示模态框
     },
     //编辑
@@ -467,6 +452,7 @@ export default {
         this.$message.success('置顶成功')
       }
     },
+
     //修改资讯信息
     async confirmUpdate() {
       this.data = {

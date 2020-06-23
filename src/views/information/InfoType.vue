@@ -11,7 +11,7 @@
         :model="ruleForm"
         status-icon
         label-width="80px"
-      >cnpm install vue-amap --save
+      >
 
         <el-form-item
           label="分类名"

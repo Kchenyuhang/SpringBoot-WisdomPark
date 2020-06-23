@@ -2,6 +2,7 @@
 <template>
   <div style="width:100%">
     <!-- 修改弹出框 -->
+
     <el-dialog
       :modal="false"
       title="编辑一卡通"
@@ -19,7 +20,8 @@
           prop="balance"
         >
           <el-input
-            type="number"
+            max="5"
+            oninput="value=value.replace(/[^\d]/g,'')"
             v-model.number="ruleForm.balance"
           ></el-input>
         </el-form-item>
@@ -68,6 +70,7 @@
           type="success"
           icon="el-icon-edit"
           size="small"
+          @click="delAll()"
         >批量删除</el-button>
         <el-button
           type="warning"
@@ -82,6 +85,27 @@
         ></el-button>
       </el-col>
     </el-row>
+    <!-- 删除提示框 -->
+    <el-dialog
+      title="提示"
+      :visible.sync="batchdelVisible"
+      width="300px"
+      center
+      :modal="false"
+    >
+      <div class="del-dialog-cnt">批量删除订单信息后不可恢复，是否确定删除？</div>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="batchdelVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="deleteBatch()"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+
     <el-row>
       <el-col span="1"></el-col>
       <el-col
@@ -89,9 +113,10 @@
         class="ml-20 mt-10"
       >
         <el-table
-          :data="tableData.slice(start,end)"
+          :data="tableData.slice(start, end)"
           border
           style="width: 100%"
+          @selection-change="handleSelectionChange"
         >
           <el-table-column
             type="selection"
@@ -113,27 +138,25 @@
             label="类型"
             min-width="15%"
           >
-            <template slot-scope="{row,$index}">
+            <template slot-scope="{ row, $index }">
               <input
                 class="edit-cell"
                 v-if="showEdit[$index]"
                 v-model="row.orderType"
-              >
-              <span v-if="!showEdit[$index]">{{row.orderType}}</span>
+              />
+              <span v-if="!showEdit[$index]">{{ row.orderType }}</span>
             </template>
           </el-table-column>
           <el-table-column
             prop="orderMoney"
             label="金额"
             min-width="10%"
-          >
-          </el-table-column>
+          > </el-table-column>
           <el-table-column
             prop="jobNumber"
             label="卡号"
             min-width="10%"
-          >
-          </el-table-column>
+          > </el-table-column>
           <el-table-column
             prop="description"
             label="缴费描述"
@@ -180,7 +203,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPageA"
-        :page-sizes="[6,12,18]"
+        :page-sizes="[6, 12, 18]"
         :page-size="pageSize"
         layout="total, prev, pager, next, sizes,jumper"
         :total="tableData.length"
@@ -226,19 +249,20 @@ export default {
       currentPageSize: 100,
       currentPage: 1,
       currentPageSizeA: 6,
-      currentPageA: 0,
+      currentPageA: 1,
       visible: false,
       delVisible: false,
       updatecenterDialogVisible: false,
       ruleForm: {
         balance: '',
-        description: '',
-        type: ''
+        description: ''
       },
       showEdit: [], //显示编辑框
       showBtn: [],
       showBtnOrdinary: true,
-      input: ''
+      batchdelVisible: false,
+      input: '',
+      delarr: [] //存放删除的数据
     }
   },
   components: {},
@@ -297,13 +321,35 @@ export default {
       this.$message.success('信息删除成功')
       this.delVisible = false //关闭删除提示模态框
     },
+    //批量删除
+    delAll() {
+      this.batchdelVisible = true //显示删除弹框
+      const length = this.multipleSelection.length
+      for (let i = 0; i < length; i++) {
+        this.delarr.push(this.multipleSelection[i].pkOrderId)
+      }
+    },
+    //操作多选
+    handleSelectionChange(val) {
+      this.multipleSelection = val
+    },
+    //批量删除
+    async deleteBatch() {
+      console.log(this.delarr)
+      this.data = { ids: String(this.delarr) }
+      this.url = '/order/deletionBath'
+      this.result = await API.init(this.url, this.data, 'post')
+      this.$message.success('批量删除成功')
+      this.batchdelVisible = false //关闭删除提示模态框
+      this.getOrderAll()
+    },
     // eslint-disable-next-line no-unused-vars
     statusChange: function(row, column) {
-      return row.status == 1 ? '已支付' : row.status == 0 ? '未支付' : 'aaa'
+      return row.status == 1 ? '已支付' : row.status == 0 ? '未支付' : ''
     },
     // 分页查询所有
     async getOrderAll() {
-      this.data = { currentPage: this.currentPage, pageSize: this.PageSize }
+      this.data = { currentPage: this.currentPage, pageSize: this.currentPageSize }
       this.url = '/order/all'
       this.result = await API.init(this.url, this.data, 'post')
       this.tableData = this.result.data
@@ -321,9 +367,9 @@ export default {
     //修改订单信息
     async confirmUpdate() {
       this.data = {
-        pkCardId: this.msg.pkCardId,
+        pkOrderId: this.msg.pkOrderId,
         description: this.ruleForm.description,
-        cardBalance: this.ruleForm.balance
+        orderMoney: this.ruleForm.balance
       }
       this.url = '/order/modification'
       this.result = await API.init(this.url, this.data, 'post')

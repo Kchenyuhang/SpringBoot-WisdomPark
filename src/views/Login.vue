@@ -75,7 +75,7 @@ export default {
       })
     },
     async login() {
-      /* let data = {
+      /* let data={
         account: this.user.account,
         password: this.user.password,
         code: this.vertifyCode
@@ -93,12 +93,12 @@ export default {
         // 设置请求头Content-Type
         //headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
       }).then((res) => {
-      this.$store.commit('setToken', res.data.data.token)
-      localStorage.setItem('token', res.data.data.token)
-      this.$store.commit('setUser', res.data.data.user)
-      localStorage.setItem('user', JSON.stringify(res.data.data.user))
-      console.log(res.data.data.user)
-      this.$router.push('/')
+        this.$store.commit('setToken', res.data.data.token)
+        localStorage.setItem('token', res.data.data.token)
+        this.$store.commit('setUser', res.data.data.user)
+        localStorage.setItem('user', JSON.stringify(res.data.data.user))
+        console.log(res.data.data.user)
+        this.$router.push('/')
       })
     }
   },
