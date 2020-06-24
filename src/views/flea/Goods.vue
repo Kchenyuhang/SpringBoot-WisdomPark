@@ -10,9 +10,23 @@
     <el-table ref="pkFleaGoodsId" :data="goodsShow" @selection-change="handleSelectionChange" height="100%">
       <el-table-column prop="pkFleaGoodsId" type="selection" width="50"></el-table-column>
       <el-table-column prop="pkFleaGoodsId" label="id" width="50"></el-table-column>
-      <el-table-column prop="goodsName" label="商品名" width="310"></el-table-column>
+      <el-table-column prop="goodsName" label="商品名" width="310">
+        <template slot-scope="scope">
+          <el-popover placement="top" trigger="hover">
+            <span style="display:block; width: 300px;">{{ scope.row.goodsName }}</span>
+            <span slot="reference" class="text-ellipsis">{{ scope.row.goodsName }}</span>
+          </el-popover>
+        </template>
+      </el-table-column>
       <el-table-column prop="goodsPrice" label="价格" width="60"></el-table-column>
-      <el-table-column prop="goodsDescription" label="描述" width="260" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="goodsDescription" label="描述" width="260">
+        <template slot-scope="scope">
+          <el-popover placement="top" trigger="hover">
+            <span style="display:block; width: 300px;">{{ scope.row.goodsDescription }}</span>
+            <span slot="reference" class="text-ellipsis">{{ scope.row.goodsDescription }}</span>
+          </el-popover>
+        </template>
+      </el-table-column>
       <el-table-column prop="typeName" label="类型" width="50"></el-table-column>
       <el-table-column prop="goodsMark" label="标签" width="50"></el-table-column>
       <!-- <el-table-column prop="nickname" label="发布人昵称" width="50"></el-table-column> -->

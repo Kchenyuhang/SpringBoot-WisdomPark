@@ -11,10 +11,12 @@
       <el-table ref="RewardId" :data="rewardShow" @selection-change="handleSelectionChange">
         <el-table-column prop="pkFleaRewardId" type="selection" width="50%"></el-table-column>
         <el-table-column prop="title" label="标题 " width="200%" show-overflow-tooltip> </el-table-column>
-        <el-table-column prop="description" label="描述 " width="200%" show-overflow-tooltip>
+        <el-table-column prop="description" label="描述 " width="200%">
           <template slot-scope="scope">
-            <!-- <i class="el-icon-time"></i> -->
-            <span>{{ rewardShow[scope.$index].description }}</span>
+            <el-popover placement="top" trigger="hover">
+              <span style="display:block; width: 300px;">{{ scope.row.description }}</span>
+              <span slot="reference" class="text-ellipsis">{{ scope.row.description }}</span>
+            </el-popover>
           </template>
         </el-table-column>
         <el-table-column prop="nickname" label="发布人昵称 " width="130%"> </el-table-column>
