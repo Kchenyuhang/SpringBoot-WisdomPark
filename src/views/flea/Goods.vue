@@ -242,7 +242,7 @@ export default {
     },
     currentPage: function() {
       console.log('currentPage改变' + this.currentPage)
-      this.getAllGoods
+      this.getAllGoods()
     },
     total: function() {}
   }
