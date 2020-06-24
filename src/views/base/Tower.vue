@@ -343,9 +343,9 @@ export default {
       mapVisible: false,
       // 点击显示的标记默认的定位
       markers: [
-        {
-          position: [118.937761, 32.121619]
-        }
+        // {
+        //   position: [118.937761, 32.121619]
+        // }
       ],
       towerType: [
         { name: '教学楼', value: 2 },
@@ -397,8 +397,8 @@ export default {
               events: {
                 // eslint-disable-next-line no-unused-vars
                 click(o) {
-                  // alert(self.lng)
-                  // alert(self.lat)
+                  alert(self.lng)
+                  alert(self.lat)
                 }
               }
             }
