@@ -196,6 +196,7 @@ export default {
         ids.push(val[i].commentId)
       }
       this.commentsId = ids
+      console.log(ids)
     },
     async batchDelete() {
       let data = {
