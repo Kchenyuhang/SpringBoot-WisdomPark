@@ -1,9 +1,6 @@
 <template>
   <div style="width: 100%;">
-    <el-row
-      type="flex"
-      class="ml-20 mt-10"
-    >
+    <el-row type="flex" class="ml-20 mt-10">
       <el-input
         prefix-icon="el-icon-search"
         @input="filterSearch"
@@ -12,147 +9,61 @@
         v-if="searchShow"
         class="blur-search"
       ></el-input>
-      <el-select
-        v-model="search.status"
-        placeholder="请选择"
-        v-if="searchShow"
-        class="statu-search ml-10"
-      >
-        <el-option
-          v-for="item in status"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        ></el-option>
+      <el-select v-model="search.status" placeholder="请选择" v-if="searchShow" class="statu-search ml-10">
+        <el-option v-for="item in status" :key="item.value" :label="item.label" :value="item.value"></el-option>
       </el-select>
-      <el-button
-        type="success"
-        size="mini"
-        class="ml-10"
-        icon="el-icon-search"
-        v-if="searchShow"
-        @click="searchByStatus"
-      >搜索</el-button>
+      <el-button type="success" size="mini" class="ml-10" icon="el-icon-search" v-if="searchShow" @click="searchByStatus">搜索</el-button>
     </el-row>
     <el-row class="df-jr-ac ml-20 mt-10">
       <el-col class="tl">
-        <el-button
-          type="primary"
-          icon="el-icon-plus"
-          @click="openDialog"
-          size="mini"
-        >
+        <el-button type="primary" icon="el-icon-plus" @click="openDialog" size="mini">
           <span class="light-font-color">新增</span>
         </el-button>
-        <el-button
-          type="warning"
-          icon="el-icon-download"
-          size="mini"
-        >
-          <span
-            class="light-font-color"
-            @click="exportTeacherInfo"
-          >导出</span>
+        <el-button type="warning" icon="el-icon-download" size="mini">
+          <span class="light-font-color" @click="exportTeacherInfo">导出</span>
         </el-button>
       </el-col>
       <el-col class="tr mr-20">
-        <el-button
-          icon="el-icon-refresh"
-          size="small"
-        ></el-button>
+        <el-button icon="el-icon-refresh" size="small"></el-button>
       </el-col>
     </el-row>
     <!-- 表格展示 -->
     <el-row>
       <el-col span="1"></el-col>
-      <el-col
-        span="23"
-        class="ml-20 mt-10"
-      >
-        <el-table
-          :data="studentList.slice(start, end)"
-          stripe="true"
-          style="width: 100%;"
-          class="light-small-font"
-        >
-          <el-table-column
-            type="selection"
-            min-width="5%"
-            @selection-change="handleSelectionChange"
-          > </el-table-column>
-          <el-table-column
-            label="姓名"
-            show-overflow-tooltip
-            min-width="10%"
-          >
+      <el-col span="23" class="ml-20 mt-10">
+        <el-table :data="studentList.slice(start, end)" stripe="true" style="width: 100%;" class="light-small-font">
+          <el-table-column type="selection" min-width="5%" @selection-change="handleSelectionChange"> </el-table-column>
+          <el-table-column label="姓名" show-overflow-tooltip min-width="10%">
             <template slot-scope="scope">
               <span style="margin-left: -5%;">{{ scope.row.userName }}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            label="学号"
-            show-overflow-tooltip
-            min-width="15%"
-          >
+          <el-table-column label="学号" show-overflow-tooltip min-width="15%">
             <template slot-scope="scope">
               <span>{{ scope.row.jobNumber }}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            label="手机号"
-            show-overflow-tooltip
-            min-width="15%"
-          >
+          <el-table-column label="手机号" show-overflow-tooltip min-width="15%">
             <template slot-scope="scope">
               <span>{{ scope.row.phoneNumber }}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            label="班级"
-            show-overflow-tooltip
-            min-width="10%"
-          >
+          <el-table-column label="班级" show-overflow-tooltip min-width="10%">
             <template slot-scope="scope">
               <span>{{ scope.row.name }}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="status"
-            label="状态"
-            show-overflow-tooltip
-            min-width="10%"
-          >
+          <el-table-column prop="status" label="状态" show-overflow-tooltip min-width="10%">
             <template slot-scope="scope">
-              <el-switch
-                @change="changeStatus(scope.row)"
-                v-model="scope.row.status"
-                active-color="#13ce66"
-                inactive-color="#ff4949"
-              >
+              <el-switch @change="changeStatus(scope.row)" v-model="scope.row.status" active-color="#13ce66" inactive-color="#ff4949">
               </el-switch>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="gmtCreate"
-            label="创建时间"
-            min-width="15%"
-            show-overflow-tooltip
-            align="center"
-          > </el-table-column>
+          <el-table-column prop="gmtCreate" label="创建时间" min-width="15%" show-overflow-tooltip align="center"> </el-table-column>
 
-          <el-table-column
-            label="操作"
-            show-overflow-tooltip
-            min-width="20%"
-            align="center"
-          >
+          <el-table-column label="操作" show-overflow-tooltip min-width="20%" align="center">
             <template slot-scope="scope">
-              <el-button
-                size="mini"
-                icon="el-icon-edit"
-                type="primary"
-                @click="handleEdit(scope.row)"
-              >
+              <el-button size="mini" icon="el-icon-edit" type="primary" @click="handleEdit(scope.row)">
                 <span class="light-font-color">编辑</span>
               </el-button>
             </template>
@@ -174,48 +85,19 @@
       ></el-pagination>
     </el-row>
     <!-- 新增页面 -->
-    <div
-      class="dialog"
-      v-if="dialogFormVisible"
-    >
-      <el-form
-        class="mt-10 dialog-form dc-jc-ac"
-        :model="adminInfo"
-        style="padding: 0px 20px; "
-      >
-        <p
-          style="width: 90%;"
-          class="dark-large-font tl"
-        >{{ msg }}用户</p>
-        <el-form-item
-          required
-          label="姓名"
-          class="mt-20"
-          :label-width="formLabelWidth"
-          style="width: 90%; height: 40px"
-        >
-          <el-input
-            v-model="userAccountVo.userName"
-            autocomplete="off"
-            placeholder="请输入用户名"
-            style="width: 80%"
-          ></el-input>
+    <div class="dialog" v-if="dialogFormVisible">
+      <el-form class="mt-10 dialog-form dc-jc-ac" :model="adminInfo" style="padding: 0px 20px; ">
+        <p style="width: 90%;" class="dark-large-font tl">{{ msg }}用户</p>
+        <el-form-item required label="姓名" class="mt-20" :label-width="formLabelWidth" style="width: 90%; height: 40px">
+          <el-input v-model="userAccountVo.userName" autocomplete="off" placeholder="请输入用户名" style="width: 80%"></el-input>
           <p style="width: 90%; display:flex;">
             <span style="display: block; width: 20%"></span>
-            <span
-              style="display: block; height: 20px; margin-top: -10px; width: 80%; color:red;"
-              v-if="rules.nameErrorShow"
-              class="tl"
-            >{{ errorInfo.nameErrorInfo }}
+            <span style="display: block; height: 20px; margin-top: -10px; width: 80%; color:red;" v-if="rules.nameErrorShow" class="tl"
+              >{{ errorInfo.nameErrorInfo }}
             </span>
           </p>
         </el-form-item>
-        <el-form-item
-          required
-          label="学号"
-          :label-width="formLabelWidth"
-          style="width: 90%;height: 40px"
-        >
+        <el-form-item required label="学号" :label-width="formLabelWidth" style="width: 90%;height: 40px">
           <el-input
             oninput="value=value.replace(/[^\d]/g,'')"
             maxlength="10"
@@ -226,20 +108,12 @@
           ></el-input>
           <p style="width: 90%; display:flex">
             <span style="display: block; width: 20%"></span>
-            <span
-              style="display: block; height: 20px; margin-top: -10px; width: 80%; color:red;"
-              v-if="rules.jobNumberErrorShow"
-              class="tl"
-            >{{ errorInfo.jobNumberErrorInfo }}
+            <span style="display: block; height: 20px; margin-top: -10px; width: 80%; color:red;" v-if="rules.jobNumberErrorShow" class="tl"
+              >{{ errorInfo.jobNumberErrorInfo }}
             </span>
           </p>
         </el-form-item>
-        <el-form-item
-          required
-          label="电话"
-          :label-width="formLabelWidth"
-          style="width: 90%; height: 40px"
-        >
+        <el-form-item required label="电话" :label-width="formLabelWidth" style="width: 90%; height: 40px">
           <el-input
             oninput="value=value.replace(/[^\d]/g,'')"
             maxlength="11"
@@ -255,64 +129,25 @@
               style="display: block; height: 20px; margin-top: -10px; width: 80%; color:red;"
               v-if="rules.phoneNumberErrorShow"
               class="tl"
-            >{{ errorInfo.phoneNumberErrorInfo }}
+              >{{ errorInfo.phoneNumberErrorInfo }}
             </span>
           </p>
         </el-form-item>
-        <p
-          style="width: 90%"
-          class="df-jr-ac"
-        >
-          <el-form-item
-            required
-            label="性别"
-            :label-width="formLabelWidth"
-            style="width: 50%;"
-          >
-            <el-select
-              v-model="userAccountVo.gender"
-              placeholder="请选择角色"
-              style="width: 60%;"
-              class="ml-10"
-            >
-              <el-option
-                label="男"
-                value="男"
-              ></el-option>
-              <el-option
-                label="女"
-                value="女"
-              ></el-option>
+        <p style="width: 90%" class="df-jr-ac">
+          <el-form-item required label="性别" :label-width="formLabelWidth" style="width: 50%;">
+            <el-select v-model="userAccountVo.gender" placeholder="请选择角色" style="width: 60%;" class="ml-10">
+              <el-option label="男" value="男"></el-option>
+              <el-option label="女" value="女"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item
-            class="mr-10 df-jc-ac"
-            required
-            label="状态"
-          >
-            <el-radio
-              v-model="userAccountVo.status"
-              label="true"
-            >激活</el-radio>
-            <el-radio
-              v-model="userAccountVo.status"
-              label="false"
-            >禁用</el-radio>
+          <el-form-item class="mr-10 df-jc-ac" required label="状态">
+            <el-radio v-model="userAccountVo.status" label="true">激活</el-radio>
+            <el-radio v-model="userAccountVo.status" label="false">禁用</el-radio>
           </el-form-item>
         </p>
-        <p
-          class="mt-20 tr"
-          style="width: 90%"
-        >
-          <el-button
-            @click="dialogFormVisible = false"
-            size="small"
-          >取 消</el-button>
-          <el-button
-            type="primary"
-            @click="addStudentInfo(tag)"
-            size="small"
-          >确定</el-button>
+        <p class="mt-20 tr" style="width: 90%">
+          <el-button @click="dialogFormVisible = false" size="small">取 消</el-button>
+          <el-button type="primary" @click="addStudentInfo(tag)" size="small">确定</el-button>
         </p>
       </el-form>
     </div>
@@ -686,7 +521,7 @@ export default {
   align-items: center;
 }
 
->>> .el-input__icon {
+.el-input__icon {
   color: #ddd;
   margin-bottom: 10px;
 }
@@ -703,27 +538,27 @@ export default {
   background-color: #909399;
 }
 
->>> .el-input__inner {
+.el-input__inner {
   height: 30px;
 }
 
->>> .el-icon-edit {
+.el-icon-edit {
   color: #f7fbff;
 }
 
->>> .el-icon-plus {
+.el-icon-plus {
   color: #f7fbff;
 }
 
->>> .el-icon-delete {
+.el-icon-delete {
   color: #f7fbff;
 }
 
->>> .el-icon-download {
+.el-icon-download {
   color: #f7fbff;
 }
 
->>> .el-range-separator {
+.el-range-separator {
   margin-bottom: 10px;
 }
 
@@ -731,7 +566,7 @@ export default {
   color: #f7fbff;
 } */
 
->>> .el-input__prefix {
+.el-input__prefix {
   display: flex;
   align-items: center;
 }
