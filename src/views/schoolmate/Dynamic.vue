@@ -1,13 +1,5 @@
 <template>
   <div style="width:100%">
-    <!-- 修改弹出框 -->
-    <el-dialog title="编辑动态信息" :visible.sync="updatecenterDialogVisible" width="30%" left>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="updatecenterDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="confirmUpdate">确 定</el-button>
-      </span>
-    </el-dialog>
-
     <!-- 新增页面 -->
     <div class="dialog" v-if="addcenterDialogVisible">
       <el-form class="mt-10 dialog-form dc-jc-ac" :model="dynamicInfo" ref="dynamicInfo" :rules="rules" style="padding: 0px 20px;">
@@ -40,20 +32,17 @@
 
     <el-row type="flex" class="ml-20 mt-10">
       <el-input size="mini" v-model="input" clearable placeholder="请输入内容" class="blur-search" @input="filterSearch()"></el-input>
-      <el-select size="mini" v-model="selectValue" placeholder="请选择" class="statu-search ml-10">
-        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
-      </el-select>
-      <el-button type="success" size="mini" class="ml-10" icon="el-icon-search">搜索</el-button>
+      <el-button type="success" size="mini" class="ml-10" @click="searchAppInfoByCreate" v-if="searchShow">
+        <i class="el-icon-search" style="color: rgb(247, 251, 255)"></i>
+        <span class="light-font-color">搜索</span>
+      </el-button>
     </el-row>
     <el-row class="df-jr-ac ml-20 mt-10">
       <el-col class="tl">
         <el-button type="primary" icon="el-icon-plus" @click="addcenterDialogVisible = true" size="mini">
           <span class="light-font-color">新增</span>
         </el-button>
-        <el-button type="success" icon="el-icon-edit" size="mini">
-          <span class="light-font-color">修改</span>
-        </el-button>
-        <el-button type="danger" icon="el-icon-delete" @click="handleDeleteMul" size="mini">
+        <el-button type="danger" icon="el-icon-delete" @click="delAll" size="mini">
           <span class="light-font-color">批量删除</span>
         </el-button>
         <el-button type="warning" icon="el-icon-download" disabled size="mini">
@@ -61,12 +50,10 @@
         </el-button>
       </el-col>
     </el-row>
-
     <!-- 表格展示 -->
     <el-row>
-      <el-col span="1"></el-col>
-      <el-col span="23" class="ml-20 mt-10">
-        <el-table :data="dynamicList" stripe="true" style="width: 100%;">
+      <el-col class="ml-20 mt-10">
+        <el-table :data="dynamicList" style="width: 100%;">
           <el-table-column type="selection" min-width="10%" @selection-change="handleSelectionChange"> </el-table-column>
           <el-table-column label="昵称" show-overflow-tooltip min-width="13%">
             <template slot-scope="scope">
@@ -83,16 +70,22 @@
               <span>{{ scope.row.type }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="点赞数" show-overflow-tooltip min-width="12%">
+          <el-table-column label="动态内容" show-overflow-tooltip min-width="12%">
+            <template slot-scope="scope">
+              <span>{{ scope.row.content }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="点赞数" show-overflow-tooltip min-width="8%">
             <template slot-scope="scope">
               <span>{{ scope.row.thumbs }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="评论数" show-overflow-tooltip min-width="12%">
+          <el-table-column label="评论数" show-overflow-tooltip min-width="8%">
             <template slot-scope="scope">
               <span>{{ scope.row.comments }}</span>
             </template>
           </el-table-column>
+
           <el-table-column label="创建时间" show-overflow-tooltip min-width="18%">
             <template slot-scope="scope">
               <i class="el-icon-time"></i>
@@ -105,14 +98,9 @@
               <span>{{ scope.row.gmtModified }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="动态内容" show-overflow-tooltip min-width="12%">
-            <template slot-scope="scope">
-              <span>{{ scope.row.content }}</span>
-            </template>
-          </el-table-column>
+
           <el-table-column label="操作" show-overflow-tooltip min-width="23%">
             <template slot-scope="scope">
-              <el-button size="mini" type="success" @click="handleUpdate(scope.$index, scope.row)">编辑</el-button>
               <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
             </template>
           </el-table-column>
@@ -155,9 +143,10 @@ export default {
       selectValue: '',
       start: 0,
       blurSearch: '',
-      currentPage: 1,
-      total: 500,
-      pageSize: 9,
+      currentPage: 0,
+      total: 0,
+      pageSize: 10,
+      currentPageSize: 10,
       searchShow: true,
       updatecenterDialogVisible: false,
       addcenterDialogVisible: false,
@@ -186,6 +175,7 @@ export default {
   },
   created() {
     this.getDynamicAll()
+    this.getAllDynamicLength()
   },
   watch: {
     pageSize: function() {
@@ -220,18 +210,23 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        let data = {
-          id: item.pkDynamicId
-        }
-        let res = API.init('/dynamic/deletion', data, 'post')
-        if (res.data.code == 1) {
-          this.$message({
-            message: '删除成功',
-            type: 'success'
-          })
-          let index = this.dynamicInfos.indexOf(item)
-          this.dynamicInfos.splice(index, 1)
-        }
+        // alert(item.pkDynamicId)
+        this.axios({
+          method: 'post',
+          url: 'http://localhost:8081/dynamic/deletion',
+          data: {
+            id: item.pkDynamicId
+          }
+        }).then((res) => {
+          if (res.data.code == 1) {
+            this.$message({
+              message: '删除成功',
+              type: 'success'
+            })
+            let index = this.dynamicList.indexOf(item)
+            this.dynamicList.splice(index, 1)
+          }
+        })
       })
       // })
     },
@@ -241,19 +236,67 @@ export default {
       this.url = '/dynamic/all'
       this.result = await API.init(this.url, this.data, 'post')
       this.dynamicList = this.result.data
-      this.dynamicList1 = this.result.data
       for (let i = 0; i < this.dynamicList.length; i++) {
         console.log(this.dynamicList[i].gmtCreate)
         this.dynamicList[i].gmtCreate = this.formatDate(this.dynamicList[i].gmtCreate)
         this.dynamicList[i].gmtModified = this.formatDate(this.dynamicList[i].gmtModified)
       }
+
+      this.getAllDynamicInfo()
     },
-    // //单行删除
-    // handleDelete(index, row) {
-    //   this.idx = index
-    //   this.msg = row //每一条数据的记录
-    //   this.delVisible = true
-    // },
+    async getAllDynamicLength() {
+      this.data = {}
+      this.url = '/dynamic/allDynamic'
+      this.result = await API.init(this.url, this.data, 'post')
+      this.total = this.result.data
+    },
+    async getAllDynamicInfo() {
+      this.data = {}
+      this.url = '/dynamic/allDynamicInfo'
+      this.result = await API.init(this.url, this.data, 'post')
+      this.dynamicList1 = this.result.data
+      for (let i = 0; i < this.dynamicList1.length; i++) {
+        this.dynamicList1[i].gmtCreate = this.formatDate(this.dynamicList1[i].gmtCreate)
+        this.dynamicList1[i].gmtModified = this.formatDate(this.dynamicList1[i].gmtModified)
+      }
+    },
+    //批量删除
+    async delAll() {
+      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const length = this.multipleSelection.length
+        for (let i = 0; i < length; i++) {
+          this.delarr.push(this.multipleSelection[i].pkAppVersionId)
+        }
+
+        let data = { ids: JSON.stringify(this.delarr) }
+        alert(JSON.stringify(this.delarr))
+        this.url = '/comment/deletionBath'
+        this.axios({
+          method: 'post',
+          url: 'http://localhost:8081/comment/deletionBath',
+          data: {
+            ids: data
+          }
+        }).then((res) => {
+          if (res.data.code == 1) {
+            this.$message({
+              message: '删除成功',
+              type: 'success'
+            })
+            /*  let index = this.appList.indexOf(item)
+            this.appList.splice(index, 1) */
+          }
+        })
+        /* this.result = await API.init(this.url, data, 'post')
+      if(this.result.code == 1){
+        this.$message.success('批量删除成功')
+      } */
+      })
+    },
     //批量删除
     handleDeleteMul() {
       this.delVisible = true
@@ -277,30 +320,32 @@ export default {
       this.updatecenterDialogVisible = true
     },
 
-    //新增图书
-    async confirmAdd() {
-      this.data = {
-        userId: this.dynamicInfo.userId,
-        content: this.dynamicInfo.content,
-        type: this.dynamicInfo.type
-      }
-      this.url = '/dynamic/insert'
-      this.result = await API.init(this.url, this.data, 'post')
-      this.addcenterDialogVisible = false
-      this.$message.success('动态添加成功')
-    },
     //过滤搜索
     filterSearch() {
       // 获取输入框的值
       let search = this.input
       //数组元素按条件过滤
-      this.dynamicList1 = this.dynamicList1.filter((v) => {
-        if (JSON.stringify(v).includes(search)) {
-          return v
+      if (search != '') {
+        this.dynamicList = this.dynamicList1.filter((v) => {
+          if (JSON.stringify(v).includes(search)) {
+            return v
+          }
+        })
+      } else {
+        this.getDynamicAll()
+      }
+    },
+
+    //根据时间查询
+    searchAppInfoByCreate() {
+      this.appList = this.appList1.filter((appInfo) => {
+        console.log(appInfo)
+        if (this.time[0] <= appInfo.gmtCreate && appInfo.gmtCreate <= this.time[1]) {
+          //console.log(status)
+          return appInfo
         }
       })
     },
-
     // 添加和表单验证
     submitForm(dynamicInfo) {
       this.$refs[dynamicInfo].validate((valid) => {
@@ -314,6 +359,28 @@ export default {
           this.result = API.init(this.url, this.data, 'post')
           this.addcenterDialogVisible = false
           this.$message.success('动态添加成功')
+          this.getDynamicAll()
+          // console.log(this.result.data)
+          // this.dynamicList.splice(0, 0, this.result.data)
+          // this.axios({
+          //   method: 'post',
+          //   url: 'http://localhost:8081/dynamic/insert',
+          //   data: {
+          //     userId: this.dynamicInfo.userId,
+          //     content: this.dynamicInfo.content,
+          //     type: this.dynamicInfo.type
+          //   }
+          // }).then((res) => {
+          //   if (res.data.code == 1) {
+          //     this.$message({
+          //       message: '删除成功',
+          //       type: 'success'
+          //     })
+          //     this.addcenterDialogVisible = false
+          //     console.log(res.data.data)
+          //     this.dynamicList.splice(0, 0, res.data.data)
+          //   }
+          // })
         } else {
           console.log('error submit!!')
           return false
@@ -323,7 +390,6 @@ export default {
     resetForm(dynamicInfo) {
       this.$refs[dynamicInfo].resetFields()
     },
-
     //刷新数据
     flush() {
       this.getDynamicAll()
@@ -361,9 +427,6 @@ export default {
       this.currentPage = val
       this.start = (this.currentPage - 1) * this.currentPageSize
       this.end = this.currentPage * this.currentPageSize
-    },
-    searchOver() {
-      this.iconColor = '#f1f1df'
     }
   }
 }
