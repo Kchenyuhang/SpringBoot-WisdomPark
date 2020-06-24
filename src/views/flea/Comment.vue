@@ -7,25 +7,28 @@
         <el-button size="medium" type="danger" @click="handleDeleteMul()">批量删除</el-button>
       </el-row>
     </div>
-    <el-table ref="commentId" :data="commentsShow" @selection-change="handleSelectionChange" height="100%">
-      <el-table-column prop="commentId" type="selection" width="50"></el-table-column>
-      <el-table-column prop="commentId" label="id" width="50"></el-table-column>
-      <el-table-column prop="reviwerName" label="回复人" width="110"></el-table-column>
-      <el-table-column prop="commentByName" label="评论人" width="200"></el-table-column>
-      <el-table-column prop="comment" label="评论内容" width="160" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="title" label="评论帖标题" width="150"></el-table-column>
-      <el-table-column prop="createTime" label="评论时间" width="150" sortable show-overflow-tooltip>
-        <template slot-scope="scope">
-          <i class="el-icon-time"></i>
-          <span>{{ commentsShow[scope.$index].createTime }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" width="150">
-        <template slot-scope="scope">
-          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <div class="table">
+      <el-table ref="commentId" :data="commentsShow" @selection-change="handleSelectionChange">
+        <el-table-column prop="commentId" type="selection" width="50%"></el-table-column>
+        <el-table-column prop="commentId" label="id" width="180%"></el-table-column>
+        <el-table-column prop="reviwerName" label="回复人" width="180%"></el-table-column>
+        <el-table-column prop="commentByName" label="评论人" width="200%"></el-table-column>
+        <el-table-column prop="comment" label="评论内容" width="180%" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="title" label="评论帖标题" width="190%"></el-table-column>
+        <el-table-column prop="createTime" label="评论时间" width="150%" sortable show-overflow-tooltip>
+          <template slot-scope="scope">
+            <i class="el-icon-time"></i>
+            <span>{{ commentsShow[scope.$index].createTime }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="150%">
+          <template slot-scope="scope">
+            <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+
     <div style="margin-top:20px">
       <el-pagination
         @size-change="handleSizeChange"
@@ -258,5 +261,8 @@ export default {
 .imgChange {
   cursor: pointer;
   width: 80px;
+}
+.table {
+  padding-left: 10px;
 }
 </style>
