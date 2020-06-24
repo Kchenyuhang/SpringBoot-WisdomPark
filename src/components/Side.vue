@@ -9,10 +9,15 @@
       @close="handleClose"
     >
       <el-menu-item class="menu-title">
-        <i class="el-icon-s-grid" style="font-size: 30px"></i>
+        <!-- <i class="el-icon-s-grid" style="font-size: 30px"></i> -->
+        <img src="../assets/smart_campus.png" alt="" style="width: 30px; height: 30px">
         <span class="logo-title font-white">智慧校园后台</span>
       </el-menu-item>
-      <el-submenu v-for="(item, index) in menuList" :key="index" :index="item.name">
+      <el-menu-item class="menu-title" @click="goIndex">
+        <i class="el-icon-s-home"></i>
+        <span class="logo-title font-white">首页</span>
+      </el-menu-item>
+      <el-submenu v-for="(item, index) in menuList.slice(1)" :key="index" :index="item.name">
         <template slot="title">
           <p class="row" @click="changeMenu(item)">
             <i :class="item.icon" style="flex: 0 0 20%; text-align: left;"></i>
@@ -67,6 +72,9 @@ export default {
         this.$router.push(item1.path)
       }
       Bus.$emit('childMenuName', item1, parentName)
+    },
+    goIndex(){
+      this.$router.push("/")
     }
   }
 }

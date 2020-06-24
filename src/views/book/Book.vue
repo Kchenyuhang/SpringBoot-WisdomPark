@@ -125,7 +125,6 @@
               <span>{{ scope.row.type }}</span>
             </template>
           </el-table-column>
-
           <el-table-column label="简介" min-width="13%">
             <template slot-scope="scope">
               <el-popover placement="top" max-width="300px" trigger="hover">

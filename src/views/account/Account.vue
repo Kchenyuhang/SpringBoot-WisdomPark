@@ -225,7 +225,6 @@ export default {
         jobNumber: [{ type: 'date', required: true, message: '请选择日期', trigger: 'change' }],
         role: [{ type: 'date', required: true, message: '请选择时间', trigger: 'change' }],
         gender: [{ type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }],
-        clazzId: [{ required: true, message: '请选择活动资源', trigger: 'change' }],
         address: [{ required: true, message: '请填写活动形式', trigger: 'blur' }]
       }
     }
@@ -334,24 +333,35 @@ export default {
     },
     //新增账号
     async confirmAdd() {
-      this.data = {
-        userName: this.ruleForm1.userName,
-        jobNumber: this.ruleForm1.jobNumber,
-        role: this.radio1,
-        gender: this.radio,
-        address: this.ruleForm1.address,
-        clazzId: this.selectValue,
-        phoneNumber: this.ruleForm1.phoneNumber
-      }
-      this.url = '/userAccount/insert'
-      this.result = await API.init(this.url, this.data, 'post')
-      console.log(this.result)
-      this.addcenterDialogVisible = false
-      this.getuserAccount()
-      if (this.result.code == 50003) {
-        this.$message.success('账号已存在')
+      if (
+        this.ruleForm1.jobNumber != '' &&
+        this.ruleForm1.userName != '' &&
+        this.ruleForm1.phoneNumber != '' &&
+        this.ruleForm1.address != ''
+      ) {
+        this.data = {
+          userName: this.ruleForm1.userName,
+          jobNumber: this.ruleForm1.jobNumber,
+          role: this.radio1,
+          gender: this.radio,
+          address: this.ruleForm1.address,
+          clazzId: this.selectValue,
+          phoneNumber: this.ruleForm1.phoneNumber,
+          status: false
+        }
+        // this.rules.acctMonth.push({ required: true }) //添加校验规则
+        this.url = '/userAccount/insert'
+        this.result = await API.init(this.url, this.data, 'post')
+        console.log(this.result)
+        this.addcenterDialogVisible = false
+        this.getuserAccount()
+        if (this.result.code == 50003) {
+          this.$message.success('账号已存在')
+        } else {
+          this.$message.success('账号添加成功')
+        }
       } else {
-        this.$message.success('账号添加成功')
+        this.$message.success('数据填充不完整，请重新输入')
       }
     },
     async changeSwitchA(index, row) {
