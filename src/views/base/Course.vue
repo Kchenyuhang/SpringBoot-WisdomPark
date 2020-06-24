@@ -1,9 +1,6 @@
 <template>
   <div style="width: 100%">
-    <el-row
-      type="flex"
-      class="ml-20 mt-10"
-    >
+    <el-row type="flex" class="ml-20 mt-10">
       <el-input
         prefix-icon="el-icon-search"
         v-model="blurSearch"
@@ -11,49 +8,26 @@
         placeholder="请输入内容"
         class="blur-search"
       ></el-input>
-      <el-button
-        type="success"
-        size="mini"
-        @click="searchByName()"
-        class="ml-10"
-        icon="el-icon-search"
-      >
+      <el-button type="success" size="mini" @click="searchByName()" class="ml-10" icon="el-icon-search">
         <span style="color:white">搜索</span>
       </el-button>
     </el-row>
     <el-row class="df-jr-ac ml-20 mt-10">
       <el-col class="tl">
-        <el-button
-          type="primary"
-          icon="el-icon-plus"
-          disabled
-          @click="openDialog"
-          size="mini"
-        >
+        <el-button type="primary" icon="el-icon-plus" disabled @click="openDialog" size="mini">
           <span class="light-font-color">新增</span>
         </el-button>
-        <el-button
-          type="warning"
-          disabled
-          icon="el-icon-download"
-          size="mini"
-        >
+        <el-button type="warning" disabled icon="el-icon-download" size="mini">
           <span class="light-font-color">导出</span>
         </el-button>
       </el-col>
       <el-col class="tr mr-20">
-        <el-button
-          icon="el-icon-refresh"
-          size="small"
-        ></el-button>
+        <el-button icon="el-icon-refresh" size="small"></el-button>
       </el-col>
     </el-row>
     <!-- 表格 -->
     <el-row>
-      <el-col
-        span="23"
-        class="ml-20 mt-10"
-      >
+      <el-col span="23" class="ml-20 mt-10">
         <el-table
           border
           ref="multipleTable"
@@ -63,86 +37,32 @@
           class="light-small-font"
           @selection-change="handleSelectionChange"
         >
-          <el-table-column
-            type="selection"
-            min-width="5%"
-          ></el-table-column>
-          <el-table-column
-            label="课程名"
-            min-width="10%"
-          >
+          <el-table-column type="selection" min-width="5%"></el-table-column>
+          <el-table-column label="课程名" min-width="10%">
             <template slot-scope="scope">{{ scope.row.subjectName }}</template>
           </el-table-column>
-          <el-table-column
-            prop="semesterName"
-            label="学期"
-            min-width="15%"
-          ></el-table-column>
-          <el-table-column
-            prop="user_name"
-            align="center"
-            label="授课教师"
-            show-overflow-tooltip
-            min-width="10%"
-          > </el-table-column>
-          <el-table-column
-            align="center"
-            label="上课地点"
-            show-overflow-tooltip
-            min-width="10%"
-          >
+          <el-table-column prop="semesterName" label="学期" min-width="15%"></el-table-column>
+          <el-table-column prop="user_name" align="center" label="授课教师" show-overflow-tooltip min-width="10%"> </el-table-column>
+          <el-table-column align="center" label="上课地点" show-overflow-tooltip min-width="10%">
             <template slot-scope="scope">{{ scope.row.towerName }}{{ scope.row.roomName }}</template>
           </el-table-column>
-          <el-table-column
-            prop="time"
-            align="center"
-            label="上课时间"
-            show-overflow-tooltip
-            min-width="10%"
-          >
+          <el-table-column prop="time" align="center" label="上课时间" show-overflow-tooltip min-width="10%">
             <template slot-scope="scope">
               <span>周{{ scope.row.week_day }}第{{ scope.row.time }}节</span>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="clazz"
-            align="center"
-            label="上课班级"
-            show-overflow-tooltip
-            min-width="10%"
-          > </el-table-column>
-          <el-table-column
-            prop="week_duration"
-            align="center"
-            label="上课周次"
-            show-overflow-tooltip
-            min-width="10%"
-          > </el-table-column>
-          <el-table-column
-            label="操作"
-            align="center"
-            show-overflow-tooltip
-            min-width="20%"
-          >
+          <el-table-column prop="clazz" align="center" label="上课班级" show-overflow-tooltip min-width="10%"> </el-table-column>
+          <el-table-column prop="week_duration" align="center" label="上课周次" show-overflow-tooltip min-width="10%"> </el-table-column>
+          <el-table-column label="操作" align="center" show-overflow-tooltip min-width="20%">
             <template slot-scope="scope">
               <p class="tc">
-                <el-button
-                  size="mini"
-                  icon="el-icon-edit"
-                  type="primary"
-                  @click="handleEdit(scope.row)"
-                >
+                <el-button size="mini" icon="el-icon-edit" type="primary" @click="handleEdit(scope.row)">
                   <span class="light-font-color">编辑</span>
                 </el-button>
                 <!-- <el-button size="mini" type="primary" @click="handleEdit(scope.row)">
                   <span class="light-font-color">学生管理</span>
                 </el-button> -->
-                <el-button
-                  size="mini"
-                  icon="el-icon-delete"
-                  type="danger"
-                  @click="handleDelete(scope.row)"
-                >
+                <el-button size="mini" icon="el-icon-delete" type="danger" @click="handleDelete(scope.row)">
                   <span class="light-font-color">删除</span>
                 </el-button>
               </p>
@@ -166,203 +86,59 @@
       ></el-pagination>
     </el-row>
     <!-- 新增页面 -->
-    <div
-      class="dialog"
-      v-if="dialogFormVisible"
-    >
+    <div class="dialog" v-if="dialogFormVisible">
       <h2>新增房间信息</h2>
-      <el-form
-        class="mt-10 dialog-form dc-jc-ac"
-        :model="course"
-        style="border-radius: 5px;"
-      >
-        <p
-          class="df-jb-ac"
-          style="width: 80%"
-        >
-          <el-form-item
-            required
-            label="课程名"
-            style="width: 50%"
-          >
-            <el-input
-              v-model="course.name"
-              autocomplete="off"
-              placeholder="请输入学期名"
-              style="width: 60%"
-            ></el-input>
+      <el-form class="mt-10 dialog-form dc-jc-ac" :model="course" style="border-radius: 5px;">
+        <p class="df-jb-ac" style="width: 80%">
+          <el-form-item required label="课程名" style="width: 50%">
+            <el-input v-model="course.name" autocomplete="off" placeholder="请输入学期名" style="width: 60%"></el-input>
           </el-form-item>
-          <el-form-item
-            required
-            label="周次"
-            style="width: 50%"
-          >
-            <el-input
-              v-model="course.weeks"
-              autocomplete="off"
-              placeholder="请输入周次"
-              style="width: 60%"
-            ></el-input>
+          <el-form-item required label="周次" style="width: 50%">
+            <el-input v-model="course.weeks" autocomplete="off" placeholder="请输入周次" style="width: 60%"></el-input>
           </el-form-item>
         </p>
-        <el-form-item
-          required
-          label="学期"
-          style="width: 80%"
-        >
-          <el-select
-            v-model="course.semesterName"
-            class="ml-10"
-            placeholder="请选择学期"
-            @change="getSemester"
-            style="width: 80%"
-          >
-            <el-option
-              v-for="(item, index) in semesterList"
-              :key="index"
-              :label="item.name"
-              :value="item.pkSemesterId"
-            ></el-option>
+        <el-form-item required label="学期" style="width: 80%">
+          <el-select v-model="course.semesterName" class="ml-10" placeholder="请选择学期" @change="getSemester" style="width: 80%">
+            <el-option v-for="(item, index) in semesterList" :key="index" :label="item.name" :value="item.pkSemesterId"></el-option>
           </el-select>
         </el-form-item>
-        <p
-          class="df-jb-ac"
-          style="width: 80%"
-        >
-          <el-form-item
-            required
-            label="教工号"
-            style="width: 50%"
-          >
-            <el-input
-              v-model="course.jobNumber"
-              placeholder="输入教师工号"
-              style="width: 60%"
-            ></el-input>
+        <p class="df-jb-ac" style="width: 80%">
+          <el-form-item required label="教工号" style="width: 50%">
+            <el-input v-model="course.jobNumber" placeholder="输入教师工号" style="width: 60%"></el-input>
           </el-form-item>
-          <el-form-item
-            required
-            label="班级"
-            style="width: 50%"
-          >
-            <el-select
-              v-model="course.clazz"
-              placeholder="选择班级"
-              @change="getRoomId"
-              style="width: 60%"
-            >
-              <el-option
-                v-for="(item, index) in clazzes"
-                :key="index"
-                :label="item.name"
-                :value="item.value"
-              ></el-option>
+          <el-form-item required label="班级" style="width: 50%">
+            <el-select v-model="course.clazz" placeholder="选择班级" @change="getRoomId" style="width: 60%">
+              <el-option v-for="(item, index) in clazzes" :key="index" :label="item.name" :value="item.value"></el-option>
             </el-select>
           </el-form-item>
         </p>
-        <p
-          class="df-jb-ac"
-          style="width: 80%"
-        >
-          <el-form-item
-            min-width="50%"
-            required
-            label="楼栋"
-          >
-            <el-select
-              v-model="course.towerId"
-              placeholder="请选择楼栋"
-              class="ml-10"
-              @change="getTowerRooms"
-              style="width: 60%"
-            >
-              <el-option
-                v-for="(item, index) in towersRooms"
-                :key="index"
-                :label="item.name"
-                :value="item.pk_tower_id"
-              ></el-option>
+        <p class="df-jb-ac" style="width: 80%">
+          <el-form-item min-width="50%" required label="楼栋">
+            <el-select v-model="course.towerId" placeholder="请选择楼栋" class="ml-10" @change="getTowerRooms" style="width: 60%">
+              <el-option v-for="(item, index) in towersRooms" :key="index" :label="item.name" :value="item.pk_tower_id"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item
-            min-width="50%"
-            label="房间"
-            required
-            class="ml-10"
-          >
-            <el-select
-              v-model="course.roomId"
-              placeholder="选择教室"
-              @change="getRoomId"
-              style="width: 60%"
-            >
-              <el-option
-                v-for="(item, index) in rooms"
-                :key="index"
-                :label="item.name"
-                :value="item.id"
-              ></el-option>
+          <el-form-item min-width="50%" label="房间" required class="ml-10">
+            <el-select v-model="course.roomId" placeholder="选择教室" @change="getRoomId" style="width: 60%">
+              <el-option v-for="(item, index) in rooms" :key="index" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
         </p>
-        <p
-          class="df-jb-ac"
-          style="width: 80%"
-        >
-          <el-form-item
-            min-width="50%"
-            required
-            label="周几"
-          >
-            <el-select
-              v-model="course.weekDay"
-              placeholder="选择周几"
-              class="ml-10"
-              @change="getTowerRooms"
-              style="width: 60%"
-            >
-              <el-option
-                v-for="(item, index) in weekDays"
-                :key="index"
-                :label="item"
-                :value="item"
-              ></el-option>
+        <p class="df-jb-ac" style="width: 80%">
+          <el-form-item min-width="50%" required label="周几">
+            <el-select v-model="course.weekDay" placeholder="选择周几" class="ml-10" @change="getTowerRooms" style="width: 60%">
+              <el-option v-for="(item, index) in weekDays" :key="index" :label="item" :value="item"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item
-            min-width="50%"
-            label="节次"
-            required
-            class="ml-10"
-          >
-            <el-select
-              v-model="course.time"
-              placeholder="选择节次"
-              @change="getRoomId"
-              style="width: 60%"
-            >
-              <el-option
-                v-for="(item, index) in times"
-                :key="index"
-                :label="item"
-                :value="item"
-              ></el-option>
+          <el-form-item min-width="50%" label="节次" required class="ml-10">
+            <el-select v-model="course.time" placeholder="选择节次" @change="getRoomId" style="width: 60%">
+              <el-option v-for="(item, index) in times" :key="index" :label="item" :value="item"></el-option>
             </el-select>
           </el-form-item>
         </p>
-        <el-form-item
-          class="tr"
-          style="width: 80%"
-        >
-          <el-button
-            @click="dialogFormVisible = false"
-            size="mini"
-          >取 消</el-button>
-          <el-button
-            type="primary"
-            @click="updateCourseInfo()"
-            size="mini"
-          >确定</el-button>
+        <el-form-item class="tr" style="width: 80%">
+          <el-button @click="dialogFormVisible = false" size="mini">取 消</el-button>
+          <el-button type="primary" @click="updateCourseInfo()" size="mini">确定</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -418,7 +194,8 @@ export default {
       semestersList: [],
       towersRooms: [],
       childRooms: [],
-      course1: {}
+      course1: {},
+      oldCourse: {}
     }
   },
   created() {
@@ -435,7 +212,6 @@ export default {
         let time = this.semesterList[i].gmtCreate
         this.semesterList[i].gmtCreate = this.global.formatDate(time)
       }
-      console.log(this.semestersList)
     },
     //获取所有教学楼信息
     async getTeachTowers() {
@@ -445,7 +221,9 @@ export default {
     getRoomId(val) {
       this.course.roomId = val
     },
+    //修改信息
     async updateCourseInfo() {
+      //判断默认的下拉选项是否为之前默认的
       if (this.course1.clazz === this.course.clazz) {
         this.course.clazz = this.course1.clazz_id
       }
@@ -461,12 +239,28 @@ export default {
       if (this.course1.towerName === this.course.towerId) {
         this.course.towerId = this.course1.tower_id
       }
+      //给定义的修改的对象重新赋值
+      this.oldCourse.clazz_id = this.course.clazz
+      this.oldCourse.semester_id = this.course.semesterName
+      this.oldCourse.user_job_number = this.course.name
+      this.oldCourse.room_id = this.course.roomId
+      this.oldCourse.tower_id = this.course.towerId
+      this.oldCourse.week_duration = this.course.weeks
+      this.oldCourse.week_day = this.course.weekDay
+      this.oldCourse.time = this.course.time
+      console.log(this.oldCourse)
       let result = await API.init('/course/modification', this.course, 'post')
       if (result.code == 1) {
         this.$message({
           type: 'success',
           message: '修改成功!'
         })
+        let index = this.subjectlist1.filter((subject) => {
+          if (subject.pk_course_id == this.oldCourse.pk_course_id) {
+            return subject
+          }
+        })
+        this.subjectlist.splice(index, 1, this.oldCourse)
         this.dialogFormVisible = false
       }
     },
@@ -521,6 +315,7 @@ export default {
       this.course.oldRoomId = row.room_id
       this.course.oldScheduleId = row.schedule_id
       this.course.oldSubjectId = row.subject_id
+      this.oldCourse = row
       this.course1 = row
       this.dialogFormVisible = true
     },

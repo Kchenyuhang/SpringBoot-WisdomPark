@@ -7,7 +7,7 @@
       <el-input
         v-model="blurSearch"
         prefix-icon="el-icon-search"
-        placeholder="请输入内容"
+        placeholder="根据楼栋名搜索"
         class="blur-search"
         v-if="searchShow"
       ></el-input>
@@ -275,13 +275,18 @@
           :label-width="formLabelWidth"
           style="width: 90%;"
         >
-          <el-input
+          <el-select
             v-model="towerInfo.type"
-            class="ml-10"
-            autocomplete="off"
-            placeholder="请输入内容"
+            placeholder="选择楼栋类型"
             style="width: 80%"
-          ></el-input>
+          >
+            <el-option
+              v-for="(item, index) in towerType"
+              :key="index"
+              :label="item.name"
+              :value="item.value"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <p
           class="mt-20 tr"
@@ -342,6 +347,10 @@ export default {
           position: [118.937761, 32.121619]
         }
       ],
+      towerType: [
+        { name: '教学楼', value: 2 },
+        { name: '宿舍楼', value: 1 }
+      ],
       //  自动定位到当前位置
       plugin: [
         {
@@ -355,14 +364,10 @@ export default {
               let { lng, lat } = e.lnglat
               self.lng = lng
               self.lat = lat
-              console.log(lng)
-              console.log(lat)
             },
             init(o) {
               // o 是高德地图定位插件实例
               o.getCurrentPosition((status, result) => {
-                console.log(status, result)
-                console.log(result.formattedAddress)
                 if (result && result.position) {
                   self.address = result.formattedAddress
                   self.lng = result.position.lng
@@ -446,7 +451,6 @@ export default {
       this.towerInfo.longitude = String(this.lng)
       this.towerInfo.latitude = String(this.lat)
 
-      console.log(tower)
       if (tag == 1) {
         let result = await API.init('/tower/increase', this.towerInfo, 'post')
         if (result.code == 1) {
@@ -454,7 +458,6 @@ export default {
             message: '新增成功',
             type: 'success'
           })
-          this.getTowerList()
           this.dialogFormVisible = false
           this.towerList.splice(0, 0, tower)
         }
@@ -493,6 +496,36 @@ export default {
       this.start += this.pageSize
       this.end += this.pageSize
     },
+    handleDelete(row) {
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        /* let dto = {
+          id: row.pkTowerId
+        } */
+        //let res = API.init('/tower/id', dto, 'post')
+
+        this.axios({
+          method: 'post',
+          url: 'http://localhost:8081/tower/id',
+          data: {
+            id: row.pkTowerId
+          }
+        }).then((res) => {
+          if (res.data.code == 1) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            let index = this.towerList1.indexOf(row)
+            this.towerList1.splice(index, 1)
+            this.towerList.splice(index, 1)
+          }
+        })
+      })
+    },
     //上一页
     prevPage() {
       this.currentPage -= 1
@@ -513,12 +546,10 @@ export default {
     },
     //根据时间查询
     searchAppInfoByCreate() {
-      console.log(this.time.length)
+      this.start = 0
+      this.end = 8
+      this.currentPage = 1
       if (this.blurSearch != '') {
-        // 获取输入框的值
-        let search = this.blurSearch
-        //数组元素按条件过滤
-        console.log(search)
         this.towerList = this.towerList1.filter((v) => {
           if (v.name.indexOf(this.blurSearch) != -1) {
             return v
@@ -528,7 +559,6 @@ export default {
       } else if (this.time.length >= 1) {
         this.towerList = this.towerList1.filter((tower) => {
           if (this.time[0] <= tower.gmtCreate && tower.gmtCreate <= this.time[1]) {
-            //console.log(status)
             return tower
           }
         })

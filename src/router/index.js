@@ -189,6 +189,58 @@ const routes = [
         path: 'fleaorder',
         name: 'Order',
         component: () => import('../views/flea/Order.vue')
+      },
+
+      /**
+       * 校友圈相关路由
+       */
+      {
+        path: 'dynamic',
+        name: 'Dynamic',
+        component: () => import('../views/schoolmate/Dynamic.vue')
+      },
+      {
+        path: 'dynamicComment',
+        name: 'DynamicComment',
+        component: () => import('../views/schoolmate/DynamicComment.vue')
+      },
+
+      /**跑腿 */
+      {
+        path: 'pdelivery',
+        name: 'pdelivery',
+        component: () => import('../views/errands/DeliveryOrder.vue')
+      },
+      {
+        path: 'puser',
+        name: 'puser',
+        component: () => import('../views/errands/Puer.vue')
+      },
+      {
+        path: 'passErrends',
+        name: 'passErrends',
+        component: () => import('../views/errands/passErrends.vue')
+      },
+      /**校园聘管理*/
+      {
+        path: 'avocation',
+        name: 'Avocation',
+        component: () => import('../views/job/Avocation.vue')
+      },
+      {
+        path: 'company',
+        name: 'Company',
+        component: () => import('../views/job/Company.vue')
+      },
+      {
+        path: 'job',
+        name: 'Job',
+        component: () => import('../views/job/Job.vue')
+      },
+      {
+        path: 'jobType',
+        name: 'Type',
+        component: () => import('../views/job/JobType.vue')
       }
     ]
   },

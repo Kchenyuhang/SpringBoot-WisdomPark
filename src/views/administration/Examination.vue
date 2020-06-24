@@ -86,11 +86,14 @@
         <el-input
           v-model="type"
           placeholder="请输入类型"
+          type="text"
         ></el-input>
         <div class="sub-title">输入总分</div>
         <el-input
           v-model="sum"
           placeholder="请输入总分"
+          maxlength="3"
+          oninput="value=value.replace(/[^\d]/g,'')"
         ></el-input>
       </div>
       <span
@@ -179,6 +182,7 @@
         <el-input
           v-model="type"
           placeholder="请输入类型"
+          oninput="value=value.replace(/[^\d]/g,'')"
         ></el-input>
         <p class="between-style">总分:{{ sum }}</p>
       </div>
@@ -186,7 +190,7 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="addcenterDialogVisible = false">取 消</el-button>
+        <el-button @click="updatecenterDialogVisible = false">取 消</el-button>
         <el-button
           type="primary"
           @click="confirmUpdate"
@@ -199,6 +203,7 @@
       class="ml-20 mt-10"
     >
       <el-input
+        type="text"
         v-model="input"
         clearable
         placeholder="请输入内容"

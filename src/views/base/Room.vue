@@ -1,12 +1,8 @@
 <template>
-  <!-- <el-row type="flex" style="width: 100%">
-      <el-col span="4" class="tl"> -->
-  <!-- <el-input prefix-icon="el-icon-search" v-model="input" placeholder="请输入内容" class="blur-search mt-10"></el-input> -->
-  <!-- <el-tree :data="towers" :props="defaultProps" @node-click="handleNodeClick" class="mt-20"></el-tree> -->
   <div class="room-container" style="width: 100%">
     <el-row type="flex" style="width: 100%">
       <el-col span="4" class="tl">
-        <el-input prefix-icon="el-icon-search" v-model="input" placeholder="请输入内容" class="blur-search mt-10"></el-input>
+        <el-input prefix-icon="el-icon-search" v-model="towerSearch" placeholder="请输入内容" class="blur-search mt-10"></el-input>
         <el-tree :data="towers" :props="defaultProps" @node-click="handleNodeClick" class="mt-20"></el-tree>
       </el-col>
       <el-col span="20">
@@ -142,6 +138,7 @@ export default {
       start: 0,
       end: 10,
       searchShow: true,
+      towerSearch: '',
       iconColor: '#fefcf8',
       pageSize: 10,
       currentPageSize: 10,
@@ -158,8 +155,10 @@ export default {
       roomsList1: [],
       room: {
         name: '',
-        towerName: '',
-        towerUnit: ''
+        towerName: null,
+        towerUnit: null,
+        gmtGreate: '',
+        pkRoomId: null,
       },
       input: '',
       towerName: -1,
@@ -176,11 +175,6 @@ export default {
   methods: {
     async getRoom() {
       let res = await API.init('/room/list', null, 'post')
-      // this.axios({
-      //   method: 'get',
-      //   url: 'http://localhost:8080/room/list'
-      console.log(res.data)
-      // }).then((res) => {
       this.rooms = res.data
       for (let i = 0, len = this.rooms.length; i < len; i++) {
         this.rooms[i].gmtGreate = this.global.formatDate(this.rooms[i].gmtGreate)
@@ -205,14 +199,18 @@ export default {
       this.units = (await API.init('/tower/units/list', null, 'post')).data
     },
     updateRoomInfo(row) {
+      console.log(row)
       this.room.name = row.roomName
-      this.room.towerName = row.towerName
-      this.room.towerUnit = row.unitName
+      this.room.towerName = row.towerId
+      this.room.towerUnit = row.unitId
       this.flag = 2
       this.dialogFormVisible = true
+      this.room.pkRoomId = row.pkRoomId
     },
     //新增房间消息
     async addRoomInfo(tag) {
+      let time = new Date().valueOf()
+      this.room.gmtGreate = this.global.formatDate(time)
       let roomInfo = {
         name: this.room.name,
         towerId: this.room.towerName,
@@ -226,6 +224,7 @@ export default {
             message: '新增成功!'
           })
           this.dialogFormVisible = false
+          this.getRoom()
         }
       } else {
         let result = await API.init('/modification/id', roomInfo, 'post')
@@ -235,6 +234,9 @@ export default {
             message: '修改成功!'
           })
           this.dialogFormVisible = false
+          this.getRoom()
+          /* let index = this.roomsList1.indexOf(this.room.pkRoomId)
+          this.roomsList.splice(index, 1) */
         }
       }
     },
@@ -242,12 +244,11 @@ export default {
     getTowerUnits(val) {
       let towerUnits = this.units.filter((unit) => {
         if (unit.pk_tower_id == val) {
-          console.log(unit)
           return unit
         }
       })
       this.towerUnits = towerUnits[0].childUnit
-      this.room.towerUnit = this.towerUnits[0].name
+      /* this.room.towerUnit = this.towerUnits[0].name */
     },
     //点击节点
     handleNodeClick(val) {
@@ -274,7 +275,6 @@ export default {
       //     towerId: 1
       //   }
       // }).then((res) => {
-      console.log(res)
       if (res.data.code == 1) {
         this.$message({
           type: 'success',
@@ -295,20 +295,29 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        let res = API.init('/room/id/' + row.roomId, null, 'post')
-
-        // this.axios({
-        //   method: 'delete',
-        //   url: 'http://localhost:8080/room/id/' + row.roomId
-        // }).then((res) => {
-        if (res.data.code == 1) {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          })
-          let index = this.rooms.indexOf(row)
-          this.room.splice(index, 1)
-        }
+        this.axios({
+          method: 'post',
+          url: 'http://localhost:8081/room/id/',
+          data: {
+            id: row.roomId
+          }
+        }).then((res) => {
+          if (res.data.code == 1) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            let index = this.roomsList1.indexOf(row)
+            this.roomsList.splice(index, 1)
+            this.roomsList1 = this.roomsList1.filter((room) => {
+              if (room.roomId !== row.roomId) {
+                return room
+              }
+            })
+            console.log('房间信息>>>>>>>>>>>>>>>>>>>>')
+            console.log(this.roomsList1)
+          }
+        })
       })
       // })
     },
@@ -337,11 +346,13 @@ export default {
       this.end = this.currentPage * this.currentPageSize
     },
     searchOver() {
-      alert(1)
       this.iconColor = '#f1f1df'
     },
     //模糊搜索
     search() {
+      this.start = 0
+      this.end = 10
+      this.currentPage = 1
       //数组元素按条件过滤
       this.roomsList = this.roomsList1.filter((v) => {
         if (JSON.stringify(v).indexOf(this.input) != -1) {

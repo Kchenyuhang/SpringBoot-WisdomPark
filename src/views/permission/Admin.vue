@@ -11,21 +11,12 @@
           <el-input
             v-model="blurSearch"
             prefix-icon="el-icon-search"
-            placeholder="请输入内容"
+            placeholder="输入用户名或角色查询"
             class="blur-search"
+            @input="filterSearch"
             v-if="searchShow"
           ></el-input>
-          <!-- <el-date-picker
-            v-model="time"
-            type="daterange"
-            range-separator=":"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            class="date-input-search ml-10"
-            value-format="yyyy-MM-dd"
-            v-if="searchShow"
-          ></el-date-picker> -->
-          <el-select v-model="searchs.statu" placeholder="请选择" v-if="searchShow" class="statu-search ml-10">
+          <el-select v-model="searchs.statu" placeholder="状态" v-if="searchShow" class="statu-search ml-10">
             <el-option v-for="item in status" :key="item.value" :label="item.label" :value="item.value"></el-option>
           </el-select>
           <el-button v-if="searchShow" type="success" size="mini" @click="search()" class="ml-10 bg-green" icon="">
@@ -59,7 +50,7 @@
         <el-row style="border: 1px solid #e6ebf5" class="mt-20  ml-20">
           <el-table
             ref="multipleTable"
-            :data="adminInfos.slice(start, end)"
+            :data="admins.slice(start, end)"
             tooltip-effect="dark"
             style="width: 100%; "
             @selection-change="handleSelectionChange"
@@ -119,13 +110,40 @@
         </el-row>
         <!-- 新增页面 -->
         <div class="dialog" v-if="dialogFormVisible">
-          <el-form class="mt-10 dialog-form dc-jc-ac" :model="adminInfo" style="padding: 0px 20px;">
+          <el-form class="mt-10 dialog-form dc-jc-ac" :rules="rules" :model="adminInfo" style="padding: 0px 20px;">
             <p style="width: 90%;" class="dark-large-font tl">{{ msg }}用户</p>
-            <el-form-item required label="用户名" class="mt-20" :label-width="formLabelWidth" style="width: 90%;">
-              <el-input v-model="adminInfo.name" autocomplete="off" placeholder="请输入用户名" style="width: 80%"></el-input>
+            <el-form-item required label="用户名" class="mt-20" :label-width="formLabelWidth" style="width: 90%; height: 60px">
+              <el-input
+                v-model="adminInfo.name"
+                autocomplete="off"
+                @blur="checkSpecial(adminInfo.name)"
+                placeholder="请输入用户名"
+                style="width: 80%"
+              ></el-input>
+              <p style="width: 90%; display:flex">
+                <span style="display: block; width: 20%"></span>
+                <span style="display: block; height: 20px; margin-top: 0; width: 80%; color:red;" v-if="rules.userErrorShow" class="tl"
+                  >{{ userErrorInfo }}
+                </span>
+              </p>
             </el-form-item>
-            <el-form-item required label="手机号" :label-width="formLabelWidth" style="width: 90%;">
-              <el-input v-model="adminInfo.phoneNumber" autocomplete="off" placeholder="请输入手机号" style="width: 80%"></el-input>
+            <el-form-item required label="手机号" :label-width="formLabelWidth" style="width: 90%; height: 60px;">
+              <el-input
+                v-model="adminInfo.phoneNumber"
+                maxlength="11"
+                type="text"
+                autocomplete="off"
+                placeholder="请输入手机号"
+                style="width: 80%; max-height: 30px"
+                oninput="value=value.replace(/[^\d]/g,'')"
+                @input="checkPhone(adminInfo.phoneNumber)"
+              ></el-input>
+              <p style="width: 90%; display:flex">
+                <span style="display: block; width: 20%"></span>
+                <span style="display: block; height: 20px; margin-top: 0; width: 80%; color:red;" v-if="rules.phoneErrorShow" class="tl"
+                  >{{ phoneErrorInfo }}
+                </span>
+              </p>
             </el-form-item>
             <p style="width: 90%" class="df-jr-ac">
               <el-form-item required label="角色" :label-width="formLabelWidth" style="width: 50%;">
@@ -186,6 +204,7 @@ export default {
       dialogFormVisible: false,
       multipleSelection: [],
       admins: [],
+      adminInfoList: [],
       adminInfo: {
         userId: '',
         name: '',
@@ -193,10 +212,17 @@ export default {
         phoneNumber: '',
         isEnabled: -1
       },
+      rules: {
+        phoneErrorShow: false,
+        userErrorShow: false
+      },
+      userErrorInfo: '',
+      phoneErrorInfo: '',
       tag: 1,
       currentPage: 1,
       msg: '新增',
-      roleName: ''
+      roleName: '',
+      deleteIndex: 0
     }
   },
   components: {},
@@ -214,6 +240,7 @@ export default {
       }
       this.admins = admin
       this.adminInfos = admin
+      this.adminInfoList = this.admins
     },
     //获取所有角色信息
     async getRoles() {
@@ -221,6 +248,8 @@ export default {
     },
     /* 打开遮罩层 */
     openDialog() {
+      this.rules.phoneErrorShow = false
+      this.rules.userErrorShow = false
       this.dialogFormVisible = true
       this.tag = 1
       this.msg = ' 新增 '
@@ -283,58 +312,74 @@ export default {
     },
     //新增管理员消息
     async addAdminInfo(tag) {
-      let time = new Date().getMilliseconds
-      this.roles.filter((role) => {
-        if (role.pkRoleId == this.adminInfo.role) {
-          this.roleName = role.roleName
-        }
-      })
-      //转换isEnabled状态
-      if (this.adminInfo.isEnabled == 'true') {
-        this.adminInfo.isEnabled = true
-      } else {
-        this.adminInfo.isEnabled = false
+      if (this.adminInfo.name == '') {
+        this.userErrorInfo = '用户名不能为空'
+        this.rules.userErrorShow = true
       }
-      //定义临时变量，用于新增或修改
-      let admin = {
-        sys_user_id: this.adminInfo.userId,
-        sys_user_name: this.adminInfo.name,
-        role_name: this.roleName,
-        sys_user_phone_number: this.adminInfo.phoneNumber,
-        is_enabled: this.adminInfo.isEnabled,
-        gmt_create: time
+      if (this.adminInfo.phoneNumber == '') {
+        this.phoneErrorInfo = '手机号不能为空'
+        this.rules.phoneErrorShow = true
       }
-      if (tag == 1) {
-        let result = await API.init('/admin/increase', this.adminInfo, 'post')
-        if (result.code == 1) {
-          this.$message({
-            message: '新增成功',
-            type: 'success'
-          })
-          this.dialogFormVisible = false
-          this.admins.splice(0, 0, admin)
+      if (this.adminInfo.phoneNumber.length < 11) {
+        this.phoneErrorInfo = '请输入11位手机号'
+        this.rules.phoneErrorShow = true
+      }
+      if (this.rules.phoneErrorShow == false && this.rules.userErrorShow == false) {
+        let time = new Date().getMilliseconds
+        this.roles.filter((role) => {
+          if (role.pkRoleId == this.adminInfo.role) {
+            this.roleName = role.roleName
+          }
+        })
+        //转换isEnabled状态
+        if (this.adminInfo.isEnabled == 'true') {
+          this.adminInfo.isEnabled = true
+        } else {
+          this.adminInfo.isEnabled = false
         }
-      } else {
-        let result = await API.init('/admin/modification', this.adminInfo, 'post')
-        if (result.code == 1) {
-          let adminInfo = this.admins.filter((admin) => {
-            if (admin.sys_user_id == this.adminInfo.userId) {
-              return admin
-            }
-          })
-          this.dialogFormVisible = false
-          this.$message({
-            message: '修改成功',
-            type: 'success'
-          })
-          //修改用户信息
-          let index = this.admins.indexOf(adminInfo[0])
-          this.admins.splice(index, 1, admin)
+        //定义临时变量，用于新增或修改
+        let admin = {
+          sys_user_id: this.adminInfo.userId,
+          sys_user_name: this.adminInfo.name,
+          role_name: this.roleName,
+          sys_user_phone_number: this.adminInfo.phoneNumber,
+          is_enabled: this.adminInfo.isEnabled,
+          gmt_create: time
+        }
+        if (tag == 1) {
+          let result = await API.init('/admin/increase', this.adminInfo, 'post')
+          if (result.code == 1) {
+            this.$message({
+              message: '新增成功',
+              type: 'success'
+            })
+            this.dialogFormVisible = false
+            this.admins.splice(0, 0, admin)
+          }
+        } else {
+          let result = await API.init('/admin/modification', this.adminInfo, 'post')
+          if (result.code == 1) {
+            let adminInfo = this.admins.filter((admin) => {
+              if (admin.sys_user_id == this.adminInfo.userId) {
+                return admin
+              }
+            })
+            this.dialogFormVisible = false
+            this.$message({
+              message: '修改成功',
+              type: 'success'
+            })
+            //修改用户信息
+            let index = this.admins.indexOf(adminInfo[0])
+            this.admins.splice(index, 1, admin)
+          }
         }
       }
     },
     /* 修改admin信息 */
     updaeAdminInfo(row) {
+      this.rules.phoneErrorShow = false
+      this.rules.userErrorShow = false
       this.msg = '修改'
       this.adminInfo.name = row.sys_user_name
       this.roles.filter((role) => {
@@ -352,28 +397,70 @@ export default {
       this.dialogFormVisible = true
       this.tag = 2
     },
-    //删除房间信息
+    //删除管理员信息
     async handleDelete(item) {
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        let data = {
+        /* let data = {
           field: item.sys_user_phone_number
-        }
-        let res = API.init('/sysUser/deletion/phoneNumber', data, 'post')
-        if (res.data.code == 1) {
-          this.$message({
-            message: '删除成功',
-            type: 'success'
-          })
-          let index = this.admins.indexOf(item)
-          this.admins.splice(index, 1)
-        }
-
+        } */
+        /* let res = API.init('/sysUser/deletion/phoneNumber', data, 'post') */
+        this.axios({
+          url: 'http://localhost:8081/sysUser/deletion/phoneNumber',
+          method: 'post',
+          data: {
+            field: item.sys_user_phone_number
+          }
+        }).then((res) => {
+          if (res.data.code == 1) {
+            this.$message({
+              message: '删除成功',
+              type: 'success'
+            })
+            let index = this.adminInfoList.indexOf(item)
+            /* for (let i = 0, len = this.adminInfoList.length; i < len; i++) {
+              if (this.adminInfoList[i].sys_user_id === item.sys_user_id) console.log('索引i的值' + i)
+              index = i
+            } */
+            this.admins.splice(index, 1)
+            this.deleteIndex = index
+            this.adminInfoList = this.adminInfoList.filter((admin) => {
+              if (admin.sys_user_id !== item.sys_user_id) {
+                return admin
+              }
+            })
+            /* this.adminInfoList.splice(index, 1) */
+          }
+        })
       })
       // })
+    },
+    //校验手机号
+    checkPhone(val) {
+      this.rules.phoneErrorShow = this.check.checkPhone(val)
+      if (this.rules.phoneErrorShow) {
+        this.phoneErrorInfo = '手机号格式不正确'
+      }
+    },
+    //校验特殊字符
+    checkSpecial(val) {
+      if (!this.check.containSpecial(val)) {
+        if (val.length > 10) {
+          this.userErrorInfo = '用户名不得超过10个字符'
+          this.rules.userErrorShow = true
+        } else if (val == '') {
+          this.userErrorInfo = '用户名不得为空'
+          this.rules.userErrorShow = true
+        } else {
+          this.rules.userErrorShow = false
+        }
+      } else {
+        this.userErrorInfo = '不能包含特殊字符'
+        this.rules.userErrorShow = true
+      }
     },
     //刷新数据
     flush() {
@@ -415,6 +502,16 @@ export default {
     },
     searchOver() {
       this.iconColor = '#f1f1df'
+    },
+    //过滤搜搜
+    filterSearch() {
+      this.adminInfos = this.admins.filter((admin) => {
+        console.log(admin)
+
+        if (admin.sys_user_name.indexOf(this.blurSearch) !== -1 || admin.role_name.indexOf(this.blurSearch) !== -1) {
+          return admin
+        }
+      })
     }
   },
   computed: {}
@@ -445,7 +542,7 @@ export default {
   width: 100px;
 }
 
->>> .el-input__icon {
+.el-input__icon {
   color: #ddd;
   margin-top: -5px;
 }
@@ -458,13 +555,13 @@ export default {
   background-color: #f4f4f5;
 }
 
->>> .el-input__prefix {
+.el-input__prefix {
   display: flex;
   height: 30px;
   line-height: 30px;
 }
 
->>> .el-icon-date {
+.el-icon-date {
   margin-bottom: 10px;
 }
 
@@ -472,25 +569,9 @@ export default {
   background-color: #909399;
 }
 
->>> .el-input__inner {
+.el-input__inner {
   height: 30px;
   line-height: 30px;
-}
-
->>> .el-icon-edit {
-  color: #f7fbff;
-}
-
->>> .el-icon-plus {
-  color: #f7fbff;
-}
-
->>> .el-icon-delete {
-  color: #f7fbff;
-}
-
->>> .el-icon-download {
-  color: #f7fbff;
 }
 
 /* >>> .el-icon-search {
@@ -525,7 +606,7 @@ export default {
   background-color: rgba(0, 0, 0, 0.7);
 }
 
->>> .el-form-item__label {
+.el-form-item__label {
   color: #606266;
   font-weight: 600;
 }
@@ -547,5 +628,59 @@ export default {
 .search-btn {
   height: 30px;
   width: 80px;
+}
+
+>>> .el-input__icon {
+  color: #eee;
+  margin-bottom: 10px;
+}
+
+.el-button--success {
+  background-color: #13ce66;
+}
+
+.search-btn {
+  background-color: #f4f4f5;
+}
+
+.search-btn:hover {
+  background-color: #909399;
+}
+
+>>> .el-input__inner {
+  height: 30px;
+}
+
+>>> .el-icon-edit {
+  color: #f7fbff;
+}
+
+>>> .el-icon-plus {
+  color: #f7fbff;
+}
+
+>>> .el-icon-delete {
+  color: #f7fbff;
+}
+
+>>> .el-icon-download {
+  color: #f7fbff;
+}
+
+>>> .el-range-separator {
+  margin-bottom: 10px;
+}
+
+/* >>> .el-icon-search {
+  color: #f7fbff;
+} */
+
+>>> .el-input__prefix {
+  display: flex;
+  align-items: center;
+}
+
+>>> .el-select__caret {
+  margin-top: 5px;
 }
 </style>

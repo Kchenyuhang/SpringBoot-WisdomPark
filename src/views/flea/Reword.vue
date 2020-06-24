@@ -3,20 +3,20 @@
     <div class="tab-header">
       <el-row class="header-row">
         <el-input class="input" placeholder="请输入内容" v-model="input" clearable @input="filterSearch"></el-input>
+        <el-button size="medium" type="success">查询</el-button>
+        <el-button type="danger" icon="el-icon-delete" size="medium" @click="batchDelete">批量下架</el-button>
       </el-row>
-      <br />
-      <el-col class="tl">
-        <el-button type="danger" icon="el-icon-delete" size="small" round @click="batchDelete">批量下架</el-button>
-      </el-col>
     </div>
     <div class="table">
       <el-table ref="RewardId" :data="rewardShow" @selection-change="handleSelectionChange">
         <el-table-column prop="pkFleaRewardId" type="selection" width="50%"></el-table-column>
         <el-table-column prop="title" label="标题 " width="200%" show-overflow-tooltip> </el-table-column>
-        <el-table-column prop="description" label="描述 " width="200%" show-overflow-tooltip>
+        <el-table-column prop="description" label="描述 " width="200%">
           <template slot-scope="scope">
-            <!-- <i class="el-icon-time"></i> -->
-            <span>{{ rewardShow[scope.$index].description }}</span>
+            <el-popover placement="top" trigger="hover">
+              <span style="display:block; width: 300px;">{{ scope.row.description }}</span>
+              <span slot="reference" class="text-ellipsis">{{ scope.row.description }}</span>
+            </el-popover>
           </template>
         </el-table-column>
         <el-table-column prop="nickname" label="发布人昵称 " width="130%"> </el-table-column>
@@ -36,7 +36,7 @@
         </el-table-column>
         <el-table-column label="操作" width="150%">
           <template slot-scope="scope">
-            <el-button icon="el-icon-delete" @click="deleteOne(scope.$index, scope.row)" type="danger" size="small" round>
+            <el-button icon="el-icon-delete" @click="deleteOne(scope.$index, scope.row)" type="danger" size="small">
               下架
             </el-button>
           </template>
@@ -204,6 +204,14 @@ export default {
   .input {
     width: 400px;
     margin-right: 69%;
+  }
+}
+.header-row {
+  margin: 20px;
+  .input {
+    width: 400px;
+    margin-right: 20px;
+    margin-left: -53%;
   }
 }
 .table {
