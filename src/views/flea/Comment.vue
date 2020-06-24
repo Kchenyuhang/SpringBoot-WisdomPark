@@ -7,20 +7,28 @@
         <el-button size="medium" type="danger" @click="handleDeleteMul()">批量删除</el-button>
       </el-row>
     </div>
-    <el-table ref="commentId" :data="commentsShow" @selection-change="handleSelectionChange" height="100%">
-      <el-table-column prop="commentId" type="selection" width="50"></el-table-column>
-      <el-table-column prop="commentId" label="id" width="50"></el-table-column>
-      <el-table-column prop="reviwerName" label="回复人" width="110"></el-table-column>
-      <el-table-column prop="commentByName" label="评论人" width="200"></el-table-column>
-      <el-table-column prop="comment" label="评论内容" width="160"></el-table-column>
-      <el-table-column prop="title" label="评论帖标题" width="150"></el-table-column>
-      <el-table-column prop="createTime" label="评论时间" width="150"></el-table-column>
-      <el-table-column label="操作" width="150">
-        <template slot-scope="scope">
-          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <div class="table">
+      <el-table ref="commentId" :data="commentsShow" @selection-change="handleSelectionChange">
+        <el-table-column prop="commentId" type="selection" width="50%"></el-table-column>
+        <el-table-column prop="commentId" label="id" width="180%"></el-table-column>
+        <el-table-column prop="reviwerName" label="回复人" width="180%"></el-table-column>
+        <el-table-column prop="commentByName" label="评论人" width="200%"></el-table-column>
+        <el-table-column prop="comment" label="评论内容" width="180%" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="title" label="评论帖标题" width="190%"></el-table-column>
+        <el-table-column prop="createTime" label="评论时间" width="150%" sortable show-overflow-tooltip>
+          <template slot-scope="scope">
+            <i class="el-icon-time"></i>
+            <span>{{ commentsShow[scope.$index].createTime }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="150%">
+          <template slot-scope="scope">
+            <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+
     <div style="margin-top:20px">
       <el-pagination
         @size-change="handleSizeChange"
@@ -48,7 +56,7 @@
       </span>
     </el-dialog>
     <!-- 设置可以被引用  引用名为file  不可见
-    <input ref="file" v-show="false" type="file" @change="uploadAvatar($event)" /> -->
+    <input ref="file" v-show="false" type="file" @change="uploadAvatar($event)" />-->
   </div>
 </template>
 
@@ -132,7 +140,13 @@ export default {
       MM = MM < 10 ? '0' + MM : MM
       let d = date.getDate()
       d = d < 10 ? '0' + d : d
-      return y + '年' + MM + '月' + d + '日'
+      let h = date.getHours()
+      h = h < 10 ? '0' + h : h
+      let m = date.getMinutes()
+      m = m < 10 ? '0' + m : m
+      let s = date.getSeconds()
+      s = s < 10 ? '0' + s : s
+      return y + '年' + MM + '月' + d + '日' + h + ':' + m + ':' + s
     },
     //当前页展示数据
     handleSizeChange: function(pageSize) {
@@ -182,6 +196,7 @@ export default {
         ids.push(val[i].commentId)
       }
       this.commentsId = ids
+      console.log(ids)
     },
     async batchDelete() {
       let data = {
@@ -197,11 +212,11 @@ export default {
   watch: {
     pageSize: function() {
       console.log('pageSize改变' + this.pageSize)
-      this.getAllGoods()
+      this.getAllComments()
     },
     currentPage: function() {
       console.log('currentPage改变' + this.currentPage)
-      this.getAllGoods
+      this.getAllComments()
     },
     total: function() {}
   }
@@ -247,5 +262,8 @@ export default {
 .imgChange {
   cursor: pointer;
   width: 80px;
+}
+.table {
+  padding-left: 10px;
 }
 </style>

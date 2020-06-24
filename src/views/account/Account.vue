@@ -10,61 +10,26 @@
     </el-dialog>
     <!-- 修改弹出框 -->
 
-    <el-dialog
-      class="dialog"
-      title="编辑账号信息"
-      :modal="false"
-      :visible.sync="updatecenterDialogVisible"
-      width="30%"
-      left
-    >
-      <el-form
-        :model="ruleForm"
-        status-icon
-        label-width="80px"
-        :rules="rules"
-      >
-        <el-form-item
-          required
-          label="昵称"
-          prop="nickName"
-        >
-          <el-input
-            v-model="ruleForm.nickName"
-            autocomplete="off"
-          ></el-input>
+    <el-dialog class="dialog" title="编辑账号信息" :modal="false" :visible.sync="updatecenterDialogVisible" width="30%" left>
+      <el-form :model="ruleForm" status-icon label-width="80px" :rules="rules">
+        <el-form-item required label="昵称" prop="nickName">
+          <el-input v-model="ruleForm.nickName" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item
-          required
-          label="头像"
-          prop="avatar"
-        >
-          <img
-            :src="ruleForm.avatar"
-            alt=""
-            style="width:100px;height:100px"
-            @click="getClick()"
-          >
+        <el-form-item required label="头像" prop="avatar">
+          <img :src="ruleForm.avatar" alt="" style="width:100px;height:100px" @click="getClick()" />
           <!-- 隐藏的文件输入框 -->
           <input type="file" ref="upload" style="display:none;" @change="handlderFile()" />
         </el-form-item>
 
-        <el-form-item
-          required
-          label="手机号"
-          prop="phoneNumber"
-        >
+        <el-form-item required label="手机号" prop="phoneNumber">
           <el-input
             oninput="value=value.replace(/[^\d]/g,'')"
             v-model.number="ruleForm.phoneNumber"
             @input="phoneChange1"
+            maxlength="11"
           ></el-input>
         </el-form-item>
-        <el-form-item
-          required
-          label="地址"
-          prop="address"
-        >
+        <el-form-item required label="地址" prop="address">
           <el-input v-model.number="ruleForm.address"></el-input>
         </el-form-item>
       </el-form>
@@ -75,39 +40,13 @@
     </el-dialog>
     <!-- 增加弹出框 -->
 
-    <el-dialog
-      class="dialog"
-      :modal="false"
-      title="添加账号"
-      :visible.sync="addcenterDialogVisible"
-      width="30%"
-      height="300px"
-      center
-    >
-      <el-form
-        label-width="80px"
-        :model="ruleForm1"
-        :rules="rules"
-      >
-        <el-form-item
-          required
-          label="姓名"
-          prop="userName"
-        >
-
+    <el-dialog class="dialog" :modal="false" title="添加账号" :visible.sync="addcenterDialogVisible" width="30%" center>
+      <el-form label-width="80px" :model="ruleForm1" :rules="rules" ref="ruleForm1">
+        <el-form-item required label="姓名" prop="userName">
           <el-input v-model="ruleForm1.userName"></el-input>
         </el-form-item>
-        <el-form-item
-          required
-          label="学号"
-          prop="jobNumber"
-        >
-
-          <el-input
-            maxlength="13"
-            oninput="value=value.replace(/[^\d]/g,'')"
-            v-model="ruleForm1.jobNumber"
-          ></el-input>
+        <el-form-item required label="学号" prop="jobNumber">
+          <el-input maxlength="13" oninput="value=value.replace(/[^\d]/g,'')" v-model="ruleForm1.jobNumber"></el-input>
         </el-form-item>
         <el-form-item label="班级" prop="clazzId">
           <el-select size="mini" v-model="selectValue" placeholder="请选择" class="statu-search ml-10">
@@ -118,28 +57,21 @@
           <el-input v-model="ruleForm1.address"></el-input>
         </el-form-item>
 
-        <el-form-item
-          label="手机号"
-          prop="phoneNumber"
-        >
+        <el-form-item required label="手机号" prop="phoneNumber">
           <el-input
             oninput="value=value.replace(/[^\d]/g,'')"
             v-model="ruleForm1.phoneNumber"
             @input="phoneChange"
+            maxlength="11"
           ></el-input>
         </el-form-item>
-        <el-form-item
-          required
-          label="性别"
-          prop="gender"
-        >
-
+        <el-form-item required label="性别" prop="gender">
           <template>
             <el-radio v-model="radio" label="男"></el-radio>
             <el-radio v-model="radio" label="女"></el-radio>
           </template>
         </el-form-item>
-        <el-form-item label="角色" prop="role">
+        <el-form-item required label="角色" prop="role">
           <template>
             <el-radio v-model="radio1" label="1">学生</el-radio>
             <el-radio v-model="radio1" label="2">教师</el-radio>
@@ -151,23 +83,9 @@
         <el-button type="primary" @click="confirmAdd">确 定</el-button>
       </span>
     </el-dialog>
-    <el-row
-      type="flex"
-      class="ml-20 mt-10"
-    >
-      <el-input
-        size="mini"
-        v-model="input"
-        placeholder="请输入内容"
-        class="blur-search"
-        @input="filterSearch()"
-      ></el-input>
-      <el-button
-        type="success"
-        size="mini"
-        class="ml-10"
-        icon="el-icon-search"
-      >搜索</el-button>
+    <el-row type="flex" class="ml-20 mt-10">
+      <el-input size="mini" v-model="input" placeholder="请输入内容" class="blur-search" @input="filterSearch()"></el-input>
+      <el-button type="success" size="mini" class="ml-10" icon="el-icon-search">搜索</el-button>
     </el-row>
     <el-row class="df-jr-ac ml-20 mt-10">
       <el-col class="tl">
@@ -195,30 +113,10 @@
           <el-table-column label="账号" min-width="10%">
             <template slot-scope="scope">{{ scope.row.userAccount }}</template>
           </el-table-column>
-          <el-table-column
-            prop="nickname"
-            label="昵称"
-            min-width="15%"
-          ></el-table-column>
-          <el-table-column
-            prop="role"
-            label="角色"
-            min-width="15%"
-            :formatter="roleChange"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="phoneNumber"
-            label="手机号"
-            show-overflow-tooltip
-            min-width="15%"
-          > </el-table-column>
-          <el-table-column
-            prop="status"
-            label="状态"
-            show-overflow-tooltip
-            min-width="15%"
-          >
+          <el-table-column prop="nickname" label="昵称" min-width="15%"></el-table-column>
+          <el-table-column prop="role" label="角色" min-width="15%" :formatter="roleChange"> </el-table-column>
+          <el-table-column prop="phoneNumber" label="手机号" show-overflow-tooltip min-width="15%"> </el-table-column>
+          <el-table-column prop="status" label="状态" show-overflow-tooltip min-width="15%">
             <template slot-scope="scope">
               <el-switch
                 v-model="scope.row.status"
@@ -322,7 +220,12 @@ export default {
       delarr: [], //存放删除的数据
       batchdelVisible: false,
       rules: {
-        phoneNumber: [{ validator: checkPhone, trigger: 'blur' }]
+        phoneNumber: [{ validator: checkPhone, trigger: 'blur' }],
+        userName: [{ required: true, message: '请选择活动区域', trigger: 'change' }],
+        jobNumber: [{ type: 'date', required: true, message: '请选择日期', trigger: 'change' }],
+        role: [{ type: 'date', required: true, message: '请选择时间', trigger: 'change' }],
+        gender: [{ type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }],
+        address: [{ required: true, message: '请填写活动形式', trigger: 'blur' }]
       }
     }
   },
@@ -412,16 +315,13 @@ export default {
     },
     //批量删除
     async deleteBatch() {
+      console.log(this.delarr)
       this.data = { ids: String(this.delarr) }
       this.url = '/userAccount/deletionBath'
       this.result = await API.init(this.url, this.data, 'post')
-      if (this.data) {
-        this.getuserAccount()
-        this.$message.success('批量删除成功')
-      } else {
-        this.$message.error('信息批量删除失败')
-      }
+      this.$message.success('批量删除成功')
       this.batchdelVisible = false //关闭删除提示模态框
+      this.getuserAccount()
     },
     // 当前页展示数据
     handleSizeChange: function(pageSize) {
@@ -433,25 +333,35 @@ export default {
     },
     //新增账号
     async confirmAdd() {
-      console.log(this.data)
-      this.data = {
-        userName: this.ruleForm1.userName,
-        jobNumber: this.ruleForm1.jobNumber,
-        role: this.radio1,
-        gender: this.radio,
-        address: this.ruleForm1.address,
-        clazzId: this.selectValue,
-        phoneNumber: this.ruleForm1.phoneNumber
-      }
-      this.url = '/userAccount/insert'
-      this.result = await API.init(this.url, this.data, 'post')
-      console.log(this.result)
-      this.addcenterDialogVisible = false
-      this.getuserAccount()
-      if (this.result.code == 50003) {
-        this.$message.success('账号已存在')
+      if (
+        this.ruleForm1.jobNumber != '' &&
+        this.ruleForm1.userName != '' &&
+        this.ruleForm1.phoneNumber != '' &&
+        this.ruleForm1.address != ''
+      ) {
+        this.data = {
+          userName: this.ruleForm1.userName,
+          jobNumber: this.ruleForm1.jobNumber,
+          role: this.radio1,
+          gender: this.radio,
+          address: this.ruleForm1.address,
+          clazzId: this.selectValue,
+          phoneNumber: this.ruleForm1.phoneNumber,
+          status: false
+        }
+        // this.rules.acctMonth.push({ required: true }) //添加校验规则
+        this.url = '/userAccount/insert'
+        this.result = await API.init(this.url, this.data, 'post')
+        console.log(this.result)
+        this.addcenterDialogVisible = false
+        this.getuserAccount()
+        if (this.result.code == 50003) {
+          this.$message.success('账号已存在')
+        } else {
+          this.$message.success('账号添加成功')
+        }
       } else {
-        this.$message.success('账号添加成功')
+        this.$message.success('数据填充不完整，请重新输入')
       }
     },
     async changeSwitchA(index, row) {

@@ -3,25 +3,26 @@
     <div class="tab-header">
       <el-row class="header-row">
         <el-input class="input" placeholder="请输入内容" v-model="input" clearable @input="filterSearch"></el-input>
+        <el-button size="medium" type="success">查询</el-button>
+        <el-button type="danger" icon="el-icon-delete" size="medium" @click="delAll()">批量下架</el-button>
       </el-row>
-      <br />
-      <el-col class="tl">
-        <el-button type="danger" icon="el-icon-delete" size="small" round @click="batchDelete">批量下架</el-button>
-      </el-col>
     </div>
     <div class="table">
       <el-table ref="RewardId" :data="rewardShow" @selection-change="handleSelectionChange">
         <el-table-column prop="pkFleaRewardId" type="selection" width="50%"></el-table-column>
+        <el-table-column prop="pkFleaRewardId" label="id " width="50%"> </el-table-column>
         <el-table-column prop="title" label="标题 " width="200%" show-overflow-tooltip> </el-table-column>
-        <el-table-column prop="description" label="描述 " width="200%" show-overflow-tooltip>
+        <el-table-column prop="description" label="描述 " width="200%">
           <template slot-scope="scope">
-            <!-- <i class="el-icon-time"></i> -->
-            <span>{{ rewardShow[scope.$index].description }}</span>
+            <el-popover placement="top" trigger="hover">
+              <span style="display:block; width: 300px;">{{ scope.row.description }}</span>
+              <span slot="reference" class="text-ellipsis">{{ scope.row.description }}</span>
+            </el-popover>
           </template>
         </el-table-column>
         <el-table-column prop="nickname" label="发布人昵称 " width="130%"> </el-table-column>
-        <el-table-column prop="sex" label="性别" width="130%"> </el-table-column>
-        <el-table-column prop="username" label="发布人姓名" width="150%"> </el-table-column>
+        <el-table-column prop="sex" label="性别" width="100%"> </el-table-column>
+        <el-table-column prop="username" label="发布人姓名" width="120%"> </el-table-column>
         <el-table-column prop="createTime" label="发布时间" width="170%" sortable show-overflow-tooltip>
           <template slot-scope="scope">
             <i class="el-icon-time"></i>
@@ -36,8 +37,24 @@
         </el-table-column>
         <el-table-column label="操作" width="150%">
           <template slot-scope="scope">
-            <el-button icon="el-icon-delete" @click="deleteOne(scope.$index, scope.row)" type="danger" size="small" round>
-              下架
+            <el-button
+              v-if="rewardShow[scope.$index].isDeleted == 0"
+              icon="el-icon-delete"
+              @click="handleDelete(scope.$index, scope.row)"
+              type="danger"
+              size="small"
+            >
+              删除
+            </el-button>
+            <el-button
+              v-if="rewardShow[scope.$index].isDeleted == 1"
+              icon="el-icon-delete"
+              @click="handleDelete(scope.$index, scope.row)"
+              type="danger"
+              size="small"
+              disabled
+            >
+              删除
             </el-button>
           </template>
         </el-table-column>
@@ -55,6 +72,21 @@
       >
       </el-pagination>
     </div>
+    <!-- 删除提示框 -->
+    <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
+      <div class="del-dialog-cnt">建议您仅删除违规订单，您确定删除吗</div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="delVisible = false">取 消</el-button>
+        <el-button type="primary" @click="deleteOne">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog title="提示" :visible.sync="batchDelVisible" width="300px" center>
+      <div class="del-dialog-cnt">建议您仅删除违规订单，您确定批量删除吗</div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="delVisible = false">取 消</el-button>
+        <el-button type="primary" @click="batchDelete()">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -68,10 +100,13 @@ export default {
       pageSize: 5,
       delVisible: false, //删除提示弹框的状态
       multipleSelection: [], //多选的数据
+      batchDelVisible: false,
       rewardShow: [],
       rewardAll: [],
       rewardId: [],
-      input: ''
+      input: '',
+      index: '',
+      msg: ''
     }
   },
   components: {},
@@ -115,6 +150,7 @@ export default {
         }
       })
     },
+    //格式化时间
     formatDate(value) {
       let date = new Date(value)
       let y = date.getFullYear()
@@ -141,13 +177,13 @@ export default {
     //单行删除
     handleDelete(index, row) {
       this.index = index
-      // this.msg = row //每一条数据的记录
-      this.rewardId.push(row.pkFleaRewardId) //把单行删除的每条数据的id添加进放删除数据的数组
+      this.msg = row //每一条数据的记录
+      // this.rewardId.push(row.pkFleaRewardId) //把单行删除的每条数据的id添加进放删除数据的数组
       this.delVisible = true
     },
     //批量删除
     delAll() {
-      this.delVisible = true //显示删除弹框
+      this.batchDelVisible = true //显示删除弹框
     },
     //多选信息
     handleSelectionChange(val) {
@@ -160,16 +196,17 @@ export default {
     //确定单行删除
     async deleteOne() {
       let data = {
-        fleaRewardId: this.rewardId
+        fleaRewardId: this.msg.pkFleaRewardId
       }
       console.log(data)
       // console.log(data.fleaRewardId.get[0])
-      let data1 = {
-        fleaRewardId: data.fleaRewardId[0]
-      }
-      alert('要下架的悬赏id：' + data1.fleaRewardId)
-      await apiPost('flea/reward/deleteOne', data1)
+      // let data1 = {
+      //   fleaRewardId: data.fleaRewardId[0]
+      // }
+      alert('要下架的悬赏id：' + data)
+      await apiPost('flea/reward/deleteOne', data)
       this.getRewardAll()
+      this.delVisible = false
     },
     //确定批量删除
     async batchDelete() {
@@ -179,6 +216,7 @@ export default {
       console.log(data)
       await apiPost('flea/reward/batchDelete', data)
       this.getRewardAll()
+      this.batchDelVisible = false
     }
   },
   computed: {},
@@ -204,6 +242,14 @@ export default {
   .input {
     width: 400px;
     margin-right: 69%;
+  }
+}
+.header-row {
+  margin: 20px;
+  .input {
+    width: 400px;
+    margin-right: 20px;
+    margin-left: -53%;
   }
 }
 .table {

@@ -7,6 +7,11 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '/text',
+    name: 'Text',
+    component: () => import('../views/permission/Text.vue')
+  },
+  {
     path: '/',
     name: 'Index',
     component: Index,
