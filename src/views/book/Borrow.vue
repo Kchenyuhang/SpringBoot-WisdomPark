@@ -79,6 +79,7 @@
       ></el-input>
       <el-date-picker
         v-model="value2"
+        class="ml-10"
         type="datetimerange"
         range-separator=":"
         start-placeholder="开始日期"
@@ -227,6 +228,7 @@
           >
             <template slot-scope="scope">
               <el-button
+                :disabled="scope.row.isReturned==1"
                 size="mini"
                 type="success"
                 @click="handleUpdate(scope.$index, scope.row)"
@@ -387,15 +389,11 @@ export default {
       this.delVisible = true
     },
     async deleteRow() {
-      this.data = { field: this.msg.pkBorrowId }
-      this.url = '/borrow/id'
+      this.data = { pkId: this.msg.pkBorrowId }
+      this.url = '/borrow/deletion'
       this.result = await API.init(this.url, this.data, 'post')
-      if (this.data) {
-        this.getbookBorrowAll()
-        this.$message.success('删除成功')
-      } else {
-        this.$message.error('借阅信息删除失败')
-      }
+      this.getbookBorrowAll()
+      this.$message.success('删除成功')
       this.delVisible = false //关闭删除提示模态框
     },
     //批量删除
@@ -413,28 +411,23 @@ export default {
     //批量删除
     async deleteBatch() {
       this.data = { ids: String(this.delarr) }
-      this.url = '/book/deletion/batch'
+      this.url = '/borrow/deletionBath'
       this.result = await API.init(this.url, this.data, 'post')
-      if (this.data) {
-        this.getbookBorrowAll()
-        this.$message.success('批量删除成功')
-      } else {
-        this.$message.error('借阅信息批量删除失败')
-      }
+      this.getbookBorrowAll()
+      this.$message.success('批量删除成功')
       this.batchdelVisible = false //关闭删除提示模态框
     },
-    //修改借阅信息
     async handleUpdate(index, row) {
+      this.data = { pkId: this.msg.pkBorrowId }
       this.idx = index
       this.msg = row
       this.data = {
-        pkBorrowId: this.msg.pkBorrowId,
-        isReturned: true
+        pkId: this.msg.pkBorrowId
       }
-      this.url = '/borrow/deletion'
+      this.url = '/borrow/modification/return'
       this.result = await API.init(this.url, this.data, 'post')
-      this.getbookBorrowAll()
       this.$message.success('归还成功')
+      this.getbookBorrowAll()
     },
     //新增借阅
     async confirmAdd() {

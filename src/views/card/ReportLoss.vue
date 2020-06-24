@@ -58,7 +58,8 @@
           <el-table-column prop="gmtCreate" label="创建时间" min-width="15%" show-overflow-tooltip> </el-table-column>
           <el-table-column label="操作" min-width="23%">
             <template slot-scope="scope">
-              <el-button size="mini" type="primary" @click="handleStatus(scope.$index, scope.row)">
+              <el-button                 :disabled="scope.row.lossStatus==1"
+ size="mini" type="primary" @click="handleStatus(scope.$index, scope.row)">
                 <span class="light-font-color">挂失</span></el-button>
               <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)"><span class="light-font-color">删除</span></el-button>
             </template>
