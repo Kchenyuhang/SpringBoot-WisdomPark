@@ -1,5 +1,5 @@
 <template>
-  <div style="width:100%">
+  <div style="width: 100%;">
     <el-row
       type="flex"
       class="ml-20 mt-10"
@@ -86,7 +86,7 @@
             min-width="10%"
           >
             <template slot-scope="scope">
-              <span style="margin-left:-5%">{{ scope.row.userName }}</span>
+              <span style="margin-left: -5%;">{{ scope.row.userName }}</span>
             </template>
           </el-table-column>
           <el-table-column
