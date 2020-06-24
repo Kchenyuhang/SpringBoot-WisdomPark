@@ -255,25 +255,14 @@
           @click="delAll()"
           disabled=""
         >批量删除</el-button>
-        <!-- 删除提示框 -->
-        <el-dialog
-          title="提示"
-          :visible.sync="batchdelVisible"
-          width="300px"
-          center
-        >
+        <!-- 删除提示框
+        <el-dialog title="提示" :visible.sync="batchdelVisible" width="300px" center>
           <div class="del-dialog-cnt">批量删除一卡通信息后不可恢复，是否确定删除？</div>
-          <span
-            slot="footer"
-            class="dialog-footer"
-          >
+          <span slot="footer" class="dialog-footer">
             <el-button @click="batchdelVisible = false">取 消</el-button>
-            <el-button
-              type="primary"
-              @click="deleteBatch()"
-            >确 定</el-button>
+            <el-button type="primary" @click="deleteBatch()">确 定</el-button>
           </span>
-        </el-dialog>
+        </el-dialog> -->
       </el-col>
       <el-col class="tr mr-20">
         <el-button
@@ -394,7 +383,7 @@
               <el-button
                 size="mini"
                 type="danger"
-                @click="handleDelete(scope.$index, scope.row)"
+                @click="handleDelete(scope.row)"
               >删除</el-button>
             </template>
           </el-table-column>
@@ -444,7 +433,7 @@ export default {
       gmtTime: '',
       msg: '', //记录每一条的信息，便于取id
       students: [],
-      value2: [new Date(2000, 0, 11, 10, 10, 10), new Date(2000, 10, 11, 10, 10, 10)],
+      value2: [new Date(2020, 0, 11, 10, 10, 10), new Date(2020, 10, 11, 10, 10, 10)],
       semsters: [],
       semster: '',
       subjects: [],
@@ -643,16 +632,24 @@ export default {
       this.updatecenterDialogVisible = true
     },
     //单行删除
-    async handleDelete(index, row) {
-      console.log(index, row)
-      this.url = '/examination/deletion'
-      this.data = {
-        clazzId: row.clazzId,
-        semester: row.semester,
-        subjectId: row.subjectId
-      }
-      this.result = await API.init(this.url, this.data, 'post')
-      this.getCardAll()
+    async handleDelete(row) {
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // console.log(index, row)
+        this.url = '/examination/deletion'
+        this.data = {
+          clazzId: row.clazzId,
+          semester: row.semester,
+          subjectId: row.subjectId
+        }
+        this.result = API.init(this.url, this.data, 'post')
+        let index = this.examinationList.indexOf(row)
+        this.examinationList.splice(index, 1)
+        // this.getCardAll()
+      })
     },
     formatDate(value) {
       let date = new Date(value)
