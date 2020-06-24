@@ -3,21 +3,33 @@
     <div class="tab-header">
       <el-row class="header-row">
         <el-input class="input" placeholder="请输入内容" v-model="input" clearable @input="filterSearch"></el-input>
+        <el-button size="medium" type="success">查询</el-button>
+        <el-button type="danger" icon="el-icon-delete" size="medium" @click="batchDelete">批量下架</el-button>
       </el-row>
-      <br />
-      <el-col class="tl">
-        <el-button type="danger" icon="el-icon-delete" size="small" round @click="batchDelete">批量下架</el-button>
-      </el-col>
     </div>
     <div class="table">
       <el-table ref="pkFleaOrderId" :data="orderShow" @selection-change="handleSelectionChange">
         <el-table-column prop="pkFleaOrderId" type="selection" width="50%"></el-table-column>
         <el-table-column prop="pkFleaOrderId" label="订单编号 " width="130%"> </el-table-column>
-        <el-table-column prop="goodsName" label="商品名 " width="130%" show-overflow-tooltip> </el-table-column>
+        <el-table-column prop="goodsName" label="商品名 " width="130%">
+          <template slot-scope="scope">
+            <el-popover placement="top" trigger="hover">
+              <span style="display:block; width: 300px;">{{ scope.row.goodsName }}</span>
+              <span slot="reference" class="text-ellipsis">{{ scope.row.goodsName }}</span>
+            </el-popover>
+          </template>
+        </el-table-column>
         <el-table-column prop="goodsMark" label="商品标签 " width="120%"> </el-table-column>
         <el-table-column prop="goodsSeller" label="卖方 " width="120%"> </el-table-column>
         <el-table-column prop="goodsBuyer" label="买方" width="120%"> </el-table-column>
-        <el-table-column prop="goodsDescription" label="商品信息" width="150%" show-overflow-tooltip> </el-table-column>
+        <el-table-column prop="goodsDescription" label="商品信息" width="150%">
+          <template slot-scope="scope">
+            <el-popover placement="top" trigger="hover">
+              <span style="display:block; width: 300px;">{{ scope.row.goodsDescription }}</span>
+              <span slot="reference" class="text-ellipsis">{{ scope.row.goodsDescription }}</span>
+            </el-popover>
+          </template>
+        </el-table-column>
         <el-table-column prop="orderCreateTime" label="订单创建时间" width="170%" sortable show-overflow-tooltip>
           <template slot-scope="scope">
             <i class="el-icon-time"></i>
@@ -32,7 +44,7 @@
         </el-table-column>
         <el-table-column label="操作" width="150%">
           <template slot-scope="scope">
-            <el-button icon="el-icon-delete" @click="deleteOne(scope.$index, scope.row)" type="danger" size="small" round>
+            <el-button icon="el-icon-delete" @click="deleteOne(scope.$index, scope.row)" type="danger" size="small">
               下架
             </el-button>
           </template>
@@ -178,8 +190,7 @@ export default {
       this.getOrderAll()
     }
   },
-  computed: {},
-
+  computed: {}
 }
 </script>
 
@@ -194,6 +205,14 @@ export default {
   .input {
     width: 400px;
     margin-right: 69%;
+  }
+}
+.header-row {
+  margin: 20px;
+  .input {
+    width: 400px;
+    margin-right: 20px;
+    margin-left: -53%;
   }
 }
 .table {
