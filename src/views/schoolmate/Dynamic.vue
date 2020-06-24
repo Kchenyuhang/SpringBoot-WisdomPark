@@ -225,6 +225,7 @@ export default {
             })
             let index = this.dynamicList.indexOf(item)
             this.dynamicList.splice(index, 1)
+            this.total -= 1
           }
         })
       })
@@ -360,6 +361,7 @@ export default {
           this.addcenterDialogVisible = false
           this.$message.success('动态添加成功')
           this.getDynamicAll()
+          this.total += 1
           // console.log(this.result.data)
           // this.dynamicList.splice(0, 0, this.result.data)
           // this.axios({

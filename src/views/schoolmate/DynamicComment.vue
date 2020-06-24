@@ -173,7 +173,6 @@ export default {
               type: 'success'
             })
             let index = this.comments.indexOf(item)
-            alert(index)
             this.comments.splice(index, 1)
           }
         })

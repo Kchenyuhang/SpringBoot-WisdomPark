@@ -7,22 +7,36 @@
         <el-button size="medium" type="danger" @click="handleDeleteMul()">批量删除</el-button>
       </el-row>
     </div>
-    <el-table
-      ref="pkFleaGoodsId"
-      :data="goodsShow"
-      @selection-change="handleSelectionChange"
-      height="100%"
-    >
+    <el-table ref="pkFleaGoodsId" :data="goodsShow" @selection-change="handleSelectionChange" height="100%">
       <el-table-column prop="pkFleaGoodsId" type="selection" width="50"></el-table-column>
       <el-table-column prop="pkFleaGoodsId" label="id" width="50"></el-table-column>
-      <el-table-column prop="goodsName" label="商品名" width="110"></el-table-column>
-      <el-table-column prop="goodsPrice" label="价格" width="200"></el-table-column>
-      <el-table-column prop="goodsDescription" label="描述" width="160"></el-table-column>
+      <el-table-column prop="goodsName" label="商品名" width="310">
+        <template slot-scope="scope">
+          <el-popover placement="top" trigger="hover">
+            <span style="display:block; width: 300px;">{{ scope.row.goodsName }}</span>
+            <span slot="reference" class="text-ellipsis">{{ scope.row.goodsName }}</span>
+          </el-popover>
+        </template>
+      </el-table-column>
+      <el-table-column prop="goodsPrice" label="价格" width="60"></el-table-column>
+      <el-table-column prop="goodsDescription" label="描述" width="260">
+        <template slot-scope="scope">
+          <el-popover placement="top" trigger="hover">
+            <span style="display:block; width: 300px;">{{ scope.row.goodsDescription }}</span>
+            <span slot="reference" class="text-ellipsis">{{ scope.row.goodsDescription }}</span>
+          </el-popover>
+        </template>
+      </el-table-column>
       <el-table-column prop="typeName" label="类型" width="50"></el-table-column>
       <el-table-column prop="goodsMark" label="标签" width="50"></el-table-column>
       <!-- <el-table-column prop="nickname" label="发布人昵称" width="50"></el-table-column> -->
-      <el-table-column prop="username" label="卖家" width="50"></el-table-column>
-      <el-table-column prop="goodsCreateTime" label="发布时间" width="130"></el-table-column>
+      <el-table-column prop="username" label="卖家" width="80"></el-table-column>
+      <el-table-column prop="goodsCreateTime" label="发布时间" width="130" sortable show-overflow-tooltip>
+        <template slot-scope="scope">
+          <i class="el-icon-time"></i>
+          <span>{{ goodsShow[scope.$index].goodsCreateTime }}</span>
+        </template>
+      </el-table-column>
       <!-- <el-table-column prop="goodsImgUrl" label="商品图片地址" width="130"></el-table-column> -->
 
       <el-table-column label="状态">
@@ -33,18 +47,10 @@
       </el-table-column>
       <el-table-column label="操作" width="150">
         <template slot-scope="scope">
-          <el-button
-            v-if="goodsShow[scope.$index].isDeleted == 0"
-            size="mini"
-            type="danger"
-            @click="handleDelete(scope.$index, scope.row)"
-          >下架</el-button>
-          <el-button
-            v-else
-            size="mini"
-            type="danger"
-            @click="handleDelete(scope.$index, scope.row)"
-          >上架</el-button>
+          <el-button v-if="goodsShow[scope.$index].isDeleted == 0" size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)"
+            >下架</el-button
+          >
+          <el-button v-else size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">上架</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -161,7 +167,13 @@ export default {
       MM = MM < 10 ? '0' + MM : MM
       let d = date.getDate()
       d = d < 10 ? '0' + d : d
-      return y + '年' + MM + '月' + d + '日'
+      let h = date.getHours()
+      h = h < 10 ? '0' + h : h
+      let m = date.getMinutes()
+      m = m < 10 ? '0' + m : m
+      let s = date.getSeconds()
+      s = s < 10 ? '0' + s : s
+      return y + '年' + MM + '月' + d + '日' + h + ':' + m + ':' + s
     },
     //当前页展示数据
     handleSizeChange: function(pageSize) {

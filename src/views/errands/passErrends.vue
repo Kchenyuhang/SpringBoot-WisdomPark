@@ -42,7 +42,12 @@
             <el-table-column label="姓名" prop="name"> </el-table-column>
             <el-table-column label="联系方式" prop="phoneNumber"> </el-table-column>
             <el-table-column label="订单量" sortable prop="countOrder"> </el-table-column>
-            <el-table-column label="状态" prop="status"> </el-table-column>
+                <el-table-column prop="status" label="状态" show-overflow-tooltip min-width="80%">
+            <template slot-scope="scope">
+              <el-switch @change="changeStatus(scope.row)" v-model="scope.row.status" active-color="#13ce66" inactive-color="#ff4949">
+              </el-switch>
+            </template>
+          </el-table-column>
             <el-table-column label="审核人" prop="reviewerName"> </el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
@@ -166,6 +171,9 @@ export default {
   },
 
   methods: {
+    changeStatus(){
+        this.$message.success("修改成功")
+    },
     async getFinshOrder(i) {
       if (this.currentPage4 - 1 < 0) {
         this.currentPage4 = 0

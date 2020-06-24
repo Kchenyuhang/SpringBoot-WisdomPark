@@ -1,9 +1,6 @@
 ﻿<template>
   <div style="width: 100%">
-    <el-row
-      type="flex"
-      class="ml-20 mt-10"
-    >
+    <el-row type="flex" class="ml-20 mt-10">
       <el-input
         size="mini"
         v-model="input"
@@ -25,83 +22,37 @@
         v-if="searchShow"
       >
       </el-date-picker>
-      <el-button
-        type="success"
-        size="mini"
-        class="ml-10"
-        v-if="searchShow"
-        @click="searchAppInfoByCreate"
-      >
-        <i
-          class="el-icon-search"
-          style="color: rgb(247, 251, 255)"
-        ></i>
+      <el-button type="success" size="mini" class="ml-10" v-if="searchShow" @click="searchAppInfoByCreate">
+        <i class="el-icon-search" style="color: rgb(247, 251, 255)"></i>
         <span class="light-font-color">搜索</span>
       </el-button>
     </el-row>
     <el-row class="df-jr-ac ml-20 mt-10">
       <el-col class="tl">
-        <el-button
-          type="primary"
-          icon="el-icon-plus"
-          @click="openDialog"
-          size="mini"
-        >
+        <el-button type="primary" icon="el-icon-plus" @click="openDialog" size="mini">
           <span class="light-font-color">新增</span>
         </el-button>
-        <el-button
-          type="success"
-          icon="el-icon-edit"
-          size="mini"
-          @click="handleEdit(selections[0])"
-          :disabled="selections.length != 1"
-        >
+        <el-button type="success" icon="el-icon-edit" size="mini" @click="handleEdit(selections[0])" :disabled="selections.length != 1">
           <span class="light-font-color">修改</span>
         </el-button>
-        <el-button
-          type="danger"
-          icon="el-icon-delete"
-          size="mini"
-          @click="batchDelete"
-          :disabled="selections.length < 1"
-        >
+        <el-button type="danger" icon="el-icon-delete" size="mini" @click="batchDelete" :disabled="selections.length < 1">
           <span class="light-font-color">删除</span>
         </el-button>
-        <el-button
-          type="warning"
-          icon="el-icon-download"
-          disabled
-          size="mini"
-        >
+        <el-button type="warning" icon="el-icon-download" disabled size="mini">
           <span class="light-font-color">导出</span>
         </el-button>
       </el-col>
       <el-col class="tr mr-20">
-        <el-button
-          size="mini"
-          style="width: 45px"
-          class="search-btn"
-          @click="searchShow = !searchShow"
-          @mouseover="searchOver()"
-        >
-          <i
-            class="el-icon-search"
-            style="color: white"
-          ></i>
+        <el-button size="mini" style="width: 45px" class="search-btn" @click="searchShow = !searchShow" @mouseover="searchOver()">
+          <i class="el-icon-search" style="color: white"></i>
         </el-button>
-        <el-button
-          icon="el-icon-refresh"
-          size="small"
-        ></el-button>
+        <el-button icon="el-icon-refresh" size="small"></el-button>
       </el-col>
     </el-row>
     <!-- 表格 -->
     <el-row>
       <el-col :span="one"></el-col>
-      <el-col
-        :span="tt"
-        class="ml-20 mt-10"
-      >
+      <el-col :span="tt" class="ml-20 mt-10">
         <el-table
           ref="multipleTable"
           :data="statementList.slice(start, end)"
@@ -110,55 +61,20 @@
           style="width: 100%;"
           @selection-change="handleSelectionChange"
         >
-          <el-table-column
-            type="selection"
-            min-width="5%"
-          > </el-table-column>
-          <el-table-column
-            label="声明标题"
-            min-width="10%"
-          >
+          <el-table-column type="selection" min-width="5%"> </el-table-column>
+          <el-table-column label="声明标题" min-width="10%">
             <template slot-scope="scope">{{ scope.row.statementTitle }}</template>
           </el-table-column>
-          <el-table-column
-            prop="statementContent"
-            label="声明内容"
-            min-width="25%"
-          ></el-table-column>
-          <el-table-column
-            prop="statementType"
-            label="声明分类"
-            show-overflow-tooltip
-            min-width="20%"
-          > </el-table-column>
-          <el-table-column
-            prop="gmtCreate"
-            label="创建时间"
-            show-overflow-tooltip
-            min-width="20%"
-          > </el-table-column>
-          <el-table-column
-            label="操作"
-            align="center"
-            show-overflow-tooltip
-            min-width="20%"
-          >
+          <el-table-column prop="statementContent" label="声明内容" min-width="25%"></el-table-column>
+          <el-table-column prop="statementType" label="声明分类" show-overflow-tooltip min-width="20%"> </el-table-column>
+          <el-table-column prop="gmtCreate" label="创建时间" show-overflow-tooltip min-width="20%"> </el-table-column>
+          <el-table-column label="操作" align="center" show-overflow-tooltip min-width="20%">
             <template slot-scope="scope">
               <p style="text-align:center">
-                <el-button
-                  size="mini"
-                  icon="el-icon-edit"
-                  type="primary"
-                  @click="handleEdit(scope.row)"
-                >
+                <el-button size="mini" icon="el-icon-edit" type="primary" @click="handleEdit(scope.row)">
                   <span class="light-font-color">编辑</span>
                 </el-button>
-                <el-button
-                  size="mini"
-                  icon="el-icon-delete"
-                  type="danger"
-                  @click="handleDelete(scope.row)"
-                >
+                <el-button size="mini" icon="el-icon-delete" type="danger" @click="handleDelete(scope.row)">
                   <span class="light-font-color">删除</span>
                 </el-button>
               </p>
@@ -168,79 +84,23 @@
       </el-col>
     </el-row>
     <!-- 新增页面 -->
-    <div
-      class="dialog"
-      v-if="dialogFormVisible"
-    >
-      <el-form
-        class="mt-10 dialog-form dc-jc-ac"
-        :model="statementInfo"
-        style="padding: 0px 20px;"
-      >
-        <p
-          style="width: 90%;"
-          class="dark-large-font tl"
-        >{{ msg }}声明</p>
-        <el-form-item
-          required
-          label="声明标题"
-          class="mt-20"
-          :label-width="formLabelWidth"
-          style="width: 90%;"
-        >
-          <el-input
-            v-model="statementInfo.statementTitle"
-            autocomplete="off"
-            placeholder="请输入标题"
-            style="width: 80%"
-          ></el-input>
+    <div class="dialog" v-if="dialogFormVisible">
+      <el-form class="mt-10 dialog-form dc-jc-ac" :model="statementInfo" style="padding: 0px 20px;">
+        <p style="width: 90%;" class="dark-large-font tl">{{ msg }}声明</p>
+        <el-form-item required label="声明标题" class="mt-20" :label-width="formLabelWidth" style="width: 90%;">
+          <el-input v-model="statementInfo.statementTitle" autocomplete="off" placeholder="请输入标题" style="width: 80%"></el-input>
         </el-form-item>
-        <el-form-item
-          required
-          label="声明内容"
-          :label-width="formLabelWidth"
-          style="width: 90%;"
-        >
-          <el-input
-            v-model="statementInfo.statementContent"
-            autocomplete="off"
-            placeholder="请输入内容"
-            style="width: 80%"
-          ></el-input>
+        <el-form-item required label="声明内容" :label-width="formLabelWidth" style="width: 90%;">
+          <el-input v-model="statementInfo.statementContent" autocomplete="off" placeholder="请输入内容" style="width: 80%"></el-input>
         </el-form-item>
-        <el-form-item
-          required
-          label="声明分类"
-          :label-width="formLabelWidth"
-          style="width: 90%;"
-        >
-          <el-select
-            v-model="statementInfo.statementType"
-            class="ml-10"
-            placeholder="分类"
-            style="width: 20%; float: left"
-          >
-            <el-option
-              v-for="(item, index) in statementTypes"
-              :key="index"
-              :label="item"
-              :value="item"
-            ></el-option>
+        <el-form-item required label="声明分类" :label-width="formLabelWidth" style="width: 90%;">
+          <el-select v-model="statementInfo.statementType" class="ml-10" placeholder="分类" style="width: 20%; float: left">
+            <el-option v-for="(item, index) in statementTypes" :key="index" :label="item" :value="item"></el-option>
           </el-select>
         </el-form-item>
-        <p
-          class="mt-20 tr"
-          style="width: 90%"
-        >
-          <el-button
-            @click="dialogFormVisible = false"
-            size="small"
-          >取 消</el-button>
-          <el-button
-            type="primary"
-            @click="addStatementInfo(tag)"
-            size="small"
-          >确定</el-button>
+        <p class="mt-20 tr" style="width: 90%">
+          <el-button @click="dialogFormVisible = false" size="small">取 消</el-button>
+          <el-button type="primary" @click="addStatementInfo(tag)" size="small">确定</el-button>
         </p>
       </el-form>
       <!-- <div slot="footer" class="dialog-footer">
@@ -306,7 +166,8 @@ export default {
         pkStatementId: -1,
         statementType: '',
         statementTitle: '',
-        statementContent: ''
+        statementContent: '',
+        gmtCreate: ''
       }
     }
   },
@@ -315,17 +176,7 @@ export default {
     this.getStatementAll()
   },
   watch: {
-    /* pageSize: function() {
-      this.getStatementAll()
-    },
-    currentPage: function() {
-      this.getStatementAll()
-    } */
-    /* selections: function() {
-      if(selections.length != 1){
-        
-      }
-    } */
+   
   },
   mounted() {},
   methods: {
@@ -412,13 +263,8 @@ export default {
       this.statementInfo.statementContent = ''
     },
     async addStatementInfo(tag) {
-      //定义临时变量，用于新增或修改
-      /* let appVersionInfo = {
-        pkStatementId: this.statementInfo.pkStatementId,
-        statementType: this.statementInfo.statementType,
-        statementTitle: this.statementInfo.currentVersion,
-        statementContent: this.statementInfo.maxVersion,
-      } */
+      let time = (new Date()).valueOf()
+      this.statementInfo.gmtCreate = this.global.formatDate(time)
       if (tag == 1) {
         let result = await API.init('/statement/increase', this.statementInfo, 'post')
         if (result.code == 1) {
