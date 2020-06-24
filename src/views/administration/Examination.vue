@@ -198,7 +198,6 @@
         <el-input
           v-model="type"
           placeholder="请输入类型"
-          oninput="value=value.replace(/[^\d]/g,'')"
           class="inline-input"
         ></el-input>
       </div>
