@@ -7,7 +7,9 @@
       <div style="height: 20px;line-height: 20px;margin-top: 100px;background-color: #f8f8f8; padding-left: 10px" class="tl ">
         <!-- <span>推荐歌曲</span> -->
       </div>
-      <router-view :style="{ width: screenWidth - 220 + `px` }" />
+      <div @click="closeTag">
+        <router-view :style="{ width: screenWidth - 220 + `px` }" />
+      </div>
     </div>
   </el-container>
 </template>
@@ -45,6 +47,11 @@ export default {
     handleClose(key, keyPath) {
       console.log(key, keyPath)
     },
+    //关闭所哟菜单
+    closeTag() {
+      Bus.$emit('active', false)
+    },
+    //获取所有菜单
     getMenuList() {
       localStorage.setItem('token', 'lksdjfklsdjfiosiofja;ljdfsdjfkljs')
       let phoneNumber = JSON.parse(localStorage.getItem('user')).sysUserPhoneNumber
