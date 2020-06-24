@@ -84,8 +84,8 @@ export default {
       this.axios({
         method: 'post',
 
-        url: 'http://120.26.177.51:80/sysUser/login',
-        // url: 'http://localhost:8081/sysUser/login',
+        // url: 'http://120.26.177.51:80/sysUser/login',
+        url: 'http://localhost:8081/sysUser/login',
 
         data: {
           account: this.user.account,
