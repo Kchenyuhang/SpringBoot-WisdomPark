@@ -84,8 +84,8 @@ export default {
       this.axios({
         method: 'post',
 
-        url: 'http://120.26.177.51:80/sysUser/login',
-        // url: 'http://localhost:8081/sysUser/login',
+        // url: 'http://120.26.177.51:80/sysUser/login',
+        url: 'http://localhost:8081/sysUser/login',
 
         data: {
           account: this.user.account,
@@ -93,7 +93,7 @@ export default {
           code: this.vertifyCode
         }
         // 设置请求头Content-Type
-        //headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        // headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
       }).then((res) => {
         this.$store.commit('setToken', res.data.data.token)
         localStorage.setItem('token', res.data.data.token)
