@@ -244,7 +244,6 @@
           width="350px"
           class="dialog"
         >
-
           <!-- //地图 -->
           <div class="amap-page-container">
             <el-amap
@@ -253,7 +252,7 @@
               class="amap-demo"
               :center="center"
               :zoom="zoom"
-              :events='events'
+              :events="events"
             >
               <!-- 点击显示标记 -->
               <el-amap-marker
