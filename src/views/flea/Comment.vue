@@ -12,9 +12,14 @@
       <el-table-column prop="commentId" label="id" width="50"></el-table-column>
       <el-table-column prop="reviwerName" label="回复人" width="110"></el-table-column>
       <el-table-column prop="commentByName" label="评论人" width="200"></el-table-column>
-      <el-table-column prop="comment" label="评论内容" width="160"></el-table-column>
+      <el-table-column prop="comment" label="评论内容" width="160" show-overflow-tooltip></el-table-column>
       <el-table-column prop="title" label="评论帖标题" width="150"></el-table-column>
-      <el-table-column prop="createTime" label="评论时间" width="150"></el-table-column>
+      <el-table-column prop="createTime" label="评论时间" width="150" sortable show-overflow-tooltip>
+        <template slot-scope="scope">
+          <i class="el-icon-time"></i>
+          <span>{{ commentsShow[scope.$index].createTime }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" width="150">
         <template slot-scope="scope">
           <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
@@ -132,7 +137,13 @@ export default {
       MM = MM < 10 ? '0' + MM : MM
       let d = date.getDate()
       d = d < 10 ? '0' + d : d
-      return y + '年' + MM + '月' + d + '日'
+      let h = date.getHours()
+      h = h < 10 ? '0' + h : h
+      let m = date.getMinutes()
+      m = m < 10 ? '0' + m : m
+      let s = date.getSeconds()
+      s = s < 10 ? '0' + s : s
+      return y + '年' + MM + '月' + d + '日' + h + ':' + m + ':' + s
     },
     //当前页展示数据
     handleSizeChange: function(pageSize) {

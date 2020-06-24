@@ -125,14 +125,14 @@
               <span>{{ scope.row.type }}</span>
             </template>
           </el-table-column>
-            
+
           <el-table-column label="简介" min-width="13%">
-              <template slot-scope="scope">
-                <el-popover placement="top" max-width="300px" trigger="hover">
+            <template slot-scope="scope">
+              <el-popover placement="top" max-width="300px" trigger="hover">
                 <span style="display:block; width: 600px;">{{ scope.row.description }}</span>
                 <span slot="reference" class="text-ellipsis">{{ scope.row.description }}</span>
-            </el-popover>
-              </template>
+              </el-popover>
+            </template>
           </el-table-column>
           <el-table-column label="是否还有库存" show-overflow-tooltip min-width="15%" :formatter="statusChange"> </el-table-column>
           <el-table-column label="创建时间" show-overflow-tooltip min-width="18%">

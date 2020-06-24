@@ -1,5 +1,5 @@
 <template>
-  <div style="width:100%">
+  <div style="width: 100%;">
     <el-row type="flex" class="ml-20 mt-10">
       <el-input
         prefix-icon="el-icon-search"
@@ -35,7 +35,7 @@
           <el-table-column type="selection" min-width="5%" @selection-change="handleSelectionChange"> </el-table-column>
           <el-table-column label="姓名" show-overflow-tooltip min-width="10%">
             <template slot-scope="scope">
-              <span style="margin-left:-5%">{{ scope.row.userName }}</span>
+              <span style="margin-left: -5%;">{{ scope.row.userName }}</span>
             </template>
           </el-table-column>
           <el-table-column label="学号" show-overflow-tooltip min-width="15%">
@@ -171,10 +171,10 @@ export default {
       end: 8,
       status: [
         { value: 'false', label: '禁用' },
-        { value: 'true', label: '激活' }
+        { value: 'true', label: '激活' },
       ],
       search: {
-        status: ''
+        status: '',
       },
       pageSize: 8,
       pageSize1: 100,
@@ -207,8 +207,8 @@ export default {
         status: '',
         cardNumber: '',
         gmtCreate: '',
-        name: ''
-      }
+        name: '',
+      },
     }
   },
   created() {
@@ -364,7 +364,7 @@ export default {
       this.$confirm('此操作将修改该用户账号状态, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
       })
         .then(() => {
           /* let data = {
@@ -385,7 +385,7 @@ export default {
             if (res.data.code == 1) {
               this.$message({
                 message: '修改成功',
-                type: 'success'
+                type: 'success',
               })
             }
           })
@@ -394,7 +394,7 @@ export default {
           item.status = !item.status
           this.$message({
             type: 'info',
-            message: '已取消删除'
+            message: '已取消删除',
           })
         })
       // })
@@ -458,8 +458,8 @@ export default {
           return v
         }
       })
-    }
-  }
+    },
+  },
 }
 </script>
 
