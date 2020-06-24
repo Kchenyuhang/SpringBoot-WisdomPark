@@ -112,8 +112,7 @@
           size="small"
           @click="delAll()"
         >
-          <span class="light-font-color">批量删除
-          </span>
+          <span class="light-font-color">批量删除 </span>
         </el-button>
         <!-- 删除提示框 -->
         <el-dialog
@@ -228,7 +227,7 @@
           >
             <template slot-scope="scope">
               <el-button
-                :disabled="scope.row.isReturned==1"
+                :disabled="scope.row.isReturned == 1"
                 size="mini"
                 type="success"
                 @click="handleUpdate(scope.$index, scope.row)"
