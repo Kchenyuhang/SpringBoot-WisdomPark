@@ -56,7 +56,7 @@
       </span>
     </el-dialog>
     <!-- 设置可以被引用  引用名为file  不可见
-    <input ref="file" v-show="false" type="file" @change="uploadAvatar($event)" /> -->
+    <input ref="file" v-show="false" type="file" @change="uploadAvatar($event)" />-->
   </div>
 </template>
 
@@ -211,11 +211,11 @@ export default {
   watch: {
     pageSize: function() {
       console.log('pageSize改变' + this.pageSize)
-      this.getAllGoods()
+      this.getAllComments()
     },
     currentPage: function() {
       console.log('currentPage改变' + this.currentPage)
-      this.getAllGoods
+      this.getAllComments()
     },
     total: function() {}
   }

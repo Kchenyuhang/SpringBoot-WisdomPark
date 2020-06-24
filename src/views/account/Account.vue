@@ -1,78 +1,27 @@
 <template>
   <div style="width: 100%">
     <!-- 删除提示框 -->
-    <el-dialog
-      :class="dialog"
-      class="dialog"
-      :modal="false"
-      title="提示"
-      :visible.sync="batchdelVisible"
-      width="300px"
-      center
-    >
+    <el-dialog :class="dialog" class="dialog" :modal="false" title="提示" :visible.sync="batchdelVisible" width="300px" center>
       <div class="del-dialog-cnt">批量删除账号信息后不可恢复，是否确定删除？</div>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
+      <span slot="footer" class="dialog-footer">
         <el-button @click="batchdelVisible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="deleteBatch()"
-        >确 定</el-button>
+        <el-button type="primary" @click="deleteBatch()">确 定</el-button>
       </span>
     </el-dialog>
     <!-- 修改弹出框 -->
 
-    <el-dialog
-      class="dialog"
-      title="编辑账号信息"
-      :modal="false"
-      :visible.sync="updatecenterDialogVisible"
-      width="30%"
-      left
-    >
-      <el-form
-        :model="ruleForm"
-        status-icon
-        label-width="80px"
-        :rules="rules"
-      >
-        <el-form-item
-          required
-          label="昵称"
-          prop="nickName"
-        >
-          <el-input
-            v-model="ruleForm.nickName"
-            autocomplete="off"
-          ></el-input>
+    <el-dialog class="dialog" title="编辑账号信息" :modal="false" :visible.sync="updatecenterDialogVisible" width="30%" left>
+      <el-form :model="ruleForm" status-icon label-width="80px" :rules="rules">
+        <el-form-item required label="昵称" prop="nickName">
+          <el-input v-model="ruleForm.nickName" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item
-          required
-          label="头像"
-          prop="avatar"
-        >
-          <img
-            :src="ruleForm.avatar"
-            alt=""
-            style="width:100px;height:100px"
-            @click="getClick()"
-          >
+        <el-form-item required label="头像" prop="avatar">
+          <img :src="ruleForm.avatar" alt="" style="width:100px;height:100px" @click="getClick()" />
           <!-- 隐藏的文件输入框 -->
-          <input
-            type="file"
-            ref="upload"
-            style="display:none;"
-            @change="handlderFile()"
-          />
+          <input type="file" ref="upload" style="display:none;" @change="handlderFile()" />
         </el-form-item>
 
-        <el-form-item
-          required
-          label="手机号"
-          prop="phoneNumber"
-        >
+        <el-form-item required label="手机号" prop="phoneNumber">
           <el-input
             oninput="value=value.replace(/[^\d]/g,'')"
             v-model.number="ruleForm.phoneNumber"
@@ -80,91 +29,35 @@
             maxlength="11"
           ></el-input>
         </el-form-item>
-        <el-form-item
-          required
-          label="地址"
-          prop="address"
-        >
+        <el-form-item required label="地址" prop="address">
           <el-input v-model.number="ruleForm.address"></el-input>
         </el-form-item>
       </el-form>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
+      <span slot="footer" class="dialog-footer">
         <el-button @click="updatecenterDialogVisible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="confirmUpdate"
-        >确 定</el-button>
+        <el-button type="primary" @click="confirmUpdate">确 定</el-button>
       </span>
     </el-dialog>
     <!-- 增加弹出框 -->
 
-    <el-dialog
-      class="dialog"
-      :modal="false"
-      title="添加账号"
-      :visible.sync="addcenterDialogVisible"
-      width="30%"
-      center
-    >
-      <el-form
-        label-width="80px"
-        :model="ruleForm1"
-        :rules="rules"
-        ref="ruleForm1"
-      >
-        <el-form-item
-          required
-          label="姓名"
-          prop="userName"
-        >
-
+    <el-dialog class="dialog" :modal="false" title="添加账号" :visible.sync="addcenterDialogVisible" width="30%" center>
+      <el-form label-width="80px" :model="ruleForm1" :rules="rules" ref="ruleForm1">
+        <el-form-item required label="姓名" prop="userName">
           <el-input v-model="ruleForm1.userName"></el-input>
         </el-form-item>
-        <el-form-item
-          required
-          label="学号"
-          prop="jobNumber"
-        >
-
-          <el-input
-            maxlength="13"
-            oninput="value=value.replace(/[^\d]/g,'')"
-            v-model="ruleForm1.jobNumber"
-          ></el-input>
+        <el-form-item required label="学号" prop="jobNumber">
+          <el-input maxlength="13" oninput="value=value.replace(/[^\d]/g,'')" v-model="ruleForm1.jobNumber"></el-input>
         </el-form-item>
-        <el-form-item
-          label="班级"
-          prop="clazzId"
-        >
-          <el-select
-            size="mini"
-            v-model="selectValue"
-            placeholder="请选择"
-            class="statu-search ml-10"
-          >
-            <el-option
-              v-for="(item, index) in clazzList"
-              :key="index"
-              :label="item.name"
-              :value="item.pkClazzId"
-            > </el-option>
+        <el-form-item label="班级" prop="clazzId">
+          <el-select size="mini" v-model="selectValue" placeholder="请选择" class="statu-search ml-10">
+            <el-option v-for="(item, index) in clazzList" :key="index" :label="item.name" :value="item.pkClazzId"> </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item
-          label="地址"
-          prop="address"
-        >
+        <el-form-item label="地址" prop="address">
           <el-input v-model="ruleForm1.address"></el-input>
         </el-form-item>
 
-        <el-form-item
-          required
-          label="手机号"
-          prop="phoneNumber"
-        >
+        <el-form-item required label="手机号" prop="phoneNumber">
           <el-input
             oninput="value=value.replace(/[^\d]/g,'')"
             v-model="ruleForm1.phoneNumber"
@@ -172,103 +65,42 @@
             maxlength="11"
           ></el-input>
         </el-form-item>
-        <el-form-item
-          required
-          label="性别"
-          prop="gender"
-        >
-
+        <el-form-item required label="性别" prop="gender">
           <template>
-            <el-radio
-              v-model="radio"
-              label="男"
-            ></el-radio>
-            <el-radio
-              v-model="radio"
-              label="女"
-            ></el-radio>
+            <el-radio v-model="radio" label="男"></el-radio>
+            <el-radio v-model="radio" label="女"></el-radio>
           </template>
         </el-form-item>
-        <el-form-item
-          required
-          label="角色"
-          prop="role"
-        >
+        <el-form-item required label="角色" prop="role">
           <template>
-            <el-radio
-              v-model="radio1"
-              label="1"
-            >学生</el-radio>
-            <el-radio
-              v-model="radio1"
-              label="2"
-            >教师</el-radio>
+            <el-radio v-model="radio1" label="1">学生</el-radio>
+            <el-radio v-model="radio1" label="2">教师</el-radio>
           </template>
         </el-form-item>
       </el-form>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
+      <span slot="footer" class="dialog-footer">
         <el-button @click="addcenterDialogVisible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="confirmAdd"
-        >确 定</el-button>
+        <el-button type="primary" @click="confirmAdd">确 定</el-button>
       </span>
     </el-dialog>
-    <el-row
-      type="flex"
-      class="ml-20 mt-10"
-    >
-      <el-input
-        size="mini"
-        v-model="input"
-        placeholder="请输入内容"
-        class="blur-search"
-        @input="filterSearch()"
-      ></el-input>
-      <el-button
-        type="success"
-        size="mini"
-        class="ml-10"
-        icon="el-icon-search"
-      >搜索</el-button>
+    <el-row type="flex" class="ml-20 mt-10">
+      <el-input size="mini" v-model="input" placeholder="请输入内容" class="blur-search" @input="filterSearch()"></el-input>
+      <el-button type="success" size="mini" class="ml-10" icon="el-icon-search">搜索</el-button>
     </el-row>
     <el-row class="df-jr-ac ml-20 mt-10">
       <el-col class="tl">
-        <el-button
-          type="primary"
-          icon="el-icon-plus"
-          size="small"
-          @click="addcenterDialogVisible = true"
-        ><span>新增</span></el-button>
-        <el-button
-          type="danger"
-          icon="el-icon-delete"
-          size="small"
-          @click="delAll()"
-        >批量删除</el-button>
-        <el-button
-          type="warning"
-          icon="el-icon-download"
-          size="small"
-        >导出</el-button>
+        <el-button type="primary" icon="el-icon-plus" size="small" @click="addcenterDialogVisible = true"><span>新增</span></el-button>
+        <el-button type="danger" icon="el-icon-delete" size="small" @click="delAll()">批量删除</el-button>
+        <el-button type="warning" icon="el-icon-download" size="small">导出</el-button>
       </el-col>
       <el-col class="tr mr-20">
-        <el-button
-          icon="el-icon-refresh"
-          size="small"
-        ></el-button>
+        <el-button icon="el-icon-refresh" size="small"></el-button>
       </el-col>
     </el-row>
     <!-- 表格 -->
     <el-row>
       <el-col span="1"></el-col>
-      <el-col
-        span="23"
-        class="ml-20 mt-10"
-      >
+      <el-col span="23" class="ml-20 mt-10">
         <el-table
           ref="multipleTable"
           :data="userAccountList"
@@ -277,40 +109,14 @@
           stripe="true"
           @selection-change="handleSelectionChange"
         >
-          <el-table-column
-            type="selection"
-            min-width="5%"
-          ></el-table-column>
-          <el-table-column
-            label="账号"
-            min-width="10%"
-          >
+          <el-table-column type="selection" min-width="5%"></el-table-column>
+          <el-table-column label="账号" min-width="10%">
             <template slot-scope="scope">{{ scope.row.userAccount }}</template>
           </el-table-column>
-          <el-table-column
-            prop="nickname"
-            label="昵称"
-            min-width="15%"
-          ></el-table-column>
-          <el-table-column
-            prop="role"
-            label="角色"
-            min-width="15%"
-            :formatter="roleChange"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="phoneNumber"
-            label="手机号"
-            show-overflow-tooltip
-            min-width="15%"
-          > </el-table-column>
-          <el-table-column
-            prop="status"
-            label="状态"
-            show-overflow-tooltip
-            min-width="15%"
-          >
+          <el-table-column prop="nickname" label="昵称" min-width="15%"></el-table-column>
+          <el-table-column prop="role" label="角色" min-width="15%" :formatter="roleChange"> </el-table-column>
+          <el-table-column prop="phoneNumber" label="手机号" show-overflow-tooltip min-width="15%"> </el-table-column>
+          <el-table-column prop="status" label="状态" show-overflow-tooltip min-width="15%">
             <template slot-scope="scope">
               <el-switch
                 v-model="scope.row.status"
@@ -323,40 +129,17 @@
               </el-switch>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="gmtCreate"
-            label="创建时间"
-            show-overflow-tooltip
-            min-width="15%"
-          > </el-table-column>
-          <el-table-column
-            label="操作"
-            align="center"
-            show-overflow-tooltip
-            min-width="20%"
-          >
+          <el-table-column prop="gmtCreate" label="创建时间" show-overflow-tooltip min-width="15%"> </el-table-column>
+          <el-table-column label="操作" align="center" show-overflow-tooltip min-width="20%">
             <template slot-scope="scope">
               <p class="tc">
-                <el-button
-                  size="mini"
-                  icon="el-icon-edit"
-                  type="primary"
-                  @click="handleUpdate(scope.$index, scope.row)"
-                >编辑</el-button>
-                <el-button
-                  size="mini"
-                  icon="el-icon-delete"
-                  type="danger"
-                  @click="handleDelete(scope.$index, scope.row)"
-                >删除</el-button>
+                <el-button size="mini" icon="el-icon-edit" type="primary" @click="handleUpdate(scope.$index, scope.row)">编辑</el-button>
+                <el-button size="mini" icon="el-icon-delete" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
               </p>
             </template>
           </el-table-column>
         </el-table>
-        <div
-          class="block"
-          style="margin-top:2%"
-        >
+        <div class="block" style="margin-top:2%">
           <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
@@ -369,24 +152,11 @@
           </el-pagination>
         </div>
         <!-- 删除提示框 -->
-        <el-dialog
-          class="dialog"
-          title="提示"
-          :visible.sync="delVisible"
-          width="300px"
-          center
-          :modal="false"
-        >
+        <el-dialog class="dialog" title="提示" :visible.sync="delVisible" width="300px" center :modal="false">
           <div class="del-dialog-cnt">账号信息删除不可恢复，是否确定删除？</div>
-          <span
-            slot="footer"
-            class="dialog-footer"
-          >
+          <span slot="footer" class="dialog-footer">
             <el-button @click="delVisible = false">取 消</el-button>
-            <el-button
-              type="primary"
-              @click="deleteRow"
-            >确 定</el-button>
+            <el-button type="primary" @click="deleteRow">确 定</el-button>
           </span>
         </el-dialog>
       </el-col>
