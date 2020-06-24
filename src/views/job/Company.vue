@@ -276,7 +276,7 @@ export default {
       this.result = await API.init(this.url, this.data, 'post')
       //添加临时变量
       // this.data.gmtCreate = new Date()
-      console.log(this.data.gmtCreate)
+      // console.log(this.data.gmtCreate)
       this.items.splice(0, 0, this.data)
       this.addcenterDialogVisible = false
     },
