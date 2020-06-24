@@ -1,5 +1,6 @@
 <template>
   <div style="width:100%">
+    <!-- 考务下的学生数据-->
     <el-dialog
       title="学生信息"
       :visible.sync="selectcenterDialogVisible"
@@ -10,24 +11,34 @@
       <div
         v-for="(item, index) in students"
         :key="index"
-      >{{ item.userName }}{{ item.jobNumber }}</div>
+      >
+        <div class="students-style">
+          <div class="stu-left">
+            {{ item.userName }}
+          </div>
+          <div class="stu-right">
+            {{ item.jobNumber }}
+          </div>
+        </div>
+      </div>
     </el-dialog>
     <!-- 增加弹出框 -->
     <el-dialog
-      title="新增一卡通"
+      title="新增考务"
       :visible.sync="addcenterDialogVisible"
       width="30%"
       :modal="false"
       center
     >
       <div class="block">
-        <span class="demonstration">选择考试时间</span>
+        <span class="demonstration ">考试时间</span>
         <el-date-picker
           v-model="value2"
           type="datetimerange"
           range-separator=":"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
+          class="time-style"
         >
         </el-date-picker>
       </div>
@@ -87,13 +98,17 @@
           v-model="type"
           placeholder="请输入类型"
           type="text"
+          class="inline-input"
         ></el-input>
+      </div>
+      <div class="between-style">
         <div class="sub-title">输入总分</div>
         <el-input
           v-model="sum"
           placeholder="请输入总分"
           maxlength="3"
           oninput="value=value.replace(/[^\d]/g,'')"
+          class="inline-input"
         ></el-input>
       </div>
       <span
@@ -116,14 +131,15 @@
       :modal="false"
       center
     >
-      <div class="block">
-        <span class="demonstration">选择考试时间</span>
+      <div class="block between-style">
+        <span class="demonstration">考试时间</span>
         <el-date-picker
           v-model="value2"
           type="datetimerange"
           range-separator=":"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
+          class="time1-style"
         >
         </el-date-picker>
       </div>
@@ -183,9 +199,14 @@
           v-model="type"
           placeholder="请输入类型"
           oninput="value=value.replace(/[^\d]/g,'')"
+          class="inline-input"
         ></el-input>
-        <p class="between-style">总分:{{ sum }}</p>
       </div>
+      <div class="between-style">
+        <p>总分</p>
+        <p class="sum-style">{{ sum }}</p>
+      </div>
+
       <span
         slot="footer"
         class="dialog-footer"
@@ -206,7 +227,7 @@
         type="text"
         v-model="input"
         clearable
-        placeholder="请输入内容"
+        placeholder="请输入任意内容"
         class="blur-search"
         size="mini"
         @input="filterSearch()"
@@ -836,5 +857,36 @@ el-input {
 }
 .between-style {
   margin-top: 10px;
+  display: flex;
+}
+.students-style {
+  margin-left: 18%;
+  display: flex;
+}
+.stu-left {
+  flex: 0 0 60%;
+}
+.stu-right {
+  flex: 0 0 40%;
+}
+.sub-title {
+  margin-right: 30px;
+  margin-top: 10px;
+}
+.time-style {
+  margin-top: 15px;
+  margin-bottom: 10px;
+  margin-left: 30px;
+  width: 300px;
+}
+.inline-input {
+  width: 300px;
+}
+.time1-style {
+  width: 300px;
+  margin-left: 30px;
+}
+.sum-style {
+  margin-left: 60px;
 }
 </style>
