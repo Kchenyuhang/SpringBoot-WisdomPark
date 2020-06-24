@@ -171,10 +171,10 @@ export default {
       end: 8,
       status: [
         { value: 'false', label: '禁用' },
-        { value: 'true', label: '激活' },
+        { value: 'true', label: '激活' }
       ],
       search: {
-        status: '',
+        status: ''
       },
       pageSize: 8,
       pageSize1: 100,
@@ -207,8 +207,8 @@ export default {
         status: '',
         cardNumber: '',
         gmtCreate: '',
-        name: '',
-      },
+        name: ''
+      }
     }
   },
   created() {
@@ -364,7 +364,7 @@ export default {
       this.$confirm('此操作将修改该用户账号状态, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning',
+        type: 'warning'
       })
         .then(() => {
           /* let data = {
@@ -385,7 +385,7 @@ export default {
             if (res.data.code == 1) {
               this.$message({
                 message: '修改成功',
-                type: 'success',
+                type: 'success'
               })
             }
           })
@@ -394,7 +394,7 @@ export default {
           item.status = !item.status
           this.$message({
             type: 'info',
-            message: '已取消删除',
+            message: '已取消删除'
           })
         })
       // })
@@ -458,8 +458,8 @@ export default {
           return v
         }
       })
-    },
-  },
+    }
+  }
 }
 </script>
 
@@ -521,7 +521,7 @@ export default {
   align-items: center;
 }
 
->>> .el-input__icon {
+.el-input__icon {
   color: #ddd;
   margin-bottom: 10px;
 }
@@ -538,27 +538,27 @@ export default {
   background-color: #909399;
 }
 
->>> .el-input__inner {
+.el-input__inner {
   height: 30px;
 }
 
->>> .el-icon-edit {
+.el-icon-edit {
   color: #f7fbff;
 }
 
->>> .el-icon-plus {
+.el-icon-plus {
   color: #f7fbff;
 }
 
->>> .el-icon-delete {
+.el-icon-delete {
   color: #f7fbff;
 }
 
->>> .el-icon-download {
+.el-icon-download {
   color: #f7fbff;
 }
 
->>> .el-range-separator {
+.el-range-separator {
   margin-bottom: 10px;
 }
 
@@ -566,7 +566,7 @@ export default {
   color: #f7fbff;
 } */
 
->>> .el-input__prefix {
+.el-input__prefix {
   display: flex;
   align-items: center;
 }
