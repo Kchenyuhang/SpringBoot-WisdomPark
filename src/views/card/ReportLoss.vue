@@ -1,187 +1,77 @@
 <template>
   <div style="width:100%">
     <!-- 增加弹出框 -->
-    <el-dialog
-      title="新增一卡通挂失"
-      :visible.sync="addcenterDialogVisible"
-      width="30%"
-      :modal="false"
-      center
-    >
-      <el-form
-        label-width="80px"
-        :model="ruleForm1"
-      >
-        <el-form-item
-          required
-          label="卡号"
-          prop="cardNumber"
-        >
-          <el-input
-            maxlength="13"
-            oninput="value=value.replace(/[^\d]/g,'')"
-            v-model="ruleForm1.cardNumber"
-          ></el-input>
+    <el-dialog title="新增一卡通挂失" :visible.sync="addcenterDialogVisible" width="30%" :modal="false" center>
+      <el-form label-width="80px" :model="ruleForm1">
+        <el-form-item required label="卡号" prop="cardNumber">
+          <el-input maxlength="13" oninput="value=value.replace(/[^\d]/g,'')" v-model="ruleForm1.cardNumber"></el-input>
         </el-form-item>
       </el-form>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
+      <span slot="footer" class="dialog-footer">
         <el-button @click="addcenterDialogVisible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="confirmAdd"
-        >确 定</el-button>
+        <el-button type="primary" @click="confirmAdd">确 定</el-button>
       </span>
     </el-dialog>
-    <el-row
-      type="flex"
-      class="ml-20 mt-10"
-    >
-      <el-input
-        size="mini"
-        v-model="input"
-        placeholder="请输入内容"
-        class="blur-search"
-        @input="filterSearch()"
-      ></el-input>
-      <el-select
-        size="mini"
-        v-model="selectValue"
-        placeholder="请选择"
-        class="statu-search ml-10"
-      >
-        <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        > </el-option>
+    <el-row type="flex" class="ml-20 mt-10">
+      <el-input size="mini" v-model="input" placeholder="请输入内容" class="blur-search" @input="filterSearch()"></el-input>
+      <el-select size="mini" v-model="selectValue" placeholder="请选择" class="statu-search ml-10">
+        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
       </el-select>
-      <el-button
-        type="success"
-        size="mini"
-        @click="search()"
-        class="ml-10"
-        icon="el-icon-search"
-      >搜索</el-button>
+      <el-button type="success" size="mini" @click="search()" class="ml-10">
+        <i class="el-icon-search" style="color: rgb(247, 251, 255)"></i>
+            <span class="light-font-color">搜索</span>
+      </el-button>
     </el-row>
     <el-row class="df-jr-ac ml-20 mt-10">
       <el-col class="tl">
-        <el-button
-          type="primary"
-          icon="el-icon-plus"
-          size="small"
-          @click="addcenterDialogVisible = true"
-        ><span>新增</span></el-button>
-        <el-button
-          type="success"
-          icon="el-icon-edit"
-          size="small"
-          disabled
-        >修改</el-button>
-        <el-button
-          type="warning"
-          icon="el-icon-download"
-          size="small"
-        >导出</el-button>
+        <el-button type="primary" icon="el-icon-plus" size="small" @click="addcenterDialogVisible = true">
+          <span class="light-font-color">新增</span></el-button>
+        <el-button type="success" icon="el-icon-edit" size="small" disabled>
+          <span class="light-font-color">修改</span></el-button>
+        <el-button type="warning" icon="el-icon-download" size="small">
+          <span class="light-font-color">导出</span></el-button>
       </el-col>
       <el-col class="tr mr-20">
-        <el-button
-          icon="el-icon-refresh"
-          size="small"
-        ></el-button>
+        <el-button icon="el-icon-refresh" size="small"></el-button>
       </el-col>
     </el-row>
     <el-row>
       <el-col span="1"></el-col>
-      <el-col
-        span="23"
-        class="ml-20 mt-10"
-      >
+      <el-col span="23" class="ml-20 mt-10">
         <el-table
           ref="multipleTable"
           :data="tableData.slice(start, end)"
           tooltip-effect="dark"
           style="width: 100%;"
+          class="light-small-font"
           @selection-change="handleSelectionChange"
         >
-          <el-table-column
-            type="selection"
-            min-width="5%"
-          >
-          </el-table-column>
-          <el-table-column
-            label="挂失人"
-            min-width="12%"
-          >
+          <el-table-column type="selection" min-width="5%"> </el-table-column>
+          <el-table-column label="挂失人" min-width="12%">
             <template slot-scope="scope">{{ scope.row.lossName }}</template>
           </el-table-column>
-          <el-table-column
-            prop="lossPhone"
-            label="手机号"
-            min-width="12%"
-          >
+          <el-table-column prop="lossPhone" label="手机号" min-width="12%"> </el-table-column>
+          <el-table-column prop="lossJobNumber" label="挂失卡号" min-width="12%" show-overflow-tooltip> </el-table-column>
+          <el-table-column prop="lossStatus" label="状态" min-width="12%" :formatter="statusChange" show-overflow-tooltip>
           </el-table-column>
-          <el-table-column
-            prop="lossJobNumber"
-            label="挂失卡号"
-            min-width="12%"
-            show-overflow-tooltip
-          >
-          </el-table-column>
-          <el-table-column
-            prop="lossStatus"
-            label="状态"
-            min-width="12%"
-            :formatter="statusChange"
-            show-overflow-tooltip
-          >
-          </el-table-column>
-          <el-table-column
-            prop="remark"
-            label="备注"
-            min-width="12%"
-            show-overflow-tooltip
-          >
-          </el-table-column>
-          <el-table-column
-            prop="gmtCreate"
-            label="创建时间"
-            min-width="15%"
-            show-overflow-tooltip
-          >
-          </el-table-column>
-          <el-table-column
-            label="操作"
-            min-width="23%"
-          >
+          <el-table-column prop="remark" label="备注" min-width="12%" show-overflow-tooltip> </el-table-column>
+          <el-table-column prop="gmtCreate" label="创建时间" min-width="15%" show-overflow-tooltip> </el-table-column>
+          <el-table-column label="操作" min-width="23%">
             <template slot-scope="scope">
-              <el-button
-                size="mini"
-                type="primary"
-                @click="handleStatus(scope.$index, scope.row)"
-              >挂失</el-button>
-              <el-button
-                size="mini"
-                type="danger"
-                @click="handleDelete(scope.$index, scope.row)"
-              >删除</el-button>
+              <el-button size="mini" type="primary" @click="handleStatus(scope.$index, scope.row)">
+                <span class="light-font-color">挂失</span></el-button>
+              <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)"><span class="light-font-color">删除</span></el-button>
             </template>
           </el-table-column>
         </el-table>
       </el-col>
     </el-row>
-    <div
-      class="block"
-      style="margin-top:2%"
-    >
+    <div class="block" style="margin-top:2%">
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPageA"
-        :page-sizes="[6,12,18]"
+        :page-sizes="[6, 12, 18]"
         :page-size="pageSize"
         layout="total, prev, pager, next, sizes,jumper"
         :total="tableData.length"
@@ -191,43 +81,19 @@
       </el-pagination>
     </div>
     <!-- 申请挂失弹出框 -->
-    <el-dialog
-      :modal="false"
-      title="提示"
-      :visible.sync="statusVisible"
-      width="300px"
-      center
-    >
+    <el-dialog :modal="false" title="提示" :visible.sync="statusVisible" width="300px" center>
       <div class="del-dialog-cnt">该一卡通挂失正在申请挂失，是否确定挂失</div>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
+      <span slot="footer" class="dialog-footer">
         <el-button @click="statusVisible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="changeStatus"
-        >确 定</el-button>
+        <el-button type="primary" @click="changeStatus">确 定</el-button>
       </span>
     </el-dialog>
     <!-- 删除提示框 -->
-    <el-dialog
-      :modal="false"
-      title="提示"
-      :visible.sync="delVisible"
-      width="300px"
-      center
-    >
+    <el-dialog :modal="false" title="提示" :visible.sync="delVisible" width="300px" center>
       <div class="del-dialog-cnt">挂失信息删除不可恢复，是否确定删除？</div>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
+      <span slot="footer" class="dialog-footer">
         <el-button @click="delVisible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="deleteRow"
-        >确 定</el-button>
+        <el-button type="primary" @click="deleteRow">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -389,7 +255,7 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .blur-search {
   width: 200px;
 }
@@ -408,5 +274,59 @@ el-input {
 }
 .el-input__inner {
   height: 30px;
+}
+
+>>> .el-input__icon {
+  color: #eee;
+  margin-bottom: 10px;
+}
+
+.el-button--success {
+  background-color: #13ce66;
+}
+
+.search-btn {
+  background-color: #f4f4f5;
+}
+
+.search-btn:hover {
+  background-color: #909399;
+}
+
+>>> .el-input__inner {
+  height: 30px;
+}
+
+>>> .el-icon-edit {
+  color: #f7fbff;
+}
+
+>>> .el-icon-plus {
+  color: #f7fbff;
+}
+
+>>> .el-icon-delete {
+  color: #f7fbff;
+}
+
+>>> .el-icon-download {
+  color: #f7fbff;
+}
+
+>>> .el-range-separator {
+  margin-bottom: 10px;
+}
+
+/* >>> .el-icon-search {
+  color: #f7fbff;
+} */
+
+>>> .el-input__prefix {
+  display: flex;
+  align-items: center;
+}
+
+>>> .el-select__caret {
+  margin-top: 5px;
 }
 </style>

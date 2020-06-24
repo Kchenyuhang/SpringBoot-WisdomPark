@@ -34,9 +34,6 @@
         <el-button type="danger" icon="el-icon-delete" size="small" disabled @click="handleDeleteMul">
           <span class="light-font-color">批量删除</span>
         </el-button>
-        <el-button type="warning" icon="el-icon-download" disabled size="small">
-          <span class="light-font-color">导出</span>
-        </el-button>
       </el-col>
       <el-col class="tr mr-20">
         <el-button size="mini" style="width: 45px" class="search-btn" @click="searchShow = !searchShow" @mouseover="searchOver()">
@@ -50,32 +47,39 @@
       <el-col span="1"></el-col>
       <el-col span="23" class="ml-20 mt-20">
         <el-table :data="feedbackList.slice(start, end)" border stripe="true" style="width: 100%;">
-          <el-table-column type="selection" min-width="10%" @selection-change="handleSelectionChange"> </el-table-column>
-          <el-table-column label="反馈标题" show-overflow-tooltip min-width="20%">
+          <el-table-column type="selection" min-width="5%" @selection-change="handleSelectionChange"> </el-table-column>
+          <el-table-column label="反馈标题" show-overflow-tooltip min-width="15%">
             <template slot-scope="scope">
               <span>{{ scope.row.title }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="反馈内容" show-overflow-tooltip min-width="30%">
+          <el-table-column label="反馈内容" show-overflow-tooltip min-width="25%">
             <template slot-scope="scope">
               <span>{{ scope.row.content }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="联系方式" show-overflow-tooltip min-width="20%">
+          <el-table-column label="联系方式" show-overflow-tooltip min-width="15%">
             <template slot-scope="scope">
               <span>{{ scope.row.contactWay }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="状态" show-overflow-tooltip min-width="15%">
+          <el-table-column label="状态" show-overflow-tooltip min-width="10%">
             <template slot-scope="scope">
               <span v-if="scope.row.isHandled == false">{{ notHandle }}</span>
               <span v-else>{{ handled }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" min-width="25%" align="center">
+          <el-table-column prop="gmtCreate" label="创建时间" show-overflow-tooltip min-width="15%"> </el-table-column>
+          <el-table-column label="操作" min-width="15%" align="center">
             <template slot-scope="scope">
               <p style="text-align:center">
-                <el-button size="mini" icon="el-icon-edit" type="primary" :disabled="scope.row.isHandled == true" @click="handleUpdate(scope.row)">
+                <el-button
+                  size="mini"
+                  icon="el-icon-edit"
+                  type="primary"
+                  :disabled="scope.row.isHandled == true"
+                  @click="handleUpdate(scope.row)"
+                >
                   <span class="light-font-color">处理</span>
                 </el-button>
               </p>
@@ -205,7 +209,7 @@ export default {
       }
     },
     //根据时间查询
-    async searchAppInfoByCreate(){
+    async searchAppInfoByCreate() {
       let quertDto = {
         time: JSON.stringify(this.time),
         currentPage: this.currentPage1 + 1,

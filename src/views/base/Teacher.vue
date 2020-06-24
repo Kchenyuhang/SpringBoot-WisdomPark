@@ -5,7 +5,7 @@
         prefix-icon="el-icon-search"
         @input="filterSearch"
         v-model="blurSearch"
-        placeholder="请输入内容"
+        placeholder="根据姓名或学号查询"
         v-if="searchShow"
         class="blur-search"
       ></el-input>
@@ -86,18 +86,54 @@
     </el-row>
     <!-- 新增页面 -->
     <div class="dialog" v-if="dialogFormVisible">
-      <el-form class="mt-10 dialog-form dc-jc-ac" :model="adminInfo" style="padding: 0px 20px;">
+      <el-form class="mt-10 dialog-form dc-jc-ac" :model="adminInfo" style="padding: 0px 20px; ">
         <p style="width: 90%;" class="dark-large-font tl">{{ msg }}用户</p>
-        <el-form-item required label="姓名" class="mt-20" :label-width="formLabelWidth" style="width: 90%;">
-          <el-input v-model="userAccountVo.userName" autocomplete="off" placeholder="请输入用户名" style="width: 80%;"></el-input>
+        <el-form-item required label="姓名" class="mt-20" :label-width="formLabelWidth" style="width: 90%; height: 40px">
+          <el-input v-model="userAccountVo.userName" autocomplete="off" placeholder="请输入用户名" style="width: 80%"></el-input>
+          <p style="width: 90%; display:flex;">
+            <span style="display: block; width: 20%"></span>
+            <span style="display: block; height: 20px; margin-top: -10px; width: 80%; color:red;" v-if="rules.nameErrorShow" class="tl"
+              >{{ errorInfo.nameErrorInfo }}
+            </span>
+          </p>
         </el-form-item>
-        <el-form-item required label="学号" :label-width="formLabelWidth" style="width: 90%;">
-          <el-input v-model="userAccountVo.jobNumber" autocomplete="off" placeholder="请输入学号" style="width: 80%;"></el-input>
+        <el-form-item required label="学号" :label-width="formLabelWidth" style="width: 90%;height: 40px">
+          <el-input
+            oninput="value=value.replace(/[^\d]/g,'')"
+            maxlength="10"
+            v-model="userAccountVo.jobNumber"
+            autocomplete="off"
+            placeholder="请输入学号"
+            style="width: 80%;"
+          ></el-input>
+          <p style="width: 90%; display:flex">
+            <span style="display: block; width: 20%"></span>
+            <span style="display: block; height: 20px; margin-top: -10px; width: 80%; color:red;" v-if="rules.jobNumberErrorShow" class="tl"
+              >{{ errorInfo.jobNumberErrorInfo }}
+            </span>
+          </p>
         </el-form-item>
-        <el-form-item required label="手机号" :label-width="formLabelWidth" style="width: 90%;">
-          <el-input v-model="userAccountVo.phoneNumber" autocomplete="off" placeholder="请输入手机号" style="width: 80%;"></el-input>
+        <el-form-item required label="电话" :label-width="formLabelWidth" style="width: 90%; height: 40px">
+          <el-input
+            oninput="value=value.replace(/[^\d]/g,'')"
+            maxlength="11"
+            v-model="userAccountVo.phoneNumber"
+            autocomplete="off"
+            @input="checkPhone(userAccountVo.phoneNumber)"
+            placeholder="请输入手机号"
+            style="width: 80%;"
+          ></el-input>
+          <p style="width: 90%; display:flex">
+            <span style="display: block; width: 20%"></span>
+            <span
+              style="display: block; height: 20px; margin-top: -10px; width: 80%; color:red;"
+              v-if="rules.phoneNumberErrorShow"
+              class="tl"
+              >{{ errorInfo.phoneNumberErrorInfo }}
+            </span>
+          </p>
         </el-form-item>
-        <p style="width: 90%;" class="df-jr-ac">
+        <p style="width: 90%" class="df-jr-ac">
           <el-form-item required label="性别" :label-width="formLabelWidth" style="width: 50%;">
             <el-select v-model="userAccountVo.gender" placeholder="请选择角色" style="width: 60%;" class="ml-10">
               <el-option label="男" value="男"></el-option>
@@ -109,7 +145,7 @@
             <el-radio v-model="userAccountVo.status" label="false">禁用</el-radio>
           </el-form-item>
         </p>
-        <p class="mt-20 tr" style="width: 90%;">
+        <p class="mt-20 tr" style="width: 90%">
           <el-button @click="dialogFormVisible = false" size="small">取 消</el-button>
           <el-button type="primary" @click="addStudentInfo(tag)" size="small">确定</el-button>
         </p>
@@ -150,6 +186,16 @@ export default {
       blurSearch: '',
       gmtTime: '',
       msg: '', //记录每一条的信息，便于取id
+      errorInfo: {
+        nameErrorInfo: '',
+        jobNumberErrorInfo: '',
+        phoneNumberErrorInfo: ''
+      },
+      rules: {
+        nameErrorShow: false,
+        jobNumberErrorShow: false,
+        phoneNumberErrorShow: false
+      },
       userAccountVo: {
         pkUserAccountId: -1,
         gender: '',
@@ -183,6 +229,9 @@ export default {
     },
     //新增学生信息
     openDialog() {
+      this.rules.nameErrorShow = false
+      this.rules.jobNumberErrorShow = false
+      this.rules.phoneNumberErrorShow = false
       this.dialogFormVisible = true
       this.tag = 1
       this.userAccountVo.gender = ''
@@ -195,7 +244,7 @@ export default {
       this.axios({
         method: 'post',
         url: 'userAccount/export/teacher',
-        responseType: 'blob',
+        responseType: 'blob'
       }).then((res) => {
         // 使用Blob创建一个指向性的URL（参数， 参数的类型）
         //const blob = new Blob([res.data], { type: 'application/vnd.ms-excel' })
@@ -219,13 +268,15 @@ export default {
     },
     /* 修改room信息 */
     handleEdit(row) {
+      this.rules.nameErrorShow = false
+      this.rules.jobNumberErrorShow = false
+      this.rules.phoneNumberErrorShow = false
       this.msg = '修改'
       this.userAccountVo.pkUserAccountId = row.pkUserAccountId
       this.userAccountVo.gender = row.gender
       this.userAccountVo.jobNumber = row.jobNumber
       this.userAccountVo.phoneNumber = row.phoneNumber
       this.userAccountVo.userName = row.userName
-      this.userAccountVo.role = row.role
       this.userAccountVo.cardNumber = row.jobNumber
       this.userAccountVo.gmtCreate = row.gmtCreate
       this.userAccountVo.name = row.name
@@ -239,41 +290,73 @@ export default {
     },
     //新增管理员消息
     async addStudentInfo(tag) {
-      //转换isEnabled状态
-      if (this.userAccountVo.status == 'true') {
-        this.userAccountVo.status = true
-      } else {
-        this.userAccountVo.status = false
+      if (this.checkAllInfo()) {
+        //转换isEnabled状态
+        if (this.userAccountVo.status == 'true') {
+          this.userAccountVo.status = true
+        } else {
+          this.userAccountVo.status = false
+        }
+        //定义临时变量，用于新增或修改
+        if (tag == 1) {
+          let result = await API.init('/userAccount/insert', this.userAccountVo, 'post')
+          if (result.code == 1) {
+            this.$message({
+              message: '新增成功',
+              type: 'success'
+            })
+            this.dialogFormVisible = false
+            this.getStudentAll()
+          }
+        } else {
+          console.log(this.userAccountVo)
+          let result = await API.init('/userAccount/modification', this.userAccountVo, 'post')
+          if (result.code == 1) {
+            let student = this.studentList1.filter((stu) => {
+              if (stu.pkUserAccountId == this.userAccountVo.pkUserAccountId) {
+                return stu
+              }
+            })
+            this.dialogFormVisible = false
+            this.$message({
+              message: '修改成功',
+              type: 'success'
+            })
+            //修改用户信息
+            let index = this.studentList1.indexOf(student[0])
+            this.studentList.splice(index, 1, this.userAccountVo)
+          }
+        }
       }
-      //定义临时变量，用于新增或修改
-      if (tag == 1) {
-        let result = await API.init('/userAccount/insert', this.userAccountVo, 'post')
-        if (result.code == 1) {
-          this.$message({
-            message: '新增成功',
-            type: 'success',
-          })
-          this.dialogFormVisible = false
-          this.getStudentAll()
-        }
-      } else {
-        console.log(this.userAccountVo)
-        let result = await API.init('/userAccount/modification', this.userAccountVo, 'post')
-        if (result.code == 1) {
-          let student = this.studentList1.filter((stu) => {
-            if (stu.pkUserAccountId == this.userAccountVo.pkUserAccountId) {
-              return stu
-            }
-          })
-          this.dialogFormVisible = false
-          this.$message({
-            message: '修改成功',
-            type: 'success',
-          })
-          //修改用户信息
-          let index = this.studentList1.indexOf(student[0])
-          this.studentList.splice(index, 1, this.userAccountVo)
-        }
+    },
+    //检查各种信息比对
+    checkAllInfo() {
+      console.log('用户名' + this.userAccountVo.userName)
+      if (this.userAccountVo.userName === '') {
+        this.rules.nameErrorShow = true
+        this.errorInfo.nameErrorInfo = '用户名不允许为空'
+      }
+      if (this.check.containSpecial(this.userAccountVo.userName)) {
+        this.rules.nameErrorShow = true
+        this.errorInfo.nameErrorInfo = '用户名不允许存在特殊符号'
+      }
+      if (this.userAccountVo.jobNumber === '') {
+        this.rules.jobNumberErrorShow = true
+        this.errorInfo.jobNumberErrorInfo = '学号不允许为空'
+      }
+      if (this.userAccountVo.phoneNumber === '') {
+        this.rules.phoneNumberErrorShow = true
+        this.errorInfo.phoneNumberErrorInfo = '手机号不允许为空'
+      }
+      if ((this.rules.nameErrorShow == false && this.rules.jobNumberErrorShow == false, this.rules.phoneNumberErrorShow == false)) {
+        return true
+      }
+      return false
+    },
+    checkPhone(val) {
+      this.rules.phoneNumberErrorShow = this.check.checkPhone(val)
+      if (this.rules.phoneNumberErrorShow) {
+        this.errorInfo.phoneNumberErrorInfo = '手机号格式不正确'
       }
     },
     //改变用户账号状态
@@ -293,9 +376,9 @@ export default {
             method: 'post',
             url: 'http://localhost:8081/userAccount/status',
             data: {
-              pkUserAccountId: item.pkUserAccountId,
-              status: item.status,
-            },
+              filed1: item.pkUserAccountId,
+              status: item.status
+            }
           }).then((res) => {
             alert(item.status)
             console.log(res.data)
@@ -346,25 +429,10 @@ export default {
       this.msg = row //每一条数据的记录
       this.delVisible = true
     },
-    //批量删除
-    handleDeleteMul() {
-      this.delVisible = true
-    },
-    async deleteRow() {
-      this.data = { field: this.msg.pkAppVersionId }
-      this.url = '/app/deletion'
-      this.result = await API.init(this.url, this.data, 'post')
-      if (this.data) {
-        this.getStudentAll()
-        this.$message.success('删除成功')
-      } else {
-        this.$message.error('信息删除失败')
-      }
-      this.delVisible = false //关闭删除提示模态框
-    },
+    //根据状态查询
     searchByStatus() {
+      this.blurSearch = ''
       let keyWords
-      console.log(this.search.status)
       if (this.search.status === 'true') {
         keyWords = true
       } else {
@@ -379,6 +447,9 @@ export default {
     },
     //过滤搜索
     filterSearch() {
+      this.currentPage = 1
+      this.start = 0
+      this.end = 8
       // 获取输入框的值
       let search = this.blurSearch
       //数组元素按条件过滤

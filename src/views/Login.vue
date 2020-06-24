@@ -75,7 +75,7 @@ export default {
       })
     },
     async login() {
-      /* let data = {
+      /* let data={
         account: this.user.account,
         password: this.user.password,
         code: this.vertifyCode
@@ -83,10 +83,8 @@ export default {
       let res = await API.init('/sysUser/login', data, 'post') */
       this.axios({
         method: 'post',
-
-        // url: 'http://120.26.177.51:80/sysUser/login',
+        // url: 'http://120.26.177.51:8081/sysUser/login',
         url: 'http://localhost:8081/sysUser/login',
-
         data: {
           account: this.user.account,
           password: this.user.password,
