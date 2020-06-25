@@ -205,6 +205,19 @@
         size="mini"
         @input="filterSearch()"
       ></el-input>
+      <el-select
+        size="mini"
+        v-model="selectValue"
+        placeholder="请选择"
+        class="statu-search ml-10"
+      >
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        > </el-option>
+      </el-select>
       <el-button
         type="success"
         size="mini"
@@ -311,7 +324,7 @@
             min-width="13%"
           >
             <template slot-scope="scope">
-              <el-tag type="success">{{ scope.row.cardBalance }}</el-tag>
+              <span>{{ scope.row.cardBalance }}</span>
             </template>
           </el-table-column>
           <el-table-column

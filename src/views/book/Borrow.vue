@@ -112,8 +112,7 @@
           size="small"
           @click="delAll()"
         >
-          <span class="light-font-color">批量删除
-          </span>
+          <span class="light-font-color">批量删除 </span>
         </el-button>
         <!-- 删除提示框 -->
         <el-dialog
@@ -201,8 +200,24 @@
             label="是否归还"
             show-overflow-tooltip
             min-width="13%"
-            :formatter="statusChange"
-          > </el-table-column>
+            :filters="[
+              { text: '已归还', value: true },
+              { text: '未归还', value: false }
+            ]"
+            :filter-method="filterTag"
+            filter-placement="bottom-end"
+          >
+            <template slot-scope="scope">
+              <el-tag
+                type="success"
+                v-if="scope.row.isReturned"
+              >已归还</el-tag>
+              <el-tag
+                type="info"
+                v-else
+              >未归还</el-tag>
+            </template>
+          </el-table-column>
 
           <el-table-column
             label="借阅时间"
@@ -228,7 +243,7 @@
           >
             <template slot-scope="scope">
               <el-button
-                :disabled="scope.row.isReturned==1"
+                :disabled="scope.row.isReturned == 1"
                 size="mini"
                 type="success"
                 @click="handleUpdate(scope.$index, scope.row)"
@@ -328,9 +343,10 @@ export default {
     total: function() {}
   },
   methods: {
-    // eslint-disable-next-line no-unused-vars
-    statusChange: function(row, column) {
-      return row.isReturned == 1 ? '已归还' : row.isReturned == 0 ? '未归还' : 'aaa'
+    filterTag(value, row) {
+      return row.isReturned === value
+      // eslint-disable-next-line no-unreachable
+      this.getbookBorrowAll()
     },
     // eslint-disable-next-line no-unused-vars
     timeChange: function(row, column) {
