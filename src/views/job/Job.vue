@@ -93,6 +93,9 @@
             <el-option v-for="item in types" :key="item.pkJobTypeId" :label="item.name" :value="item.pkJobTypeId"> </el-option>
           </el-select>
         </el-form-item>
+        <el-form-item required label="需要人数" prop="number">
+          <el-input v-model="job.number"></el-input>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="addcenterDialogVisible = false">取 消</el-button>
@@ -136,10 +139,21 @@
             <el-option v-for="item in types" :key="item.pkJobTypeId" :label="item.name" :value="item.pkJobTypeId"> </el-option>
           </el-select>
         </el-form-item>
+        <el-form-item required label="需要人数" prop="number">
+          <el-input v-model="job1.number"></el-input>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="updatecenterDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="updateJob">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 删除提示框 -->
+    <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
+      <div class="del-dialog-cnt">职位信息删除不可恢复，是否确定删除？</div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="delVisible = false">取 消</el-button>
+        <el-button type="primary" @click="deleteRow">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -176,7 +190,8 @@ export default {
         max: '',
         experience: '经验不限',
         diploma: '大专',
-        jobTypeId: ''
+        jobTypeId: '',
+        number: ''
       },
       jobAdd: {
         name: '',
@@ -208,7 +223,8 @@ export default {
         jobType: {
           pkJobTypeId: '',
           name: ''
-        }
+        },
+        number: ''
       }
     }
   },
@@ -320,7 +336,8 @@ export default {
         max: this.job.max,
         experience: this.job.experience,
         diploma: this.job.diploma,
-        jobTypeId: this.job.jobTypeId
+        jobTypeId: this.job.jobTypeId,
+        number: this.job.number
       }
       console.log(this.data)
       this.url = '/job/add'
@@ -352,18 +369,31 @@ export default {
         max: this.job1.max,
         experience: this.job1.experience,
         diploma: this.job1.diploma,
-        jobTypeId: this.job1.jobType.pkJobTypeId
+        jobTypeId: this.job1.jobType.pkJobTypeId,
+        number: this.job1.number
       }
       console.log(this.data)
-      // this.url = '/job/add'
-      // this.result = await API.init(this.url, this.data, 'post')
-      // //添加临时变量
-      // this.jobAdd.name = this.data.name
-      // this.jobAdd.boss = this.data.boss
-      // this.jobAdd.company.name = this.company
-      // this.jobAdd.jobType.name = this.type
-      // this.items.splice(0, 0, this.jobAdd)
-      // this.addcenterDialogVisible = false
+      this.url = '/job/update'
+      this.result = await API.init(this.url, this.data, 'post')
+      this.updatecenterDialogVisible = false
+    },
+    //删除
+    handleDelete(index, row) {
+      this.removeId = this.items1.indexOf(row)
+      // alert(this.removeId)
+      this.delVisible = true
+      this.job1 = row //每一条数据的记录
+    },
+    async deleteRow() {
+      // alert(this.removeId)
+      this.data = {
+        id: this.job1.pkJobId
+      }
+      console.log(this.data)
+      this.url = '/job/remove'
+      this.result = await API.init(this.url, this.data, 'post')
+      this.items.splice(this.removeId, 1)
+      this.delVisible = false
     }
   },
   computed: {}
