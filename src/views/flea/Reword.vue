@@ -1,92 +1,98 @@
 <template>
-  <div class="container">
-    <div class="tab-header">
-      <el-row class="header-row">
-        <el-input class="input" placeholder="请输入内容" v-model="input" clearable @input="filterSearch"></el-input>
-        <el-button size="medium" type="success">查询</el-button>
-        <el-button type="danger" icon="el-icon-delete" size="medium" @click="delAll()">批量下架</el-button>
-      </el-row>
-    </div>
-    <div class="table">
-      <el-table ref="RewardId" :data="rewardShow" @selection-change="handleSelectionChange">
-        <el-table-column prop="pkFleaRewardId" type="selection" width="50%"></el-table-column>
-        <el-table-column prop="pkFleaRewardId" label="id " width="50%"> </el-table-column>
-        <el-table-column prop="title" label="标题 " width="200%" show-overflow-tooltip> </el-table-column>
-        <el-table-column prop="description" label="描述 " width="200%">
-          <template slot-scope="scope">
-            <el-popover placement="top" trigger="hover">
-              <span style="display:block; width: 300px;">{{ scope.row.description }}</span>
-              <span slot="reference" class="text-ellipsis">{{ scope.row.description }}</span>
-            </el-popover>
-          </template>
-        </el-table-column>
-        <el-table-column prop="nickname" label="发布人昵称 " width="130%"> </el-table-column>
-        <el-table-column prop="sex" label="性别" width="100%"> </el-table-column>
-        <el-table-column prop="username" label="发布人姓名" width="120%"> </el-table-column>
-        <el-table-column prop="createTime" label="发布时间" width="170%" sortable show-overflow-tooltip>
-          <template slot-scope="scope">
-            <i class="el-icon-time"></i>
-            <span>{{ rewardShow[scope.$index].createTime }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="状态" width="100%">
-          <template slot-scope="scope">
-            <p v-if="rewardShow[scope.$index].isDeleted == 0" style="color: blue">已发布</p>
-            <p v-if="rewardShow[scope.$index].isDeleted == 1" style="color: red">已下架</p>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" width="150%">
-          <template slot-scope="scope">
-            <el-button
-              v-if="rewardShow[scope.$index].isDeleted == 0"
-              icon="el-icon-delete"
-              @click="handleDelete(scope.$index, scope.row)"
-              type="danger"
-              size="small"
-            >
-              删除
-            </el-button>
-            <el-button
-              v-if="rewardShow[scope.$index].isDeleted == 1"
-              icon="el-icon-delete"
-              @click="handleDelete(scope.$index, scope.row)"
-              type="danger"
-              size="small"
-              disabled
-            >
-              删除
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
-    <div class="block" style="margin-top:2%">
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="[5, 10, 15, 20, 30, 40]"
-        :page-size="pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      >
-      </el-pagination>
-    </div>
-    <!-- 删除提示框 -->
-    <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
-      <div class="del-dialog-cnt">建议您仅删除违规订单，您确定删除吗</div>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="delVisible = false">取 消</el-button>
-        <el-button type="primary" @click="deleteOne">确 定</el-button>
-      </span>
-    </el-dialog>
-    <el-dialog title="提示" :visible.sync="batchDelVisible" width="300px" center>
-      <div class="del-dialog-cnt">建议您仅删除违规订单，您确定批量删除吗</div>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="delVisible = false">取 消</el-button>
-        <el-button type="primary" @click="batchDelete()">确 定</el-button>
-      </span>
-    </el-dialog>
+  <div style="width:100%">
+    <el-row type="flex" class="ml-20 mt-10">
+      <el-input size="mini" v-model="input" placeholder="请输入内容" class="blur-search" @input="filterSearch()"></el-input>
+      <el-button type="success" size="mini" class="ml-10" icon="el-icon-search">搜索</el-button>
+      <el-button type="danger" icon="el-icon-delete" size="small" @click="delAll()">批量删除</el-button>
+    </el-row>
+    <el-row>
+      <el-col span="1"></el-col>
+      <el-col span="23" class="ml-20 mt-10">
+        <el-table
+          ref="fleaReward"
+          :data="rewardShow"
+          tooltip-effect="dark"
+          style="width: 100%;"
+          stripe="true"
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column prop="pkFleaRewardId" type="selection" min-width="5%"></el-table-column>
+          <el-table-column label="标题" min-width="10%" show-overflow-tooltip>
+            <template slot-scope="scope">{{ scope.row.title }}</template>
+          </el-table-column>
+          <el-table-column prop="description" label="悬赏描述" show-overflow-tooltip min-width="15%">
+            <template slot-scope="scope">
+              {{ scope.row.description }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="nickname" label="发布人昵称" show-overflow-tooltip min-width="15%"> </el-table-column>
+          <el-table-column prop="sex" label="性别" min-width="15%"> </el-table-column>
+          <el-table-column prop="username" label="发布人姓名" min-width="15%"> </el-table-column>
+          <el-table-column prop="createTime" label="发布时间" show-overflow-tooltip min-width="15%">
+            <template slot-scope="scope">
+              <i class="el-icon-time"></i>
+              <span>{{ rewardShow[scope.$index].createTime }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="状态" align="center" show-overflow-tooltip min-width="10%">
+            <template slot-scope="scope">
+              <p v-if="rewardShow[scope.$index].isDeleted == 0" style="color: blue">已发布</p>
+              <p v-if="rewardShow[scope.$index].isDeleted == 1" style="color: red">已撤销</p>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" align="center" show-overflow-tooltip min-width="10%">
+            <template slot-scope="scope">
+              <el-button
+                v-if="rewardShow[scope.$index].isDeleted == 0"
+                icon="el-icon-delete"
+                @click="handleDelete(scope.$index, scope.row)"
+                type="danger"
+                size="small"
+              >
+                删除
+              </el-button>
+              <el-button
+                v-if="rewardShow[scope.$index].isDeleted == 1"
+                icon="el-icon-delete"
+                @click="handleDelete(scope.$index, scope.row)"
+                type="danger"
+                size="small"
+                disabled
+              >
+                删除
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="block" style="margin-top:2%">
+          <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="currentPage"
+            :page-sizes="[10, 15, 20, 30, 40]"
+            :page-size="pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total"
+          >
+          </el-pagination>
+        </div>
+        <!-- 删除提示框 -->
+        <el-dialog class="dialog" title="提示" :visible.sync="delVisible" width="300px" center :modal="false">
+          <div class="del-dialog-cnt">建议您仅删除违规订单，您确定删除吗？</div>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="delVisible = false">取 消</el-button>
+            <el-button type="primary" @click="deleteOne">确 定</el-button>
+          </span>
+        </el-dialog>
+        <el-dialog title="提示" :visible.sync="batchDelVisible" width="300px" center>
+          <div class="del-dialog-cnt">建议您仅删除违规订单，您确定批量删除吗</div>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="delVisible = false">取 消</el-button>
+            <el-button type="primary" @click="batchDelete()">确 定</el-button>
+          </span>
+        </el-dialog>
+      </el-col>
+    </el-row>
   </div>
 </template>
 <script>
@@ -97,7 +103,7 @@ export default {
     return {
       currentPage: 1,
       total: 0, //总记录数
-      pageSize: 5,
+      pageSize: 10,
       delVisible: false, //删除提示弹框的状态
       multipleSelection: [], //多选的数据
       batchDelVisible: false,
@@ -203,7 +209,7 @@ export default {
       // let data1 = {
       //   fleaRewardId: data.fleaRewardId[0]
       // }
-      alert('要下架的悬赏id：' + data)
+      // alert('要下架的悬赏id：' + data)
       await apiPost('flea/reward/deleteOne', data)
       this.getRewardAll()
       this.delVisible = false
@@ -258,5 +264,41 @@ export default {
 .del {
   background-color: red;
   color: white;
+}
+.blur-search {
+  width: 200px;
+}
+
+.date-input-search {
+  width: 260px;
+}
+
+.statu-search {
+  width: 100px;
+}
+
+el-input {
+  height: 30px;
+}
+
+.search-btn {
+  height: 30px;
+  width: 80px;
+}
+
+.el-input__inner {
+  height: 30px;
+}
+.dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
 }
 </style>

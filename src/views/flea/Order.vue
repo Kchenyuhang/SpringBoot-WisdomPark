@@ -1,14 +1,27 @@
 <template>
-  <div class="container">
-    <div class="tab-header">
-      <el-row class="header-row">
+  <div style="width: 100%">
+    <!-- <el-row class="header-row">
         <el-input class="input" placeholder="请输入内容" v-model="input" clearable @input="filterSearch"></el-input>
         <el-button size="medium" type="success">查询</el-button>
         <el-button type="danger" icon="el-icon-delete" size="medium" @click="delAll()">批量删除</el-button>
-      </el-row>
-    </div>
-    <div class="table">
-      <el-table ref="pkFleaOrderId" :data="orderShow" @selection-change="handleSelectionChange">
+      </el-row> -->
+    <el-row type="flex" class="ml-20 mt-10">
+      <el-input size="mini" v-model="input" placeholder="请输入内容" class="blur-search" @input="filterSearch()"></el-input>
+      <el-button type="success" size="mini" class="ml-10" icon="el-icon-search">搜索</el-button>
+      <el-button type="danger" icon="el-icon-delete" size="small" @click="delAll()">批量删除</el-button>
+    </el-row>
+    <!-- <el-row class="df-jr-ac ml-20 mt-10">
+        <el-col class="tl">
+          <el-button type="primary" icon="el-icon-plus" size="small" @click="addcenterDialogVisible = true"><span>新增</span></el-button>
+
+          <el-button type="warning" icon="el-icon-download" size="small">导出</el-button>
+        </el-col>
+        <el-col class="tr mr-20">
+          <el-button icon="el-icon-refresh" size="small"></el-button>
+        </el-col>
+      </el-row> -->
+    <!-- <div class="table"> -->
+    <!-- <el-table ref="pkFleaOrderId" :data="orderShow" @selection-change="handleSelectionChange">
         <el-table-column prop="pkFleaOrderId" type="selection" width="50%"></el-table-column>
         <el-table-column prop="pkFleaOrderId" label="订单编号 " width="130%"> </el-table-column>
         <el-table-column prop="goodsName" label="商品名 " width="130%">
@@ -65,9 +78,98 @@
             </el-button>
           </template>
         </el-table-column>
-      </el-table>
-    </div>
-    <div style="margin-top:2%">
+      </el-table> -->
+    <!-- 表格 -->
+    <el-row>
+      <el-col span="1"></el-col>
+      <el-col span="23" class="ml-20 mt-10">
+        <el-table
+          ref="fleaOrder"
+          :data="orderShow"
+          tooltip-effect="dark"
+          style="width: 100%;"
+          stripe="true"
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column prop="pkFleaOrderId" type="selection" min-width="5%"></el-table-column>
+          <el-table-column label="商品名" min-width="10%" show-overflow-tooltip>
+            <template slot-scope="scope">{{ scope.row.goodsName }}</template>
+          </el-table-column>
+          <el-table-column prop="goodsMark" label="商品标签" min-width="15%"></el-table-column>
+          <el-table-column prop="goodsSeller" label="商品卖方" min-width="15%"> </el-table-column>
+          <el-table-column prop="goodsBuyer" label="商品买方" min-width="15%"> </el-table-column>
+          <el-table-column prop="goodsDescription" label="商品信息" show-overflow-tooltip min-width="15%">
+            <template slot-scope="scope">
+              {{ scope.row.goodsDescription }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="orderCreateTime" label="创建时间" show-overflow-tooltip min-width="15%">
+            <template slot-scope="scope">
+              <i class="el-icon-time"></i>
+              <span>{{ orderShow[scope.$index].orderCreateTime }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="状态" align="center" show-overflow-tooltip min-width="10%">
+            <template slot-scope="scope">
+              <p v-if="orderShow[scope.$index].isDeleted == 0" style="color: blue">已下单</p>
+              <p v-if="orderShow[scope.$index].isDeleted == 1" style="color: red">已删除</p>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" align="center" show-overflow-tooltip min-width="10%">
+            <template slot-scope="scope">
+              <el-button
+                v-if="orderShow[scope.$index].isDeleted == 0"
+                icon="el-icon-delete"
+                @click="handleDelete(scope.$index, scope.row)"
+                type="danger"
+                size="small"
+              >
+                删除
+              </el-button>
+              <el-button
+                v-if="orderShow[scope.$index].isDeleted == 1"
+                icon="el-icon-delete"
+                @click="handleDelete(scope.$index, scope.row)"
+                type="danger"
+                size="small"
+                disabled
+              >
+                删除
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="block" style="margin-top:2%">
+          <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="currentPage"
+            :page-sizes="[10, 15, 20, 30, 40]"
+            :page-size="pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total"
+          >
+          </el-pagination>
+        </div>
+        <!-- 删除提示框 -->
+        <el-dialog class="dialog" title="提示" :visible.sync="delVisible" width="300px" center :modal="false">
+          <div class="del-dialog-cnt">建议您仅删除违规订单，您确定删除吗？</div>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="delVisible = false">取 消</el-button>
+            <el-button type="primary" @click="deleteOne">确 定</el-button>
+          </span>
+        </el-dialog>
+        <el-dialog title="提示" :visible.sync="batchDelVisible" width="300px" center>
+          <div class="del-dialog-cnt">建议您仅删除违规订单，您确定批量删除吗</div>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="delVisible = false">取 消</el-button>
+            <el-button type="primary" @click="batchDelete()">确 定</el-button>
+          </span>
+        </el-dialog>
+      </el-col>
+    </el-row>
+    <!-- </div> -->
+    <!-- <div style="margin-top:2%">
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -78,22 +180,22 @@
         :total="total"
       >
       </el-pagination>
-    </div>
+    </div> -->
     <!-- 删除提示框 -->
-    <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
+    <!-- <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
       <div class="del-dialog-cnt">建议您仅删除违规订单，您确定删除吗</div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="delVisible = false">取 消</el-button>
         <el-button type="primary" @click="deleteOne">确 定</el-button>
       </span>
-    </el-dialog>
-    <el-dialog title="提示" :visible.sync="batchDelVisible" width="300px" center>
+    </el-dialog> -->
+    <!-- <el-dialog title="提示" :visible.sync="batchDelVisible" width="300px" center>
       <div class="del-dialog-cnt">建议您仅删除违规订单，您确定批量删除吗</div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="delVisible = false">取 消</el-button>
         <el-button type="primary" @click="batchDelete()">确 定</el-button>
       </span>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 
@@ -105,7 +207,7 @@ export default {
     return {
       currentPage: 1,
       total: 0, //总记录数
-      pageSize: 5,
+      pageSize: 10,
       orderShow: [],
       orderAll: [],
       ordersId: [],
@@ -203,7 +305,7 @@ export default {
       // let data1 = {
       //   pkFleaOrderId: data.pkFleaOrderId[0]
       // }
-      alert('要删除的订单id：' + data.pkFleaOrderId)
+      // alert('要删除的订单id：' + data.pkFleaOrderId)
       await apiPost('flea/order/logicalDelOne', data)
       this.getOrderAll()
       this.delVisible = false
@@ -277,5 +379,41 @@ export default {
 .del {
   background-color: red;
   color: aliceblue;
+}
+.blur-search {
+  width: 200px;
+}
+
+.date-input-search {
+  width: 260px;
+}
+
+.statu-search {
+  width: 100px;
+}
+
+el-input {
+  height: 30px;
+}
+
+.search-btn {
+  height: 30px;
+  width: 80px;
+}
+
+.el-input__inner {
+  height: 30px;
+}
+.dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
 }
 </style>
