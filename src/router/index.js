@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Index from '../views/index.vue'
 import Login from '../views/Login.vue'
+import home from '../views/home.vue'
 
 Vue.use(VueRouter)
 
@@ -16,6 +17,11 @@ const routes = [
     name: 'Index',
     component: Index,
     children: [
+      {
+        path: 'home',
+        name: 'Home',
+        component: home
+      },
       /**
        * 权限管理相关路由
        */

@@ -258,7 +258,7 @@ export default {
       this.dialogFormVisible = true
       this.tag = 1
       this.msg = ' 新增 '
-      this.statementInfo.statementType.name = ''
+      this.statementInfo.statementType = ''
       this.statementInfo.statementTitle = ''
       this.statementInfo.statementContent = ''
     },

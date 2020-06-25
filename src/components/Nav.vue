@@ -208,7 +208,7 @@ export default {
     //当标签删除完之后跳转到首页
     tags: function() {
       if (this.tags.length == 0) {
-        this.$router.push('/')
+        this.$router.push('home')
       }
     }
   },

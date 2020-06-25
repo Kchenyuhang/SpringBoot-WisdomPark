@@ -74,7 +74,7 @@ export default {
       Bus.$emit('childMenuName', item1, parentName)
     },
     goIndex(){
-      this.$router.push("/")
+      this.$router.push("home")
     }
   }
 }
