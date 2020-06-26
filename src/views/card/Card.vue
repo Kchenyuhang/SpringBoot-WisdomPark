@@ -2,6 +2,7 @@
   <div style="width:100%">
     <!-- 修改弹出框 -->
     <el-dialog
+      class="dialog"
       title="编辑一卡通"
       :modal="false"
       :visible.sync="updatecenterDialogVisible"
@@ -22,8 +23,6 @@
           <el-input
             type="password"
             v-model="ruleForm.pass"
-            autocomplete="off"
-            placeholder="请输入要修改的密码"
           ></el-input>
         </el-form-item>
         <el-form-item
@@ -34,8 +33,6 @@
           <el-input
             type="password"
             v-model="ruleForm.checkPass"
-            autocomplete="off"
-            placeholder="请再次输入要修改的密码"
           ></el-input>
         </el-form-item>
         <el-form-item
@@ -44,8 +41,7 @@
         >
           <el-input
             oninput="value=value.replace(/[^\d]/g,'')"
-            v-model.number="ruleForm.jobnumber"
-            placeholder="请输入要修改的账号"
+            v-model="ruleForm.jobnumber"
             maxlength="13"
           ></el-input>
         </el-form-item>
@@ -56,8 +52,7 @@
         >
           <el-input
             oninput="value=value.replace(/[^\d]/g,'')"
-            v-model.number="ruleForm.balance"
-            placeholder="请输入要修改的余额"
+            v-model="ruleForm.balance"
             max="5"
           ></el-input>
         </el-form-item>
@@ -76,6 +71,7 @@
 
     <!-- 增加弹出框 -->
     <el-dialog
+      class="dialog"
       title="新增一卡通"
       :visible.sync="addcenterDialogVisible"
       width="30%"
@@ -145,6 +141,7 @@
 
     <!-- 流水明细 -->
     <el-dialog
+      class="dialog"
       title="流水查询"
       :visible.sync="datailcenterDialogVisible"
       width="30%"
@@ -248,6 +245,7 @@
           <span class="light-font-color">批量删除</span></el-button>
         <!-- 删除提示框 -->
         <el-dialog
+          class="dialog"
           title="提示"
           :visible.sync="batchdelVisible"
           width="300px"
@@ -383,6 +381,7 @@
     </el-row>
     <!-- 删除提示框 -->
     <el-dialog
+      class="dialog"
       title="提示"
       :visible.sync="delVisible"
       width="300px"
@@ -568,6 +567,10 @@ export default {
       this.idx = index
       this.msg = row //每一条数据的记录
       this.updatecenterDialogVisible = true
+      this.ruleForm.pass = this.msg.cardPassword
+      this.ruleForm.checkPass = this.msg.cardPassword
+      this.ruleForm.balance = this.msg.cardBalance
+      this.ruleForm.jobnumber = this.msg.jobNumber
     },
     //修改一卡通信息
     async confirmUpdate() {
@@ -749,5 +752,17 @@ el-input {
 
 >>> .el-select__caret {
   margin-top: 5px;
+}
+.dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
 }
 </style>

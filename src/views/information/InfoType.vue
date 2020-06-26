@@ -2,6 +2,7 @@
   <div style="width:100%">
     <!-- 增加弹出框 -->
     <el-dialog
+      class="dialog"
       :modal="false"
       title="新增资讯类型信息"
       :visible.sync="addcenterDialogVisible"
@@ -78,6 +79,7 @@
         ><span class="light-font-color">批量删除</span></el-button>
         <!-- 删除提示框 -->
         <el-dialog
+          class="dialog"
           :modal="false"
           title="提示"
           :visible.sync="batchdelVisible"
@@ -169,6 +171,7 @@
     </el-row>
     <!-- 删除提示框 -->
     <el-dialog
+      class="dialog"
       :modal="false"
       title="提示"
       :visible.sync="delVisible"
@@ -391,5 +394,17 @@ el-input {
 
 >>> .el-icon-download {
   color: #f7fbff;
+}
+.dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
 }
 </style>

@@ -2,6 +2,7 @@
   <div style="width:100%">
     <!-- 修改弹出框 -->
     <el-dialog
+      class="dialog"
       title="编辑资讯内容"
       :visible.sync="updatecenterDialogVisible"
       width="98%"
@@ -33,6 +34,7 @@
 
     <!-- 增加弹出框 -->
     <el-dialog
+      class="dialog"
       title="新增资讯信息"
       :visible.sync="addcenterDialogVisible"
       width="30%"
@@ -142,6 +144,7 @@
         ><span class="light-font-color">批量删除</span></el-button>
         <!-- 删除提示框 -->
         <el-dialog
+          class="dialog"
           title="提示"
           :visible.sync="batchdelVisible"
           width="300px"
@@ -303,6 +306,7 @@
     </el-row>
     <!-- 删除提示框 -->
     <el-dialog
+      class="dialog"
       title="提示"
       :visible.sync="delVisible"
       width="300px"
@@ -615,5 +619,17 @@ el-input {
 
 >>> .el-icon-download {
   color: #f7fbff;
+}
+.dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
 }
 </style>
