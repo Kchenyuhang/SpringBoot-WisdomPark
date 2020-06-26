@@ -98,7 +98,7 @@ export default {
   },
   mounted() {},
   methods: {
-    //分页查询
+    //职位类型
     async getJobType() {
       this.data = { currentPage: this.currentPage, pageSize: this.pageSize }
       this.url = '/jobType/list'

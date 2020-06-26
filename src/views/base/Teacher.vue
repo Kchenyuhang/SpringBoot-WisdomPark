@@ -1,5 +1,5 @@
 <template>
-  <div style="width:100%">
+  <div style="width: 100%;">
     <el-row type="flex" class="ml-20 mt-10">
       <el-input
         prefix-icon="el-icon-search"
@@ -35,7 +35,7 @@
           <el-table-column type="selection" min-width="5%" @selection-change="handleSelectionChange"> </el-table-column>
           <el-table-column label="姓名" show-overflow-tooltip min-width="10%">
             <template slot-scope="scope">
-              <span style="margin-left:-5%">{{ scope.row.userName }}</span>
+              <span style="margin-left: -5%;">{{ scope.row.userName }}</span>
             </template>
           </el-table-column>
           <el-table-column label="学号" show-overflow-tooltip min-width="15%">
@@ -521,7 +521,7 @@ export default {
   align-items: center;
 }
 
->>> .el-input__icon {
+.el-input__icon {
   color: #ddd;
   margin-bottom: 10px;
 }
@@ -538,27 +538,27 @@ export default {
   background-color: #909399;
 }
 
->>> .el-input__inner {
+.el-input__inner {
   height: 30px;
 }
 
->>> .el-icon-edit {
+.el-icon-edit {
   color: #f7fbff;
 }
 
->>> .el-icon-plus {
+.el-icon-plus {
   color: #f7fbff;
 }
 
->>> .el-icon-delete {
+.el-icon-delete {
   color: #f7fbff;
 }
 
->>> .el-icon-download {
+.el-icon-download {
   color: #f7fbff;
 }
 
->>> .el-range-separator {
+.el-range-separator {
   margin-bottom: 10px;
 }
 
@@ -566,7 +566,7 @@ export default {
   color: #f7fbff;
 } */
 
->>> .el-input__prefix {
+.el-input__prefix {
   display: flex;
   align-items: center;
 }

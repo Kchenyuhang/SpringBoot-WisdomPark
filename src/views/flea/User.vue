@@ -67,7 +67,7 @@ export default {
       let res = await API.init('/flea/user/all', data, 'post')
       console.log(res)
       this.userAll = []
-      this.userAll = res.data.data.content
+      this.userAll = res.data.content
       this.total = res.data.total
       console.log(this.userAll)
       //需要清除一下原显示

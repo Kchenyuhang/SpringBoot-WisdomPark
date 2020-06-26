@@ -184,6 +184,12 @@ $orange: #ebb563;
     width: 100%;
 }
 
+.text-ellipsis {
+    overflow:hidden; 
+    text-overflow:ellipsis; 
+    white-space:nowrap
+}
+
 //dialog属性
 .dialog {
     position: absolute;
