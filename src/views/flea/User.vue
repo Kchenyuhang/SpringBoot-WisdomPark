@@ -8,13 +8,12 @@
     </div>
     <div class="table">
       <el-table ref="userId" :data="userShow" @selection-change="handleSelectionChange">
-        <el-table-column prop="pkFleaUserId" type="selection" width="50"></el-table-column>
-        <el-table-column prop="nickname" label="昵称 " width="100%"> </el-table-column>
-        <el-table-column prop="username" label="用户名 " width="100%"> </el-table-column>
-        <el-table-column prop="phoneNumber" label="手机号 " width="150%"> </el-table-column>
-        <el-table-column prop="sex" label="性别" width="100%"> </el-table-column>
-        <el-table-column prop="jobNumber" label="学号" width="150%"> </el-table-column>
-        <el-table-column prop="isDeleted" label="删除标志 " width="100%"> </el-table-column>
+        <el-table-column prop="nickname" label="昵称 " width="190%"> </el-table-column>
+        <el-table-column prop="username" label="用户名 " width="190%"> </el-table-column>
+        <el-table-column prop="phoneNumber" label="手机号 " width="250%"> </el-table-column>
+        <el-table-column prop="sex" label="性别" width="190%"> </el-table-column>
+        <el-table-column prop="jobNumber" label="学号" width="240%"> </el-table-column>
+        <el-table-column prop="isDeleted" label="删除标志 " width="170%"> </el-table-column>
       </el-table>
     </div>
     <div style="margin-top:2%">
@@ -177,10 +176,10 @@ export default {
   .input {
     width: 400px;
     margin-right: 20px;
-    margin-left: -30%;
+    margin-left: -60%;
   }
 }
 .table {
-  padding-left: 18%;
+  padding-left: 2%;
 }
 </style>

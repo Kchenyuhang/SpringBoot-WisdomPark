@@ -218,9 +218,13 @@ export default {
               }
             }
           } else {
-            nameFlag = false
+            if (this.typeShow.typeName === this.typeMenu[i].typeName) {
+              nameFlag = true
+            }else{
+              nameFlag = false
             console.log('该一级类型已存在')
             break
+            }
           }
         }
       }
