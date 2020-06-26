@@ -5,6 +5,7 @@
         <el-row type="flex" class="ml-20 mt-10">
           <el-input v-model="input" clearable placeholder="请输入内容" class="blur-search" size="mini" @input="filterSearch()"></el-input>
           <el-button type="success" size="mini" class="ml-10" icon="el-icon-search">搜索</el-button>
+          <el-button type="success" size="mini" class="ml-10" icon="el-icon-search" @click="send()">搜索111 </el-button>
         </el-row>
       </div>
       <div class="table">
@@ -114,6 +115,7 @@
 
 <script>
 const API = require('../utils/api.js')
+const web = require('../utils/websocketTest')
 export default {
   data() {
     return {
@@ -145,9 +147,18 @@ export default {
   created() {
     //开始显示发布的订单
     this.getFinshOrder(0)
+    web.initWebSocket()
+    web.getErrendsMessage(1802333101)
   },
 
   methods: {
+    send() {
+      // eslint-disable-next-line no-undef
+
+      // web.sendMessage('你好')
+      web.sendMessageToErrends('审核完成', this.reviewer.sysUserPhoneNumber, 1802333101)
+    },
+
     async getFinshOrder(i) {
       this.orderList = []
       this.orderList1 = []
@@ -182,13 +193,13 @@ export default {
         reviewerId: this.reviewer.sysUserPhoneNumber,
         stauts: this.form.delivery
       }
-      console.log(this.index)
 
       let res = await API.init('errends/Errends', data, 'post')
       this.orderList1.splice(this.index, 1)
       console.log(this.orderList1)
       console.log(res)
       this.auditfrom = 0
+      this.send()
     },
     formatDate(value) {
       let date = new Date(value)

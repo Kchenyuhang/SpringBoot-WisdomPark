@@ -46,7 +46,6 @@
             <el-table-column label="审核人" prop="reviewerName"> </el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
-                <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                 <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row.jobNumber)">删除</el-button>
               </template>
             </el-table-column>
@@ -193,7 +192,6 @@ export default {
         }
 
         this.orderList1 = this.orderList1.concat(this.orderList)
-        console.log(this.orderList1)
       } else {
         this.orderList1 = []
       }
@@ -220,11 +218,13 @@ export default {
       this.multipleSelection = val
     },
     async deleteBatch() {
-      this.data = { reqId: this.multipleSelection }
+      console.log(this.delarr)
+      this.data = { reqId: this.delarr }
+
       this.url = '/errends/delete/errends'
       this.result = await API.init(this.url, this.data, 'post')
       if (this.result.data === null) {
-        this.orderList1.splice(this.orderList1.indexOf(this.jobnumber), 1)
+        this.getFinshOrder(1)
         this.$message.success('批量删除成功')
       } else {
         this.$message.error('批量删除失败')
@@ -236,12 +236,13 @@ export default {
       if (this.multipleSelection.length === 0) {
         this.$message.warning('请选择要删除用户')
       } else {
-        this.batchdelVisible = true //显示删除弹框
-
         const length = this.multipleSelection.length
+        console.log(length)
         for (let i = 0; i < length; i++) {
-          this.delarr.push(this.multipleSelection[i].pkUserAccountId)
+          this.delarr.push(this.multipleSelection[i].jobNumber)
         }
+        this.batchdelVisible = true //显示删除弹框
+        console.log(this.delarr)
       }
     },
     handleSizeChange(val) {
