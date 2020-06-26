@@ -75,7 +75,7 @@ export default {
       })
     },
     async login() {
-      /* let data = {
+      /* let data={
         account: this.user.account,
         password: this.user.password,
         code: this.vertifyCode
@@ -93,7 +93,7 @@ export default {
           code: this.vertifyCode
         }
         // 设置请求头Content-Type
-        //headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        // headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
       }).then((res) => {
         this.$store.commit('setToken', res.data.data.token)
         localStorage.setItem('token', res.data.data.token)

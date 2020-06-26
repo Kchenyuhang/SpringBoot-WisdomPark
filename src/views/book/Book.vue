@@ -19,7 +19,6 @@
           label="书名"
           prop="bookName"
         >
-
           <el-input v-model="ruleForm.bookName"></el-input>
         </el-form-item>
         <el-form-item
@@ -32,9 +31,9 @@
         <el-form-item
           required
           label="类型"
-          prop="jobNumber"
+          prop="type"
         >
-          <el-input v-model="ruleForm.jobNumber"></el-input>
+          <el-input v-model="ruleForm.type"></el-input>
         </el-form-item>
         <el-form-item
           required
@@ -55,14 +54,14 @@
             alt=""
             style="width:100px;height:100px"
             @click="getClick()"
-          >
+          />
           <!-- 隐藏的文件输入框 -->
           <input
             type="file"
             ref="upload"
             style="display:none;"
             @change="handlderFile()"
-          >
+          />
         </el-form-item>
         <el-form-item
           required
@@ -109,7 +108,6 @@
           label="书名"
           prop="bookName"
         >
-
           <el-input v-model="ruleForm1.bookName"></el-input>
         </el-form-item>
         <el-form-item
@@ -146,14 +144,14 @@
             alt=""
             style="width:100px;height:100px"
             @click="getClick()"
-          >
+          />
           <!-- 隐藏的文件输入框 -->
           <input
             type="file"
             ref="upload"
             style="display:none;"
             @change="handlderFile()"
-          >
+          />
         </el-form-item>
         <el-form-item
           required
@@ -210,8 +208,13 @@
         type="success"
         size="mini"
         class="ml-10"
-        icon="el-icon-search"
-      >搜索</el-button>
+      >
+        <i
+          class="el-icon-search"
+          style="color: rgb(247, 251, 255)"
+        ></i>
+        <span class="light-font-color">搜索</span>
+      </el-button>
     </el-row>
     <el-row class="df-jr-ac ml-20 mt-10">
       <el-col class="tl">
@@ -220,13 +223,13 @@
           icon="el-icon-plus"
           size="small"
           @click="addcenterDialogVisible = true"
-        ><span>新增</span></el-button>
+        ><span class="light-font-color">新增</span></el-button>
         <el-button
           type="danger"
           icon="el-icon-delete"
           size="small"
           @click="delAll()"
-        >批量删除</el-button>
+        ><span class="light-font-color">批量删除</span></el-button>
         <!-- 删除提示框 -->
         <el-dialog
           class="dialog"
@@ -236,7 +239,6 @@
           width="300px"
           center
         >
-
           <div class="del-dialog-cnt">批量删除图书信息后不可恢复，是否确定删除？</div>
           <span
             slot="footer"
@@ -268,6 +270,7 @@
           :data="bookList"
           stripe="true"
           style="width: 100%;"
+          class="light-small-font"
           @selection-change="handleSelectionChange"
         >
           <el-table-column
@@ -300,6 +303,7 @@
             <template slot-scope="scope">
               <el-popover
                 placement="right"
+                width="300px"
                 trigger="hover"
               >
                 <img :src="scope.row.cover" />
@@ -322,11 +326,20 @@
           </el-table-column>
           <el-table-column
             label="简介"
-            show-overflow-tooltip
             min-width="13%"
           >
             <template slot-scope="scope">
-              <span>{{ scope.row.description }}</span>
+              <el-popover
+                placement="top"
+                max-width="300px"
+                trigger="hover"
+              >
+                <span style="display:block; width: 600px;">{{ scope.row.description }}</span>
+                <span
+                  slot="reference"
+                  class="text-ellipsis"
+                >{{ scope.row.description }}</span>
+              </el-popover>
             </template>
           </el-table-column>
           <el-table-column
@@ -347,6 +360,7 @@
           </el-table-column>
           <el-table-column
             label="操作"
+            align="center"
             show-overflow-tooltip
             min-width="23%"
           >
@@ -355,12 +369,12 @@
                 size="mini"
                 type="success"
                 @click="handleUpdate(scope.$index, scope.row)"
-              >编辑</el-button>
+              ><span class="light-font-color">编辑</span></el-button>
               <el-button
                 size="mini"
                 type="danger"
                 @click="handleDelete(scope.$index, scope.row)"
-              >删除</el-button>
+              ><span class="light-font-color">删除</span></el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -482,6 +496,15 @@ export default {
     },
     total: function() {}
   },
+  filters: {
+    ellipsis(value) {
+      if (!value) return ''
+      if (value.length > 10) {
+        return value.slice(0, 6) + '...'
+      }
+      return value
+    }
+  },
   methods: {
     // eslint-disable-next-line no-unused-vars
     statusChange: function(row, column) {
@@ -555,18 +578,25 @@ export default {
       this.idx = index
       this.msg = row //每一条数据的记录
       this.updatecenterDialogVisible = true
+      this.ruleForm.author = this.msg.author
+      this.ruleForm.bookName = this.msg.bookName
+      this.ruleForm.cover = this.msg.cover
+      this.ruleForm.description = this.msg.description
+      this.ruleForm.type = this.msg.type
+      this.ruleForm.bookResidueNumber = this.msg.bookResidueNumber
+      this.ruleForm.bookNumber = this.msg.bookNumber
     },
     //修改图书信息
     async confirmUpdate() {
       this.data = {
         pkBookId: this.msg.pkBookId,
-        author: this.ruleForm1.author,
-        cover: this.ruleForm1.cover,
-        type: this.ruleForm1.type,
-        description: this.ruleForm1.description,
-        bookNumber: this.ruleForm1.bookNumber,
-        bookResidueNumber: this.ruleForm1.bookResidueNumber,
-        bookName: this.ruleForm1.bookName
+        author: this.ruleForm.author,
+        cover: this.ruleForm.cover,
+        type: this.ruleForm.type,
+        description: this.ruleForm.description,
+        bookNumber: this.ruleForm.bookNumber,
+        bookResidueNumber: this.ruleForm.bookResidueNumber,
+        bookName: this.ruleForm.bookName
       }
       this.url = '/book/updation'
       this.result = await API.init(this.url, this.data, 'post')
@@ -623,19 +653,6 @@ export default {
         bucket: 'zhent-img'
       })
     },
-    //新增资讯
-    async confirmAdd() {
-      this.data = {
-        text: this.ruleForm1.text,
-        title: this.ruleForm1.title,
-        cover: this.ruleForm1.cover
-      }
-      this.url = '/info/insert'
-      this.result = await API.init(this.url, this.data, 'post')
-      this.addcenterDialogVisible = false
-      this.getinfoAll()
-      this.$message.success('资讯添加成功')
-    },
     formatDate(value) {
       let date = new Date(value)
       let y = date.getFullYear()
@@ -666,7 +683,7 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .top-input {
   width: 200px;
   height: 30px;
@@ -701,5 +718,42 @@ el-input {
   justify-content: center;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.7);
+}
+
+>>> .el-input__inner {
+  height: 30px;
+}
+
+>>> .el-icon-edit {
+  color: #f7fbff;
+}
+
+>>> .el-icon-plus {
+  color: #f7fbff;
+}
+
+>>> .el-icon-delete {
+  color: #f7fbff;
+}
+
+>>> .el-icon-download {
+  color: #f7fbff;
+}
+
+>>> .el-range-separator {
+  margin-bottom: 10px;
+}
+
+/* >>> .el-icon-search {
+  color: #f7fbff;
+} */
+
+>>> .el-input__prefix {
+  display: flex;
+  align-items: center;
+}
+
+>>> .el-select__caret {
+  margin-top: 5px;
 }
 </style>

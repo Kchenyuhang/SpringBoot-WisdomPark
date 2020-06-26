@@ -77,14 +77,15 @@
             alt=""
             style="width:100px;height:100px"
             @click="getClick()"
-          >
+          />
           <!-- 隐藏的文件输入框 -->
           <input
             type="file"
             ref="upload"
+            accept="image/gif,image/jpeg,image/jpg,image/png,image/svg"
             style="display:none;"
             @change="handlderFile()"
-          >
+          />
         </el-form-item>
       </el-form>
       <span
@@ -107,29 +108,23 @@
         v-model="input"
         clearable
         size="mini"
-        placeholder="请输入内容"
+        placeholder="请输入标题、内容、创建时间"
         class="blur-search"
         @input="filterSearch()"
       ></el-input>
-      <el-select
-        v-model="selectValue"
-        placeholder="请选择"
-        size="mini"
-        class="statu-search ml-10"
-      >
-        <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        > </el-option>
-      </el-select>
+
       <el-button
         type="success"
         size="mini"
         class="ml-10"
-        icon="el-icon-search"
-      >搜索</el-button>
+        @click="searchOption()"
+      >
+        <i
+          class="el-icon-search"
+          style="color: rgb(247, 251, 255)"
+        ></i>
+        <span class="light-font-color">搜索</span>
+      </el-button>
     </el-row>
     <el-row class="df-jr-ac ml-20 mt-10">
       <el-col class="tl">
@@ -138,19 +133,20 @@
           icon="el-icon-plus"
           size="small"
           @click="addcenterDialogVisible = true"
-        ><span>新增</span></el-button>
+        ><span class="light-font-color">新增</span></el-button>
         <el-button
           type="danger"
           icon="el-icon-delete"
           size="small"
           @click="delAll()"
-        >批量删除</el-button>
+        ><span class="light-font-color">批量删除</span></el-button>
         <!-- 删除提示框 -->
         <el-dialog
           title="提示"
           :visible.sync="batchdelVisible"
           width="300px"
           center
+          :modal="false"
         >
           <div class="del-dialog-cnt">批量删除资讯类型后不可恢复，是否确定删除？</div>
           <span
@@ -183,6 +179,7 @@
           :data="infoList"
           stripe="true"
           style="width: 100%;"
+          class="light-small-font p-a-20"
           @selection-change="handleSelectionChange"
         >
           <el-table-column
@@ -208,35 +205,63 @@
                 placement="right"
                 trigger="hover"
               >
-                <img :src="scope.row.cover" />
+                <img
+                  :src="scope.row.cover"
+                  style="width: 300px; height: 400px"
+                />
                 <img
                   slot="reference"
                   :src="scope.row.cover"
                   style="max-height: 50px;max-width: 80px"
-                >
+                />
               </el-popover>
             </template>
           </el-table-column>
           <el-table-column
             label="内容"
-            show-overflow-tooltip
             min-width="15%"
           >
             <template slot-scope="scope">
-              <el-button
-                type="text"
-                @click="handleUpdate(scope.$index, scope.row)"
-                v-html="scope.row.text "
+              <el-popover
+                placement="top"
+                trigger="hover"
               >
-              </el-button>
+                <p
+                  type="text"
+                  v-html="scope.row.text"
+                  style="min-width: 300px; max-width: 800px"
+                ></p>
+                <p
+                  slot="reference"
+                  class="text-ellipsis"
+                  type="text"
+                  @click="handleUpdate(scope.$index, scope.row)"
+                  v-html="scope.row.text"
+                ></p>
+              </el-popover>
             </template>
           </el-table-column>
           <el-table-column
             label="是否置顶"
             show-overflow-tooltip
             min-width="10%"
-            :formatter="isTopchange"
+            :filters="[
+              { text: '已置顶', value: true },
+              { text: '未置顶', value: false }
+            ]"
+            :filter-method="filterTag"
+            filter-placement="bottom-end"
           >
+            <template slot-scope="scope">
+              <el-tag
+                type="success"
+                v-if="scope.row.isTop"
+              >已置顶</el-tag>
+              <el-tag
+                type="info"
+                v-else
+              >未置顶</el-tag>
+            </template>
           </el-table-column>
           <el-table-column
             label="创建时间"
@@ -257,17 +282,20 @@
                 size="mini"
                 type="success"
                 @click="handleUpdate(scope.$index, scope.row)"
-              >编辑</el-button>
+              >
+                <span class="light-font-color">编辑</span></el-button>
               <el-button
                 size="mini"
                 type="primary"
                 @click="handleTop(scope.$index, scope.row)"
-              >置顶</el-button>
+              >
+                <span class="light-font-color">置顶</span></el-button>
               <el-button
                 size="mini"
                 type="danger"
                 @click="handleDelete(scope.$index, scope.row)"
-              >删除</el-button>
+              >
+                <span class="light-font-color">删除</span></el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -330,7 +358,6 @@ export default {
       input: '',
       gmtTime: '',
       msg: '',
-      selectValue: '',
       delarr: [], //存放删除的数据
       multipleSelection: [],
       dialogFormVisible: false,
@@ -340,21 +367,20 @@ export default {
         cover: 'https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png'
       },
       file: '',
-      options: [
-        {
-          value: '选项1',
-          label: '未置顶'
-        },
-        {
-          value: '选项2',
-          label: '未指定'
-        }
-      ],
       editFormVisible: false
     }
   },
   created() {
     this.getinfoAll()
+  },
+  filters: {
+    ellipsis(value) {
+      if (!value) return ''
+      if (value.length > 10) {
+        return value.slice(0, 6) + '...'
+      }
+      return value
+    }
   },
   watch: {
     pageSize: function() {
@@ -366,13 +392,14 @@ export default {
     total: function() {}
   },
   methods: {
+    filterTag(value, row) {
+      return row.isTop === value
+      // eslint-disable-next-line no-unreachable
+      this.getinfoAll()
+    },
     handleEdit: function(index, row) {
       this.editFormVisible = true
       this.editForm = Object.assign({}, row)
-    },
-    // eslint-disable-next-line no-unused-vars
-    isTopchange: function(row, column) {
-      return row.isTop == 1 ? '已置顶' : row.isTop == 0 ? '未置顶' : 'aaa'
     },
     // 查询所有
     async getinfoAll() {
@@ -413,28 +440,20 @@ export default {
     },
     //单个删除
     async deleteRow() {
-      this.data = { field: this.msg.pkInfoManageId }
-      this.url = '/info/deletion'
+      this.data = { pkId: this.msg.pkInfoManageId }
+      this.url = '/info/deletion/id'
       this.result = await API.init(this.url, this.data, 'post')
-      if (this.data) {
-        this.getinfoAll()
-        this.$message.success('删除成功')
-      } else {
-        this.$message.error('资讯信息删除失败')
-      }
+      this.getinfoAll()
+      this.$message.success('删除成功')
       this.delVisible = false //关闭删除提示模态框
     },
     //批量删除
     async deleteBatch() {
       this.data = { ids: String(this.delarr) }
-      this.url = '/info/deletionBath/'
+      this.url = '/info/deletionBath/ids'
       this.result = await API.init(this.url, this.data, 'post')
-      if (this.data) {
-        this.getinfoAll()
-        this.$message.success('批量删除成功')
-      } else {
-        this.$message.error('资讯信息批量删除失败')
-      }
+      this.getinfoAll()
+      this.$message.success('批量删除成功')
       this.batchdelVisible = false //关闭删除提示模态框
     },
     //编辑
@@ -467,6 +486,7 @@ export default {
         this.$message.success('置顶成功')
       }
     },
+
     //修改资讯信息
     async confirmUpdate() {
       this.data = {
@@ -550,7 +570,7 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .top-input {
   width: 200px;
   height: 30px;
@@ -579,5 +599,21 @@ el-input {
   background-color: white;
   width: 500px;
   height: 400px;
+}
+
+>>> .el-icon-edit {
+  color: #f7fbff;
+}
+
+>>> .el-icon-plus {
+  color: #f7fbff;
+}
+
+>>> .el-icon-delete {
+  color: #f7fbff;
+}
+
+>>> .el-icon-download {
+  color: #f7fbff;
 }
 </style>

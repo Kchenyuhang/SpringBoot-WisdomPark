@@ -122,20 +122,34 @@ export default {
     },
     handleOpen(key, keyPath) {
       this.$refs['typeShow'].clearValidate()
-      console.log(key, keyPath)
+      console.log(key)
+      console.log(keyPath)
+
+      // for (let i = 0; i < this.typeMenu.length; i++) {
+      //   for (let j = 0; j < this.typeMenu[i].subTypes.length; j++) {
+      //     if (this.showTypeId === this.typeMenu[i].subTypes[j].pkFleaTypeId) {
+      //       this.typeShow.parentId = this.typeMenu[i].subTypes[j].parentId
+      //       this.typeShow.pkFleaTypeId = this.typeMenu[i].subTypes[j].pkFleaTypeId
+      //       this.typeShow.subTypes = this.typeMenu[i].subTypes[j].subTypes
+      //       this.typeShow.typeCoverUrl = this.typeMenu[i].subTypes[j].typeCoverUrl
+      //       this.typeShow.typeName = this.typeMenu[i].subTypes[j].typeName
+      //       this.typeShow.typeUrl = this.typeMenu[i].subTypes[j].typeUrl
+      //     }
+      //   }
+      //   if (key === this.typeMenu[i].typeName) {
+      //     this.parentId = this.typeMenu[i].pkFleaTypeId
+      //     break
+      //   }
+      // }
+
       for (let i = 0; i < this.typeMenu.length; i++) {
-        for (let j = 0; j < this.typeMenu[i].subTypes.length; j++) {
-          if (this.showTypeId === this.typeMenu[i].subTypes[j].pkFleaTypeId) {
-            this.typeShow.parentId = this.typeMenu[i].subTypes[j].parentId
-            this.typeShow.pkFleaTypeId = this.typeMenu[i].subTypes[j].pkFleaTypeId
-            this.typeShow.subTypes = this.typeMenu[i].subTypes[j].subTypes
-            this.typeShow.typeCoverUrl = this.typeMenu[i].subTypes[j].typeCoverUrl
-            this.typeShow.typeName = this.typeMenu[i].subTypes[j].typeName
-            this.typeShow.typeUrl = this.typeMenu[i].subTypes[j].typeUrl
-          }
-        }
         if (key === this.typeMenu[i].typeName) {
-          this.parentId = this.typeMenu[i].pkFleaTypeId
+          this.typeShow.parentId = this.typeMenu[i].parentId
+          this.typeShow.pkFleaTypeId = this.typeMenu[i].pkFleaTypeId
+          this.typeShow.subTypes = this.typeMenu[i].subTypes
+          this.typeShow.typeCoverUrl = this.typeMenu[i].typeCoverUrl
+          this.typeShow.typeName = this.typeMenu[i].typeName
+          this.typeShow.typeUrl = this.typeMenu[i].typeUrl
           break
         }
       }
@@ -204,9 +218,13 @@ export default {
               }
             }
           } else {
-            nameFlag = false
+            if (this.typeShow.typeName === this.typeMenu[i].typeName) {
+              nameFlag = true
+            }else{
+              nameFlag = false
             console.log('该一级类型已存在')
             break
+            }
           }
         }
       }

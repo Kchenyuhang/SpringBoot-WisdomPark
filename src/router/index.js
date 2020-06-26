@@ -7,6 +7,11 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '/text',
+    name: 'Text',
+    component: () => import('../views/permission/Text.vue')
+  },
+  {
     path: '/',
     name: 'Index',
     component: Index,
@@ -185,6 +190,21 @@ const routes = [
         name: 'Order',
         component: () => import('../views/flea/Order.vue')
       },
+
+      /**
+       * 校友圈相关路由
+       */
+      {
+        path: 'dynamic',
+        name: 'Dynamic',
+        component: () => import('../views/schoolmate/Dynamic.vue')
+      },
+      {
+        path: 'dynamicComment',
+        name: 'DynamicComment',
+        component: () => import('../views/schoolmate/DynamicComment.vue')
+      },
+
       /**跑腿 */
       {
         path: 'pdelivery',
@@ -200,6 +220,27 @@ const routes = [
         path: 'passErrends',
         name: 'passErrends',
         component: () => import('../views/errands/passErrends.vue')
+      },
+      /**校园聘管理*/
+      {
+        path: 'avocation',
+        name: 'Avocation',
+        component: () => import('../views/job/Avocation.vue')
+      },
+      {
+        path: 'company',
+        name: 'Company',
+        component: () => import('../views/job/Company.vue')
+      },
+      {
+        path: 'job',
+        name: 'Job',
+        component: () => import('../views/job/Job.vue')
+      },
+      {
+        path: 'jobType',
+        name: 'Type',
+        component: () => import('../views/job/JobType.vue')
       }
     ]
   },

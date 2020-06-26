@@ -15,6 +15,7 @@ import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 import global from './js/global.js'
+import check from './js/checkData.js'
 import './assets/css/global.css'
 
 Vue.use(VueQuillEditor /* { default global options } */)
@@ -39,6 +40,7 @@ VueAMap.initAMapApiLoader({
 // 设置默认接口请求路径
 Vue.prototype.axios = axios
 Vue.prototype.global = global
+Vue.prototype.check = check
 
 Vue.config.productionTip = false
 
@@ -63,6 +65,8 @@ Vue.config.productionTip = false
 //     next()
 //   }
 // })
+
+
 
 new Vue({
   router,

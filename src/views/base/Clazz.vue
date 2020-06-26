@@ -24,7 +24,7 @@
               <span class="light-font-color">新增</span>
             </el-button>
             <el-button type="danger" icon="el-icon-delete" size="mini" @click="batchDelete">
-              <span class="light-font-color">删除</span>
+              <span class="light-font-color">批量删除</span>
             </el-button>
           </el-col>
           <el-col class="tr mr-20">
@@ -88,7 +88,7 @@
           ></el-pagination>
         </el-row>
         <!-- 新增页面 -->
-        <div class="dialog" v-if="dialogFormVisible || studentManage" @click="dialogFormVisible = false">
+        <div class="dialog" v-if="dialogFormVisible || studentManage">
           <el-form class="mt-10 dialog-form dc-jc-ac" :model="clazz" style="border-radius: 5px" v-if="dialogFormVisible">
             <p class="dark-large-font tl mt-10" style="width: 80%">
               <span>{{ msg }}班级</span>
@@ -287,8 +287,6 @@ export default {
           for (let i = 0, len = this.subTractStudentInfo.length; i < len; i++) {
             subIds.push(this.subTractStudentInfo[i].pk_user_account_id)
           }
-          console.log('减的id>>>>>>>>>>>>>>>>>>>>>>>')
-          console.log(subIds)
           let dto = {
             firstField: JSON.stringify(subIds),
             secondField: 0
@@ -318,6 +316,7 @@ export default {
             message: '分配成功'
           })
           this.dialogFormVisible = false
+          this.studentManage = false  
         }
       }
     },
@@ -670,7 +669,7 @@ el-input {
 
 .second-diago {
   width: 800px;
-  height: 600px;
+  height: 500px;
   border-radius: 5px;
   background-color: white;
 }
