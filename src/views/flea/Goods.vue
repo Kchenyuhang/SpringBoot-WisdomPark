@@ -1,152 +1,139 @@
 <template>
-  <div class="container">
-    <div class="tab-header">
-      <el-row class="header-row">
-        <el-input class="input" placeholder="请输入内容" v-model="input" clearable @input="filterSearch"></el-input>
-        <el-button size="medium" type="success">查询</el-button>
-        <el-button size="medium" type="danger" @click="handleDeleteMul()">批量删除</el-button>
-      </el-row>
-    </div>
-    <el-table ref="pkFleaGoodsId" :data="goodsShow" @selection-change="handleSelectionChange" height="100%">
-      <el-table-column prop="pkFleaGoodsId" type="selection" width="50"></el-table-column>
-      <el-table-column prop="pkFleaGoodsId" label="id" width="50"></el-table-column>
-      <el-table-column prop="goodsName" label="商品名" width="310">
-        <template slot-scope="scope">
-          <el-popover placement="top" trigger="hover">
-            <span style="display:block; width: 300px;">{{ scope.row.goodsName }}</span>
-            <span slot="reference" class="text-ellipsis">{{ scope.row.goodsName }}</span>
-          </el-popover>
-        </template>
-      </el-table-column>
-      <el-table-column prop="goodsPrice" label="价格" width="60"></el-table-column>
-      <el-table-column prop="goodsDescription" label="描述" width="260">
-        <template slot-scope="scope">
-          <el-popover placement="top" trigger="hover">
-            <span style="display:block; width: 300px;">{{ scope.row.goodsDescription }}</span>
-            <span slot="reference" class="text-ellipsis">{{ scope.row.goodsDescription }}</span>
-          </el-popover>
-        </template>
-      </el-table-column>
-      <el-table-column prop="typeName" label="类型" width="50"></el-table-column>
-      <el-table-column prop="goodsMark" label="标签" width="50"></el-table-column>
-      <!-- <el-table-column prop="nickname" label="发布人昵称" width="50"></el-table-column> -->
-      <el-table-column prop="username" label="卖家" width="80"></el-table-column>
-      <el-table-column prop="goodsCreateTime" label="发布时间" width="130" sortable show-overflow-tooltip>
-        <template slot-scope="scope">
-          <i class="el-icon-time"></i>
-          <span>{{ goodsShow[scope.$index].goodsCreateTime }}</span>
-        </template>
-      </el-table-column>
-      <!-- <el-table-column prop="goodsImgUrl" label="商品图片地址" width="130"></el-table-column> -->
-
-      <el-table-column label="状态">
-        <template slot-scope="scope">
-          <p v-if="goodsShow[scope.$index].isDeleted == 0" style="color: blue">已发布</p>
-          <p v-if="goodsShow[scope.$index].isDeleted == 1" style="color: red">已下架</p>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" width="150">
-        <template slot-scope="scope">
-          <el-button v-if="goodsShow[scope.$index].isDeleted == 0" size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)"
-            >下架</el-button
-          >
-          <el-button v-else size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">上架</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <div style="margin-top:20px">
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="[5, 7, 10, 15, 20, 30, 40]"
-        :page-size="pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      ></el-pagination>
-    </div>
-    <!-- 删除提示框 -->
-    <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
-      <div class="del-dialog-cnt">商品信息删除后可在数据库修改标签，若无权限请勿修改，是否删除？</div>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="delVisible = false">取 消</el-button>
-        <el-button type="primary" @click="deleteGoods">确 定</el-button>
-      </span>
-    </el-dialog>
-    <el-dialog title="提示" :visible.sync="batchDelVisible" width="300px" center>
-      <div class="del-dialog-cnt">商品信息删除后可在数据库修改标签，若无权限请勿修改，是否删除？</div>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="delVisible = false">取 消</el-button>
-        <el-button type="primary" @click="batchDelete">确 定</el-button>
-      </span>
-    </el-dialog>
-    <!-- 设置可以被引用  引用名为file  不可见
-    <input ref="file" v-show="false" type="file" @change="uploadAvatar($event)" />-->
+  <div style="width: 100%">
+    <el-row type="flex" class="ml-20 mt-10">
+      <el-input size="mini" v-model="input" placeholder="请输入内容" class="blur-search" @input="filterSearch()"></el-input>
+      <el-button type="success" size="mini" class="ml-10" icon="el-icon-search">搜索</el-button>
+      <el-button type="danger" icon="el-icon-delete" size="small" @click="delAll()">批量删除</el-button>
+    </el-row>
+    <el-row>
+      <el-col span="1"></el-col>
+      <el-col span="23" class="ml-20 mt-10">
+        <el-table
+          ref="fleaOrder"
+          :data="goodsShow"
+          tooltip-effect="dark"
+          style="width: 100%;"
+          :stripe="true"
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column prop="pkFleaGoodsId" type="selection" min-width="5%"></el-table-column>
+          <el-table-column label="商品名" min-width="10%" show-overflow-tooltip>
+            <template slot-scope="scope">{{ scope.row.goodsName }}</template>
+          </el-table-column>
+          <el-table-column prop="goodsMark" label="商品标签" min-width="15%"></el-table-column>
+          <el-table-column prop="goodsPrice" label="商品价格" min-width="15%"></el-table-column>
+          <el-table-column prop="typeName" label="所属分类" min-width="15%"></el-table-column>
+          <el-table-column prop="username" label="卖家昵称" min-width="15%"></el-table-column>
+          <el-table-column prop="goodsDescription" label="商品信息" show-overflow-tooltip min-width="15%">
+            <template slot-scope="scope">{{ scope.row.goodsDescription }}</template>
+          </el-table-column>
+          <el-table-column prop="orderCreateTime" label="创建时间" show-overflow-tooltip min-width="15%">
+            <template slot-scope="scope">
+              <i class="el-icon-time"></i>
+              <span>{{ goodsShow[scope.$index].goodsCreateTime }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="状态" align="center" show-overflow-tooltip min-width="10%">
+            <template slot-scope="scope">
+              <p v-if="goodsShow[scope.$index].isDeleted == 0" style="color: blue">已下单</p>
+              <p v-if="goodsShow[scope.$index].isDeleted == 1" style="color: red">已删除</p>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" align="center" show-overflow-tooltip min-width="10%">
+            <template slot-scope="scope">
+              <el-button
+                v-if="goodsShow[scope.$index].isDeleted == 0"
+                icon="el-icon-delete"
+                @click="handleDelete(scope.$index, scope.row)"
+                type="danger"
+                size="small"
+                >删除</el-button
+              >
+              <el-button
+                v-if="goodsShow[scope.$index].isDeleted == 1"
+                icon="el-icon-delete"
+                @click="handleDelete(scope.$index, scope.row)"
+                type="danger"
+                size="small"
+                disabled
+                >删除</el-button
+              >
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="block" style="margin-top:2%">
+          <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="currentPage"
+            :page-sizes="[10, 15, 20, 30, 40]"
+            :page-size="pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total"
+          ></el-pagination>
+        </div>
+        <!-- 删除提示框 -->
+        <el-dialog class="dialog" title="提示" :visible.sync="delVisible" width="300px" center :modal="false">
+          <div class="del-dialog-cnt">您只可以下架商品，您确定下架吗？</div>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="delVisible = false">取 消</el-button>
+            <el-button type="primary" @click="deleteOne">确 定</el-button>
+          </span>
+        </el-dialog>
+        <el-dialog title="提示" :visible.sync="batchDelVisible" width="300px" center>
+          <div class="del-dialog-cnt">您只可以下架商品，您确定批量下架吗</div>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="delVisible = false">取 消</el-button>
+            <el-button type="primary" @click="batchDelete()">确 定</el-button>
+          </span>
+        </el-dialog>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
-// import OSS from 'ali-oss'
-const API = require('../utils/api.js')
+import { apiPost } from '../utils/api'
 export default {
   name: 'Goods',
   data() {
     return {
-      input: '',
-      index: '', //根据索引删除元素
+      currentPage: 1,
+      total: 0, //总记录数
+      pageSize: 10,
       goodsShow: [],
-      goods: [],
+      goodsAll: [],
       goodsId: [],
-      fileList: [
-        {
-          name: 'food.jpeg',
-          url:
-            'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-        }
-      ],
-      msg: '',
       delVisible: false, //删除提示弹框的状态
+      multipleSelection: [], //多选的数据
+      input: '',
       batchDelVisible: false,
-      currentPage: 1, //当前页
-      total: 40, //总记录数
-      pageSize: 7 //页的大小
+      index: '',
+      msg: ''
     }
   },
   components: {},
   created() {
-    this.getAllGoods()
+    this.getGoodsAll()
   },
   mounted() {},
   methods: {
-    handleRemove(file, fileList) {
-      console.log(file, fileList)
-    },
-    handlePreview(file) {
-      console.log(file)
-    },
-    resetForm(formName) {
-      this.$refs[formName].resetFields()
-    },
-    async getAllGoods() {
+    async getGoodsAll() {
       let data = {
+        //此处需要减一
         currentPage: this.currentPage,
         pageSize: this.pageSize
       }
-      let res = await API.init('/flea/goods/all', data, 'post')
-
-      this.goods = res.data //源数据
-      console.log(this.goods)
-      this.goodsShow = this.goods //拷贝数组
+      let res = await apiPost('/flea/goods/all', data)
+      this.goodsAll = res.data.content
+      this.total = res.data.totalElements
+      //需要清除一下原显示
+      this.goodsShow = []
+      this.goodsShow = this.goodsShow.concat(JSON.parse(JSON.stringify(this.goodsAll))) //拷贝数组
       for (let i = 0; i < this.goodsShow.length; i++) {
         this.goodsShow[i].goodsCreateTime = this.formatDate(this.goodsShow[i].goodsCreateTime)
+        console.log(this.goodsShow[i].goodsCreateTime)
       }
-    },
-    copyArr(arr) {
-      let res = []
-      for (let i = 0; i < arr.length; i++) {
-        res.push(arr[i])
-      }
-      return res
     },
     //过滤搜索
     filterSearch() {
@@ -154,12 +141,14 @@ export default {
       let search = this.input
       //数组元素按条件过滤
       console.log('输入的关键字的为：' + search)
-      this.goodsShow = this.goods.filter((v) => {
+      this.goodsShow = this.goodsAll.filter((v) => {
+        // console.log(JSON.stringify(v))
         if (JSON.stringify(v).includes(search)) {
           return v
         }
       })
     },
+    //格式化时间
     formatDate(value) {
       let date = new Date(value)
       let y = date.getFullYear()
@@ -186,27 +175,28 @@ export default {
     //单行删除
     handleDelete(index, row) {
       this.index = index
-      this.msg = row
+      this.msg = row //每一条数据的记录
+      // this.orderId.push(row.pkFleaOrderId) //把单行删除的每条数据的id添加进放删除数据的数组
       this.delVisible = true
-    }, //批量删除
-    handleDeleteMul() {
-      this.batchDelVisible = true
     },
-    //确定删除
-    async deleteGoods() {
+    //批量删除
+    delAll() {
+      this.batchDelVisible = true //显示删除弹框
+    },
+    //确定单行删除
+    async deleteOne() {
       let data = {
         pkFleaGoodsId: this.msg.pkFleaGoodsId
       }
-      this.result = await API.init('/flea/goods/logicalDel', data, 'post')
-      console.log(this.result)
-      if (this.result.code === 1) {
-        this.getAllGoods()
-        this.$message.success('下架成功')
-      } else {
-        this.$message.error('商品下架失败')
-      }
-      this.delVisible = false //关闭删除提示模态框
-      this.goodsId = []
+      console.log(data)
+      // console.log(data.fleaRewardId.get[0])
+      // let data1 = {
+      //   pkFleaOrderId: data.pkFleaOrderId[0]
+      // }
+      // alert('要删除的订单id：' + data.pkFleaOrderId)
+      await apiPost('flea/goods/logicalDel', data)
+      this.getGoodsAll()
+      this.delVisible = false
     },
     toggleSelection(rows) {
       if (rows) {
@@ -217,19 +207,23 @@ export default {
         this.$refs.goodsId.clearSelection()
       }
     },
+    //多选信息
     handleSelectionChange(val) {
+      console.log(val)
       let ids = []
       for (let i = 0; i < val.length; i++) {
         ids.push(val[i].pkFleaGoodsId)
       }
       this.goodsId = ids
     },
+    //确定批量删除
     async batchDelete() {
-      let data = {
+      let data1 = {
         id: this.goodsId
       }
-      console.log(data)
-      API.init('flea/goods/batchLogical', data, 'post')
+      console.log(data1)
+      await apiPost('flea/goods/batchLogical', data1)
+      this.getGoodsAll()
       this.batchDelVisible = false
       this.goodsId = []
     }
@@ -237,14 +231,11 @@ export default {
   computed: {},
   watch: {
     pageSize: function() {
-      console.log('pageSize改变' + this.pageSize)
-      this.getAllGoods()
+      this.getGoodsAll()
     },
     currentPage: function() {
-      console.log('currentPage改变' + this.currentPage)
-      this.getAllGoods()
-    },
-    total: function() {}
+      this.getGoodsAll()
+    }
   }
 }
 </script>
@@ -255,38 +246,62 @@ export default {
   display: flex;
   flex-direction: column;
 }
+.tab-header {
+  margin: 20px;
+  .input {
+    width: 400px;
+    margin-right: 69%;
+  }
+}
 .header-row {
   margin: 20px;
   .input {
     width: 400px;
     margin-right: 20px;
-    margin-left: -47%;
+    margin-left: -53%;
   }
 }
-.createBook {
-  position: absolute;
+.table {
+  padding-left: 10px;
+}
+.del {
+  background-color: red;
+  color: aliceblue;
+}
+.blur-search {
+  width: 200px;
+}
+
+.date-input-search {
+  width: 260px;
+}
+
+.statu-search {
+  width: 100px;
+}
+
+el-input {
+  height: 30px;
+}
+
+.search-btn {
+  height: 30px;
+  width: 80px;
+}
+
+.el-input__inner {
+  height: 30px;
+}
+.dialog {
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  z-index: 10000;
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
-  background: rgba(0, 0, 0, 0.5);
-  border: solid 1px black;
-}
-.bookFormCreate {
-  width: 500px;
-  height: 650px;
-  background-color: white;
-  border-radius: 10px;
-  padding: 20px;
-  padding-top: 50px;
-  padding-right: 100px;
-}
-.imgChange {
-  cursor: pointer;
-  width: 80px;
+  background-color: rgba(0, 0, 0, 0.7);
 }
 </style>

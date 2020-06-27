@@ -3,70 +3,204 @@
   <div style="width:100%">
     <!-- 修改弹出框 -->
 
-    <el-dialog :modal="false" title="编辑一卡通" :visible.sync="updatecenterDialogVisible" width="30%" left>
-      <el-form :model="ruleForm" status-icon label-width="80px">
-        <el-form-item label="余额" prop="balance">
-          <el-input max="5" oninput="value=value.replace(/[^\d]/g,'')" v-model.number="ruleForm.balance"></el-input>
+    <el-dialog
+      class="dialog"
+      :modal="false"
+      title="编辑一卡通"
+      :visible.sync="updatecenterDialogVisible"
+      width="30%"
+      left
+    >
+      <el-form
+        :model="ruleForm"
+        status-icon
+        label-width="80px"
+      >
+        <el-form-item
+          label="余额"
+          prop="balance"
+        >
+          <el-input
+            max="5"
+            oninput="value=value.replace(/[^\d]/g,'')"
+            v-model.number="ruleForm.balance"
+          ></el-input>
         </el-form-item>
-        <el-form-item label="缴费描述" prop="description">
+        <el-form-item
+          label="缴费描述"
+          prop="description"
+        >
           <el-input v-model.number="ruleForm.description"></el-input>
         </el-form-item>
       </el-form>
-      <span slot="footer" class="dialog-footer">
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="updatecenterDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="confirmUpdate">确 定</el-button>
+        <el-button
+          type="primary"
+          @click="confirmUpdate"
+        >确 定</el-button>
       </span>
     </el-dialog>
 
-    <el-row type="flex" class="ml-20 mt-10">
-      <el-input size="mini" v-model="input" type="text" @input="filterSearch()" placeholder="请输入内容" class="blur-search"></el-input>
-      <el-button type="success" size="mini" class="ml-10" @click="filterSearch()">
-        <i class="el-icon-search" style="color: rgb(247, 251, 255)"></i>
+    <el-row
+      type="flex"
+      class="ml-20 mt-10"
+    >
+      <el-input
+        size="mini"
+        v-model="input"
+        type="text"
+        @input="filterSearch()"
+        placeholder="请输入内容"
+        class="blur-search"
+      ></el-input>
+      <el-button
+        type="success"
+        size="mini"
+        class="ml-10"
+        @click="filterSearch()"
+      >
+        <i
+          class="el-icon-search"
+          style="color: rgb(247, 251, 255)"
+        ></i>
         <span class="light-font-color">搜索</span>
       </el-button>
     </el-row>
     <el-row class="df-jr-ac ml-20 mt-10">
       <el-col class="tl">
-        <el-button type="success" icon="el-icon-edit" size="small" @click="delAll()"><span class="light-font-color">批量删除</span></el-button>
-        <el-button type="warning" icon="el-icon-download" size="small"><span class="light-font-color">导出</span></el-button>
+        <el-button
+          type="success"
+          icon="el-icon-edit"
+          size="small"
+          @click="delAll()"
+        ><span class="light-font-color">批量删除</span></el-button>
+        <el-button
+          type="warning"
+          icon="el-icon-download"
+          size="small"
+        ><span class="light-font-color">导出</span></el-button>
       </el-col>
       <el-col class="tr mr-20">
-        <el-button icon="el-icon-refresh" size="small"></el-button>
+        <el-button
+          icon="el-icon-refresh"
+          size="small"
+        ></el-button>
       </el-col>
     </el-row>
     <!-- 删除提示框 -->
-    <el-dialog title="提示" :visible.sync="batchdelVisible" width="300px" center :modal="false">
+    <el-dialog
+      class="dialog"
+      title="提示"
+      :visible.sync="batchdelVisible"
+      width="300px"
+      center
+      :modal="false"
+    >
       <div class="del-dialog-cnt">批量删除订单信息后不可恢复，是否确定删除？</div>
-      <span slot="footer" class="dialog-footer">
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="batchdelVisible = false">取 消</el-button>
-        <el-button type="primary" @click="deleteBatch()">确 定</el-button>
+        <el-button
+          type="primary"
+          @click="deleteBatch()"
+        >确 定</el-button>
       </span>
     </el-dialog>
 
     <el-row>
       <el-col span="1"></el-col>
-      <el-col span="23" class="ml-20 mt-10">
-        <el-table :data="tableData.slice(start, end)" class="light-small-font" border style="width: 100%" @selection-change="handleSelectionChange">
-          <el-table-column type="selection" min-width="5%"></el-table-column>
-          <el-table-column prop="gmtCreate" fixed label="日期" min-width="17%"> </el-table-column>
-          <el-table-column prop="orderNumber" label="订单号" min-width="10%"> </el-table-column>
-          <el-table-column prop="orderType" label="类型" min-width="15%">
+      <el-col
+        span="23"
+        class="ml-20 mt-10"
+      >
+        <el-table
+          :data="tableData.slice(start, end)"
+          class="light-small-font"
+          border
+          style="width: 100%"
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column
+            type="selection"
+            min-width="5%"
+          ></el-table-column>
+          <el-table-column
+            prop="gmtCreate"
+            fixed
+            label="日期"
+            min-width="17%"
+          > </el-table-column>
+          <el-table-column
+            prop="orderNumber"
+            label="订单号"
+            min-width="10%"
+          > </el-table-column>
+          <el-table-column
+            prop="orderType"
+            label="类型"
+            min-width="15%"
+          >
             <template slot-scope="{ row, $index }">
-              <input class="edit-cell" v-if="showEdit[$index]" v-model="row.orderType" />
+              <input
+                class="edit-cell"
+                v-if="showEdit[$index]"
+                v-model="row.orderType"
+              />
               <span v-if="!showEdit[$index]">{{ row.orderType }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="orderMoney" label="金额" min-width="10%"> </el-table-column>
-          <el-table-column prop="jobNumber" label="卡号" min-width="10%"> </el-table-column>
-          <el-table-column prop="description" label="缴费描述" min-width="10%"> </el-table-column>
-          <el-table-column prop="payMethod" label="支付方式" min-width="13%"> </el-table-column>
-          <el-table-column prop="status" label="状态" min-width="7%" :formatter="statusChange"> </el-table-column>
-          <el-table-column fixed="right" align="center" label="操作" min-width="15%">
+          <el-table-column
+            prop="orderMoney"
+            label="金额"
+            min-width="10%"
+          > </el-table-column>
+          <el-table-column
+            prop="jobNumber"
+            label="卡号"
+            min-width="10%"
+          > </el-table-column>
+          <el-table-column
+            prop="description"
+            label="缴费描述"
+            min-width="10%"
+          > </el-table-column>
+          <el-table-column
+            prop="payMethod"
+            label="支付方式"
+            min-width="13%"
+          > </el-table-column>
+          <el-table-column
+            prop="status"
+            label="状态"
+            min-width="7%"
+            :formatter="statusChange"
+          > </el-table-column>
+          <el-table-column
+            fixed="right"
+            align="center"
+            label="操作"
+            min-width="15%"
+          >
             <template slot-scope="scope">
-              <el-button type="primary" size="mini" @click="handleUpdate(scope.$index, scope.row)">
+              <el-button
+                type="primary"
+                size="mini"
+                @click="handleUpdate(scope.$index, scope.row)"
+              >
                 <span class="light-font-color">编辑</span>
               </el-button>
-              <el-button slot="reference" type="primary" size="mini" @click="handleDelete(scope.$index, scope.row)">
+              <el-button
+                slot="reference"
+                type="primary"
+                size="mini"
+                @click="handleDelete(scope.$index, scope.row)"
+              >
                 <span class="light-font-color">删除</span>
               </el-button>
             </template>
@@ -74,7 +208,10 @@
         </el-table>
       </el-col>
     </el-row>
-    <div class="block" style="margin-top:2%">
+    <div
+      class="block"
+      style="margin-top:2%"
+    >
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -89,11 +226,24 @@
       </el-pagination>
     </div>
     <!-- 删除提示框 -->
-    <el-dialog :modal="false" title="提示" :visible.sync="delVisible" width="300px" center>
+    <el-dialog
+      class="dialog"
+      :modal="false"
+      title="提示"
+      :visible.sync="delVisible"
+      width="300px"
+      center
+    >
       <div class="del-dialog-cnt">订单信息删除不可恢复，是否确定删除？</div>
-      <span slot="footer" class="dialog-footer">
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="delVisible = false">取 消</el-button>
-        <el-button type="primary" @click="deleteRow">确 定</el-button>
+        <el-button
+          type="primary"
+          @click="deleteRow"
+        >确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -227,6 +377,8 @@ export default {
       this.idx = index
       this.msg = row //每一条数据的记录
       this.updatecenterDialogVisible = true
+      this.ruleForm.balance = this.msg.orderMoney
+      this.ruleForm.description = this.msg.description
     },
     //修改订单信息
     async confirmUpdate() {
@@ -345,5 +497,17 @@ el-input {
 
 >>> .el-select__caret {
   margin-top: 5px;
+}
+.dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
 }
 </style>

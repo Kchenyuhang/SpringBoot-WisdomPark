@@ -2,6 +2,7 @@
   <div style="width:100%">
     <!-- 增加弹出框 -->
     <el-dialog
+      class="dialog"
       :modal="false"
       title="新增借阅"
       :visible.sync="addcenterDialogVisible"
@@ -116,6 +117,7 @@
         </el-button>
         <!-- 删除提示框 -->
         <el-dialog
+          class="dialog"
           :modal="false"
           title="提示"
           :visible.sync="batchdelVisible"
@@ -261,6 +263,7 @@
     </el-row>
     <!-- 删除提示框 -->
     <el-dialog
+      class="dialog"
       :modal="false"
       title="提示"
       :visible.sync="delVisible"
@@ -567,5 +570,17 @@ el-input {
 
 >>> .el-select__caret {
   margin-top: 5px;
+}
+.dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
 }
 </style>

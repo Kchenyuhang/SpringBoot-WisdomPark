@@ -12,16 +12,14 @@
         <el-form-item label="绑定号码" prop="job_number">
           <el-input
             oninput="value=value.replace(/[^\d]/g,'')"
-            v-model.number="ruleForm.jobnumber"
-            placeholder="请输入要修改的账号"
+            v-model="ruleForm.jobnumber"
             maxlength="13"
           ></el-input>
         </el-form-item>
         <el-form-item required label="余额" prop="balance">
           <el-input
             oninput="value=value.replace(/[^\d]/g,'')"
-            v-model.number="ruleForm.balance"
-            placeholder="请输入要修改的余额"
+            v-model="ruleForm.balance"
             max="5"
           ></el-input>
         </el-form-item>
@@ -352,6 +350,10 @@ export default {
       this.idx = index
       this.msg = row //每一条数据的记录
       this.updatecenterDialogVisible = true
+      this.ruleForm.pass = this.msg.cardPassword
+      this.ruleForm.checkPass = this.msg.cardPassword
+      this.ruleForm.balance = this.msg.cardBalance
+      this.ruleForm.jobnumber = this.msg.jobNumber
     },
     //修改一卡通信息
     async confirmUpdate() {
@@ -533,5 +535,17 @@ el-input {
 
 >>> .el-select__caret {
   margin-top: 5px;
+}
+.dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
 }
 </style>
