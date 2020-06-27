@@ -79,6 +79,7 @@
       ></el-input>
       <el-date-picker
         v-model="value2"
+        class="ml-10"
         type="datetimerange"
         range-separator=":"
         start-placeholder="开始日期"
@@ -111,8 +112,7 @@
           size="small"
           @click="delAll()"
         >
-          <span class="light-font-color">批量删除
-          </span>
+          <span class="light-font-color">批量删除 </span>
         </el-button>
         <!-- 删除提示框 -->
         <el-dialog
@@ -200,8 +200,24 @@
             label="是否归还"
             show-overflow-tooltip
             min-width="13%"
-            :formatter="statusChange"
-          > </el-table-column>
+            :filters="[
+              { text: '已归还', value: true },
+              { text: '未归还', value: false }
+            ]"
+            :filter-method="filterTag"
+            filter-placement="bottom-end"
+          >
+            <template slot-scope="scope">
+              <el-tag
+                type="success"
+                v-if="scope.row.isReturned"
+              >已归还</el-tag>
+              <el-tag
+                type="info"
+                v-else
+              >未归还</el-tag>
+            </template>
+          </el-table-column>
 
           <el-table-column
             label="借阅时间"
@@ -227,6 +243,7 @@
           >
             <template slot-scope="scope">
               <el-button
+                :disabled="scope.row.isReturned == 1"
                 size="mini"
                 type="success"
                 @click="handleUpdate(scope.$index, scope.row)"
@@ -326,9 +343,10 @@ export default {
     total: function() {}
   },
   methods: {
-    // eslint-disable-next-line no-unused-vars
-    statusChange: function(row, column) {
-      return row.isReturned == 1 ? '已归还' : row.isReturned == 0 ? '未归还' : 'aaa'
+    filterTag(value, row) {
+      return row.isReturned === value
+      // eslint-disable-next-line no-unreachable
+      this.getbookBorrowAll()
     },
     // eslint-disable-next-line no-unused-vars
     timeChange: function(row, column) {
@@ -387,15 +405,11 @@ export default {
       this.delVisible = true
     },
     async deleteRow() {
-      this.data = { field: this.msg.pkBorrowId }
-      this.url = '/borrow/id'
+      this.data = { pkId: this.msg.pkBorrowId }
+      this.url = '/borrow/deletion'
       this.result = await API.init(this.url, this.data, 'post')
-      if (this.data) {
-        this.getbookBorrowAll()
-        this.$message.success('删除成功')
-      } else {
-        this.$message.error('借阅信息删除失败')
-      }
+      this.getbookBorrowAll()
+      this.$message.success('删除成功')
       this.delVisible = false //关闭删除提示模态框
     },
     //批量删除
@@ -413,28 +427,23 @@ export default {
     //批量删除
     async deleteBatch() {
       this.data = { ids: String(this.delarr) }
-      this.url = '/book/deletion/batch'
+      this.url = '/borrow/deletionBath'
       this.result = await API.init(this.url, this.data, 'post')
-      if (this.data) {
-        this.getbookBorrowAll()
-        this.$message.success('批量删除成功')
-      } else {
-        this.$message.error('借阅信息批量删除失败')
-      }
+      this.getbookBorrowAll()
+      this.$message.success('批量删除成功')
       this.batchdelVisible = false //关闭删除提示模态框
     },
-    //修改借阅信息
     async handleUpdate(index, row) {
+      this.data = { pkId: this.msg.pkBorrowId }
       this.idx = index
       this.msg = row
       this.data = {
-        pkBorrowId: this.msg.pkBorrowId,
-        isReturned: true
+        pkId: this.msg.pkBorrowId
       }
-      this.url = '/borrow/deletion'
+      this.url = '/borrow/modification/return'
       this.result = await API.init(this.url, this.data, 'post')
-      this.getbookBorrowAll()
       this.$message.success('归还成功')
+      this.getbookBorrowAll()
     },
     //新增借阅
     async confirmAdd() {
@@ -544,6 +553,9 @@ el-input {
   margin-bottom: 10px;
 }
 
+.el-button--success {
+  background-color: #13ce66;
+}
 /* >>> .el-icon-search {
   color: #f7fbff;
 } */

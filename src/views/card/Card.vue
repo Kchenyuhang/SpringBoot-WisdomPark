@@ -86,15 +86,21 @@
       </span>
     </el-dialog>
     <el-row type="flex" class="ml-20 mt-10">
-      <el-input v-model="input" clearable placeholder="请输入内容" class="blur-search" size="mini" @input="filterSearch()"></el-input>
-      <el-button type="success" size="mini" class="ml-10">
-        <i class="el-icon-search" style="color: rgb(247, 251, 255)"></i>
-        <span class="light-font-color">搜索</span>
-      </el-button>
+      <el-row type="flex" class="ml-20 mt-10">
+        <el-input v-model="input" clearable placeholder="请输入内容" class="blur-search" size="mini" @input="filterSearch()"></el-input>
+        <el-select size="mini" v-model="selectValue" placeholder="请选择" class="statu-search ml-10">
+          <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
+        </el-select>
+        <el-button type="success" size="mini" class="ml-10">
+          <i class="el-icon-search" style="color: rgb(247, 251, 255)"></i>
+          <span class="light-font-color">搜索</span>
+        </el-button>
+      </el-row>
     </el-row>
+
     <el-row class="df-jr-ac ml-20 mt-10">
       <el-col class="tl">
-        <el-button type="primary" icon="el-icon-plus" size="small" @click="addcenterDialogVisible = true">
+        <el-button type="primary" icon="el-icon-plus" class="ml-20" size="small" @click="addcenterDialogVisible = true">
           <span class="light-font-color">新增</span></el-button
         >
         <el-button type="danger" icon="el-icon-delete" size="small" @click="delAll()">
@@ -136,7 +142,7 @@
           </el-table-column>
           <el-table-column label="余额" show-overflow-tooltip min-width="13%">
             <template slot-scope="scope">
-              <el-tag type="success">{{ scope.row.cardBalance }}</el-tag>
+              <span>{{ scope.row.cardBalance }}</span>
             </template>
           </el-table-column>
           <el-table-column label="状态" show-overflow-tooltip min-width="15%">

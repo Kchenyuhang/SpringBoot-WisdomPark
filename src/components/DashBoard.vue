@@ -9,6 +9,7 @@
 </template>
 
 <script>
+const API = require('../views/utils/api')
 export default {
   name: 'DashBoard',
   data() {
@@ -16,23 +17,29 @@ export default {
       aa: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
       data: [
         ['product', '2019'],
-        ['Mon', 30.0],
-        ['Tue', 20.0],
-        ['Wed', 60.0],
-        ['Thu', 40.0],
-        ['Fri', 25.0],
-        ['Sat', 35.0]
-      ]
+        ['1', 30],
+        ['Tue', 20],
+        ['Wed', 60],
+        ['Thu', 40],
+        ['Fri', 25],
+        ['Sat', 35]
+      ],
+      newUsersCount: 0,
+      colors: ['red', 'green', 'yellow', '#1890FF', '#dddddd', '#3888fa', '#1296db', '#37eff3', '#d81e06', '#f66f86', '#34bfa3']
     }
   },
   components: {},
-  created() {},
+  created() {
+    this.getAll()
+  },
   mounted() {
     this.drawChart()
     this.drawCharts()
     this.drawChart1()
   },
+   props: ['users', 'typeName', 'types', 'orderCounts', 'orderTime'],
   methods: {
+    //订单趋势
     drawChart() {
       // 基于准备好的dom，初始化echarts实例
       let myChart = this.$echarts.init(document.getElementById('main'))
@@ -74,7 +81,7 @@ export default {
               width: 2
             }
           },
-          data: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14']
+          data: this.orderTime
         },
         yAxis: {
           name: '接单量',
@@ -100,7 +107,7 @@ export default {
                 color: '#3888fa'
               }
             },
-            data: [320, 100, 201, 350, 180, 400, 320, 320, 100, 201, 350, 180, 400, 320]
+            data: this.orderCounts
           }
         ]
       }
@@ -108,6 +115,7 @@ export default {
       // 使用刚指定的配置项和数据显示图表。
       myChart.setOption(option)
     },
+    //用户新增
     drawChart1() {
       // 基于准备好的dom，初始化echarts实例
       let myChart = this.$echarts.init(document.getElementById('child2'))
@@ -120,7 +128,7 @@ export default {
         legend: {},
         tooltip: {},
         dataset: {
-          source: this.data
+          source: this.users
         },
         xAxis: {
           type: 'category'
@@ -142,7 +150,10 @@ export default {
       // 使用刚指定的配置项和数据显示图表。
       myChart.setOption(option)
     },
+    //商品分类
     drawCharts() {
+      console.log(this.typeName)
+      console.log(this.types)
       // 基于准备好的dom，初始化echarts实例
       let myChart1 = this.$echarts.init(document.getElementById('child'))
       // 指定图表的配置项和数据
@@ -156,11 +167,11 @@ export default {
           trigger: 'item',
           formatter: '{a} <br/>{b} : {c} ({d}%)'
         },
-        color: ['red', 'green', 'yellow', '#1890FF', 'blueviolet'],
+        color: this.colors,
         legend: {
           orient: 'vertical',
           left: 'left',
-          data: ['电子', '上衣', '妆品', '首饰', '家具']
+          data: this.typeName
         },
         series: [
           {
@@ -168,28 +179,7 @@ export default {
             type: 'pie',
             radius: '55%',
             center: ['50%', '60%'],
-            data: [
-              {
-                value: 335,
-                name: '电子'
-              },
-              {
-                value: 310,
-                name: '上衣'
-              },
-              {
-                value: 234,
-                name: '妆品'
-              },
-              {
-                value: 135,
-                name: '首饰'
-              },
-              {
-                value: 1548,
-                name: '家具'
-              }
-            ],
+            data: this.types,
             emphasis: {
               itemStyle: {
                 shadowBlur: 10,
@@ -201,6 +191,23 @@ export default {
         ]
       }
       myChart1.setOption(option)
+    },
+    async getUsers() {
+      let time = new Date().getFullYear()
+      let result = (await API.init('/userAccount/count', this.data, 'post')).data
+      let arr = ['新增用户']
+      arr[1] = String(time)
+      this.users.push(arr)
+      for (let i = 0, len = result.weekNewUsers.length; i < len; i++) {
+        arr = []
+        arr[0] = result.weekNewUsers[i].time
+        arr[1] = result.weekNewUsers[i].count
+        this.users.push(arr)
+      }
+      this.newUsersCount = result.newUsersCount
+      console.log(this.data)
+      console.log(this.users)
+      this.drawChart1()
     }
   },
   computed: {}

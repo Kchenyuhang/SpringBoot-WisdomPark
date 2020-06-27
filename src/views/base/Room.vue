@@ -16,17 +16,8 @@
         </el-row>
         <el-row class="df-jr-ac ml-20 mt-10">
           <el-col class="tl">
-            <el-button type="primary" icon="el-icon-plus" @click="dialogFormVisible = true" size="mini">
+            <el-button type="primary" icon="el-icon-plus" @click="addRoom()" size="mini">
               <span class="light-font-color">新增</span>
-            </el-button>
-            <el-button type="success" icon="el-icon-edit" size="mini">
-              <span class="light-font-color">修改</span>
-            </el-button>
-            <el-button type="danger" icon="el-icon-delete" size="mini">
-              <span class="light-font-color">删除</span>
-            </el-button>
-            <el-button type="warning" icon="el-icon-download" size="mini">
-              <span class="light-font-color">导出</span>
             </el-button>
           </el-col>
           <el-col class="tr mr-20">
@@ -91,9 +82,9 @@
         </el-row>
         <!-- 新增页面 -->
         <div class="dialog" v-if="dialogFormVisible">
-          <h2>新增房间信息</h2>
           <el-form class="mt-10 dialog-form dc-jc-ac" :model="room" style="border-radius: 5px">
-            <el-form-item label="楼栋" required style="width: 80%">
+            <p class="dark-large-font fw tl" style="width: 80%">{{msg}}房间信息</p>
+            <el-form-item label="楼栋" required class="mt-10" style="width: 80%">
               <el-select v-model="room.towerName" placeholder="请选择楼栋" @change="getTowerUnits" style="width: 80%">
                 <el-option
                   v-for="(item, index) in units"
@@ -163,7 +154,8 @@ export default {
       input: '',
       towerName: -1,
       tag: 1,
-      currentPage: 1
+      currentPage: 1,
+      msg: '新增'
     }
   },
   created() {
@@ -191,7 +183,11 @@ export default {
     /* 新增room */
     addRoom() {
       this.tag = 1
+      this.msg = '新增'
       this.dialogFormVisible = true
+      this.room.name = ''
+      this.room.towerName = ''
+      this.room.towerUnit = ''
       this.getAllTowersUnits()
     },
     //查询所有楼栋及楼栋的所有单元信息
@@ -199,24 +195,26 @@ export default {
       this.units = (await API.init('/tower/units/list', null, 'post')).data
     },
     updateRoomInfo(row) {
-      console.log(row)
+      this.msg = '修改'
       this.room.name = row.roomName
       this.room.towerName = row.towerId
       this.room.towerUnit = row.unitId
-      this.flag = 2
+      this.tag = 2
       this.dialogFormVisible = true
-      this.room.pkRoomId = row.pkRoomId
+      this.room.pkRoomId = row.roomId
+      this.getTowerUnits(row.towerId)
     },
     //新增房间消息
     async addRoomInfo(tag) {
       let time = new Date().valueOf()
       this.room.gmtGreate = this.global.formatDate(time)
       let roomInfo = {
+        id: null,
         name: this.room.name,
         towerId: this.room.towerName,
         unitId: this.room.towerUnit
       }
-      if (tag == 1) {
+      if (tag === 1) {
         let result = await API.init('/room', roomInfo, 'post')
         if (result.code == 1) {
           this.$message({
@@ -227,7 +225,8 @@ export default {
           this.getRoom()
         }
       } else {
-        let result = await API.init('/modification/id', roomInfo, 'post')
+        roomInfo.id = this.room.pkRoomId
+        let result = await API.init('/room/modification/id', roomInfo, 'post')
         if (result.code == 1) {
           this.$message({
             type: 'success',
@@ -267,14 +266,6 @@ export default {
         towerId: 1
       }
       let res = await API.init('/room/id', data, 'post')
-      // this.axios({
-      //   method: 'put',
-      //   url: 'http://localhost:8080/room/id',
-      //   data: {
-      //     name: this.room.name,
-      //     towerId: 1
-      //   }
-      // }).then((res) => {
       if (res.data.code == 1) {
         this.$message({
           type: 'success',
@@ -314,8 +305,6 @@ export default {
                 return room
               }
             })
-            console.log('房间信息>>>>>>>>>>>>>>>>>>>>')
-            console.log(this.roomsList1)
           }
         })
       })

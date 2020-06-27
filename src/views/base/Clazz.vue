@@ -253,7 +253,7 @@ export default {
     //新增房间消息
     async addRoomInfo(tag) {
       let time = Date.parse(new Date())
-      if (tag == 1) {
+      if (tag === 1) {
         let result = await API.init('/clazz/increase/clazz', this.clazz, 'post')
         if (result.code == 1) {
           this.$message({
@@ -264,7 +264,7 @@ export default {
           this.dialogFormVisible = false
         }
         this.clazzList.push(this.clazz)
-      } else if (this.tag == 2) {
+      } else if (tag === 2) {
         let result = await API.init('/clazz/modification', this.clazz, 'post')
         if (result.code == 1) {
           let clazz = this.clazzList1.filter((clazz) => {
@@ -556,10 +556,6 @@ el-input {
   background-color: #13ce66;
 }
 
-.search-btn {
-  background-color: #f4f4f5;
-}
-
 .search-btn:hover {
   background-color: #909399;
 }
@@ -595,10 +591,6 @@ el-input {
 >>> .el-input__icon {
   color: #ddd;
   margin-bottom: 10px;
-}
-
-.el-button--success {
-  background-color: #13ce66;
 }
 
 .search-btn {

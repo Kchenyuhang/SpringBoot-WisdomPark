@@ -14,7 +14,7 @@
     </el-row>
     <el-row class="df-jr-ac ml-20 mt-10">
       <el-col class="tl">
-        <el-button type="primary" icon="el-icon-plus" disabled @click="openDialog" size="mini">
+        <el-button type="primary" icon="el-icon-plus" @click="openDialog" size="mini">
           <span class="light-font-color">新增</span>
         </el-button>
         <el-button type="warning" disabled icon="el-icon-download" size="mini">
@@ -361,6 +361,10 @@ export default {
       this.course.jobNumber = ''
       this.course.towerId = null
       this.course.roomId = null
+      this.course.weekDay = null
+      this.course.time = null
+      this.course.clazz = null
+      this.course.weeks = null
     },
     //下一页
     nextPage() {

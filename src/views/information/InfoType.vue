@@ -392,4 +392,8 @@ el-input {
 >>> .el-icon-download {
   color: #f7fbff;
 }
+
+.el-button--success {
+  background-color: #13ce66;
+}
 </style>

@@ -9,24 +9,16 @@
     </el-row>
     <el-row class="df-jr-ac ml-20 mt-10">
       <el-col class="tl">
-        <el-button type="primary" icon="el-icon-plus" @click="addcenterDialogVisible = true" size="mini">
-          <span class="light-font-color">新增</span>
-        </el-button>
-        <el-button type="success" icon="el-icon-edit" size="mini">
-          <span class="light-font-color">修改</span>
-        </el-button>
         <el-button type="danger" icon="el-icon-delete" @click="handleDeleteMul" size="mini">
-          <span class="light-font-color">批量删除</span>
+          <span class="light-font-color" @click="delAll()">批量删除</span>
         </el-button>
         <el-button type="warning" icon="el-icon-download" disabled size="mini">
           <span class="light-font-color">导出</span>
         </el-button>
       </el-col>
     </el-row>
-
     <el-row>
-      <el-col span="1"></el-col>
-      <el-col span="23" class="ml-20 mt-10">
+      <el-col class="ml-20 mt-10">
         <el-table
           :data="comments"
           style="width: 100%;margin-bottom: 20px;"
@@ -34,8 +26,9 @@
           border
           default-expand-all
           :tree-props="{ children: 'replyCommentList', hasChildren: 'hasChildren' }"
+          @selection-change="handleSelectionChange"
         >
-          <el-table-column type="selection" min-width="10%" @selection-change="handleSelectionChange"> </el-table-column>
+          <el-table-column type="selection" min-width="10%"> </el-table-column>
           <el-table-column prop="commentId" label="评论id" min-width="12%"> </el-table-column>
           <el-table-column prop="userId" label="用户id" min-width="12%"> </el-table-column>
           <el-table-column prop="content" label="评论" min-width="12%"> </el-table-column>
@@ -95,7 +88,9 @@ export default {
       addcenterDialogVisible: false,
       datailcenterDialogVisible: false,
       delVisible: false, //删除提示弹框的状态
-      value1: '',
+      batchdelVisible: false, //批量删除提示弹框的状态
+      multipleSelection: [],
+      delarr: [], //存放删除的数据
       input: '',
       gmtTime: '',
       end: 10,
@@ -183,6 +178,57 @@ export default {
         })
       })
       // })
+    },
+    //操作多选
+    handleSelectionChange(val) {
+      this.multipleSelection = val
+    },
+    //批量删除
+    async batchDeleteAppInfo() {
+      let data = { ids: JSON.stringify(this.delarr) }
+      alert(JSON.stringify(this.delarr))
+      this.url = '/app/deletionBath'
+      this.result = await API.init(this.url, data, 'post')
+      if (this.result.code == 1) {
+        this.$message.success('批量删除成功')
+      }
+    },
+    //批量删除
+    async delAll() {
+      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const length = this.multipleSelection.length
+        for (let i = 0; i < length; i++) {
+          this.delarr.push(this.multipleSelection[i].pkAppVersionId)
+        }
+
+        let data = { ids: JSON.stringify(this.delarr) }
+        alert(JSON.stringify(this.delarr))
+        this.url = '/comment/deletionBath'
+        this.axios({
+          method: 'post',
+          url: 'http://localhost:8081/comment/deletionBath',
+          data: {
+            ids: data
+          }
+        }).then((res) => {
+          if (res.data.code == 1) {
+            this.$message({
+              message: '删除成功',
+              type: 'success'
+            })
+            /*  let index = this.appList.indexOf(item)
+            this.appList.splice(index, 1) */
+          }
+        })
+        /* this.result = await API.init(this.url, data, 'post')
+      if(this.result.code == 1){
+        this.$message.success('批量删除成功')
+      } */
+      })
     },
     //下一页
     nextPage() {

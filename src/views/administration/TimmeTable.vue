@@ -14,9 +14,9 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-select v-model="form.week" placeholder="周次" @change="showSchedule()">
-            <el-option v-for="(item, index) in weekList" :key="index" :value="item"></el-option>
-          </el-select>
+          <el-button type="primary" @click="print">
+            <span class="light-medium-font">新增</span>
+          </el-button>
         </el-form-item>
       </el-form>
     </el-header>
@@ -152,7 +152,6 @@
           </tr>
         </tbody>
       </table>
-      <button @click="print">点击我</button>
       <!-- 课表下方的周次表 -->
       <table style="margin-top: 100px" align="center" border="1" cellspacing="50">
         <caption>

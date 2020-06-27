@@ -4,12 +4,15 @@
     <div class="body1">
       <!-- <div class="body1" :class="{ body1: !isCollapse }"> -->
       <Nav></Nav>
-      <div style="height: 20px;line-height: 20px;margin-top: 100px;background-color: #f8f8f8; padding-left: 10px" class="tl ">
-        <!-- <span>推荐歌曲</span> -->
+      <div style="height: 30px;line-height: 30px; margin-top: 100px;background-color: #f8f8f8; padding-left: 10px" class="tl ">
+        <span class="fw">The most proud thing is your continuous improvement</span>
       </div>
-      <div @click="closeTag" :style="{ width: screenWidth - 220 + `px` }">
+      <div @click="closeTag" :style="{ width: screenWidth - 220 + `px` }" class="mb-60" style="padding-top: 20px">
         <router-view />
-      </div> 
+      </div>
+      <div :style="{ width: screenWidth - 220 + `px` }" class="footer tl dark-small-font">
+        <span class=" ml-10">@2020 软件1851 智慧校园</span>
+      </div>
     </div>
   </el-container>
 </template>
@@ -105,5 +108,15 @@ export default {
   align-items: flex-start;
   justify-content: center;
   font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  height: 40px;
+  z-index: 100;
+  line-height: 40px;
+  background-color: #ffffff;
+  box-shadow: 0px 0px 0px 0px #e3e5e7;
 }
 </style>

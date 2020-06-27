@@ -1,23 +1,31 @@
 <template>
   <div style="width:100%">
     <!-- 修改弹出框 -->
-    <el-dialog title="编辑资讯内容" :visible.sync="updatecenterDialogVisible" width="98%" :modal="false" left>
-      <template>
-        <quill-editor
-          v-model="content"
-          ref="myQuillEditor"
-          class="editer"
-          @blur="onEditorBlur($event)"
-          @focus="onEditorFocus($event)"
-          @ready="onEditorReady($event)"
-          @change="onEditorChange($event)"
-        ></quill-editor>
-      </template>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="updatecenterDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="confirmUpdate">确 定</el-button>
-      </span>
-    </el-dialog>
+    <div class="dialog" v-show="updatecenterDialogVisible">
+      <div style="background-color:white" class="contentEdit">
+        <div style="height: 560px; padding: 20px 20px">
+          <p class="tl dark-large-font fw">修改资讯信息</p>
+          <div class="df-jl-ac mt-20 ml">
+            <span class="dark-medium-font fw mr-10">标题</span>
+            <el-input placeholder="请输入资讯标题" v-model="infoTitle" clearable size="mini" class="info-title"></el-input>
+          </div>
+          <p class="tl mt-20 dark-medium-font fw">咨询内容:</p>
+          <quill-editor
+            v-model="content"
+            ref="myQuillEditor"
+            class="editer mt-20"
+            @blur="onEditorBlur($event)"
+            @focus="onEditorFocus($event)"
+            @ready="onEditorReady($event)"
+            @change="onEditorChange($event)"
+          ></quill-editor>
+        </div>
+        <div class="tc">
+          <el-button @click="updatecenterDialogVisible = false" size="small">取 消</el-button>
+          <el-button type="primary" @click="confirmUpdate" size="small">确 定</el-button>
+        </div>
+      </div>
+    </div>
 
     <!-- 增加弹出框 -->
     <el-dialog title="新增资讯信息" :visible.sync="addcenterDialogVisible" width="30%" :modal="false" center>
@@ -47,7 +55,14 @@
     </el-dialog>
 
     <el-row type="flex" class="ml-20 mt-10">
-      <el-input v-model="input" clearable size="mini" placeholder="请输入内容" class="blur-search" @input="filterSearch()"></el-input>
+      <el-input
+        v-model="input"
+        clearable
+        size="mini"
+        placeholder="请输入标题、内容、创建时间"
+        class="blur-search"
+        @input="filterSearch()"
+      ></el-input>
 
       <el-button type="success" size="mini" class="ml-10" @click="searchOption()">
         <i class="el-icon-search" style="color: rgb(247, 251, 255)"></i>
@@ -94,7 +109,7 @@
           </el-table-column>
           <el-table-column label="资讯封面" show-overflow-tooltip min-width="15%">
             <template slot-scope="scope">
-              <el-popover placement="right" trigger="hover">
+              <el-popover placement="top" trigger="hover">
                 <img :src="scope.row.cover" style="width: 300px; height: 400px" />
                 <img slot="reference" :src="scope.row.cover" style="max-height: 50px;max-width: 80px" />
               </el-popover>
@@ -104,7 +119,13 @@
             <template slot-scope="scope">
               <el-popover placement="top" trigger="hover">
                 <p type="text" v-html="scope.row.text" style="min-width: 300px; max-width: 800px"></p>
-                <p slot="reference" class="text-ellipsis" type="text" @click="handleUpdate(scope.$index, scope.row)" v-html="scope.row.text"></p>
+                <p
+                  slot="reference"
+                  class="text-ellipsis"
+                  type="text"
+                  @click="handleUpdate(scope.$index, scope.row)"
+                  v-html="scope.row.text"
+                ></p>
               </el-popover>
             </template>
           </el-table-column>
@@ -161,7 +182,7 @@
         :page-sizes="[8, 16, 24, 32, 40]"
         :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="40"
+        :total="infoList.length"
       >
       </el-pagination>
     </div>
@@ -195,6 +216,7 @@ export default {
         title: '',
         cover: 'https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png'
       },
+      infoTitle: '',
       file: '',
       editFormVisible: false
     }
@@ -228,6 +250,7 @@ export default {
     },
     handleEdit: function(index, row) {
       this.editFormVisible = true
+      this.infoTitle = row.title
       this.editForm = Object.assign({}, row)
     },
     // 查询所有
@@ -288,6 +311,7 @@ export default {
     //编辑
     handleUpdate(index, row) {
       this.idx = index
+      this.infoTitle = row.title
       this.msg = row //每一条数据的记录
       this.updatecenterDialogVisible = true
       this.content = this.msg.text
@@ -320,7 +344,8 @@ export default {
     async confirmUpdate() {
       this.data = {
         pkInfoManageId: this.msg.pkInfoManageId,
-        text: this.content
+        text: this.content,
+        title: this.infoTitle
       }
       this.url = '/info/modification'
       this.result = await API.init(this.url, this.data, 'post')
@@ -352,7 +377,6 @@ export default {
           _this.ruleForm1.cover = result.url
           _this.update()
         } catch (e) {
-          alert('文件上传成功')
           console.log(e)
         }
       }
@@ -444,5 +468,31 @@ el-input {
 
 >>> .el-icon-download {
   color: #f7fbff;
+}
+
+.el-button--success {
+  background-color: #13ce66;
+}
+
+.contentEdit {
+  width: 80%;
+  min-height: 600px;
+}
+
+.dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.info-title {
+  width: 30%;
 }
 </style>

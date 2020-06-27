@@ -85,13 +85,15 @@
     </el-dialog>
     <el-row type="flex" class="ml-20 mt-10">
       <el-input size="mini" v-model="input" placeholder="请输入内容" class="blur-search" @input="filterSearch()"></el-input>
-      <el-button type="success" size="mini" class="ml-10" icon="el-icon-search">搜索</el-button>
+      <el-button type="success" size="mini" class="ml-10">
+        <i class="el-icon-search" style="color: rgb(247, 251, 255)"></i>
+       <span class="light-font-color"> 搜索</span>
+      </el-button>
     </el-row>
     <el-row class="df-jr-ac ml-20 mt-10">
       <el-col class="tl">
-        <el-button type="primary" icon="el-icon-plus" size="small" @click="addcenterDialogVisible = true"><span>新增</span></el-button>
-        <el-button type="danger" icon="el-icon-delete" size="small" @click="delAll()">批量删除</el-button>
-        <el-button type="warning" icon="el-icon-download" size="small">导出</el-button>
+        <el-button type="primary" icon="el-icon-plus" size="small" @click="addcenterDialogVisible = true"><span class="light-font-color">新增</span></el-button>
+        <el-button type="danger" icon="el-icon-delete" size="small" @click="delAll()"><span class="light-font-color">批量删除</span></el-button>
       </el-col>
       <el-col class="tr mr-20">
         <el-button icon="el-icon-refresh" size="small"></el-button>
@@ -108,6 +110,7 @@
           style="width: 100%;"
           stripe="true"
           @selection-change="handleSelectionChange"
+          class="light-small-font"
         >
           <el-table-column type="selection" min-width="5%"></el-table-column>
           <el-table-column label="账号" min-width="10%">
@@ -133,8 +136,8 @@
           <el-table-column label="操作" align="center" show-overflow-tooltip min-width="20%">
             <template slot-scope="scope">
               <p class="tc">
-                <el-button size="mini" icon="el-icon-edit" type="primary" @click="handleUpdate(scope.$index, scope.row)">编辑</el-button>
-                <el-button size="mini" icon="el-icon-delete" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                <el-button size="mini" icon="el-icon-edit" type="primary" @click="handleUpdate(scope.$index, scope.row)"><span class="light-font-color">编辑</span></el-button>
+                <el-button size="mini" icon="el-icon-delete" type="danger" @click="handleDelete(scope.$index, scope.row)"><span class="light-font-color">删除</span></el-button>
               </p>
             </template>
           </el-table-column>
@@ -492,5 +495,55 @@ el-input {
   justify-content: center;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.7);
+}
+
+>>> .el-input__icon {
+  color: #eee;
+  margin-bottom: 10px;
+}
+
+.el-button--success {
+  background-color: #13ce66;
+}
+
+.search-btn {
+  background-color: #f4f4f5;
+}
+
+.search-btn:hover {
+  background-color: #909399;
+}
+
+>>> .el-input__inner {
+  height: 30px;
+}
+
+>>> .el-icon-edit {
+  color: #f7fbff;
+}
+
+>>> .el-icon-plus {
+  color: #f7fbff;
+}
+
+>>> .el-icon-delete {
+  color: #f7fbff;
+}
+
+>>> .el-icon-download {
+  color: #f7fbff;
+}
+
+>>> .el-range-separator {
+  margin-bottom: 10px;
+}
+
+/* >>> .el-icon-search {
+  color: #f7fbff;
+} */
+
+>>> .el-input__prefix {
+  display: flex;
+  align-items: center;
 }
 </style>
