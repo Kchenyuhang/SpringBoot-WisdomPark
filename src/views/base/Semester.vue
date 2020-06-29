@@ -12,7 +12,10 @@
         value-format="yyyy-MM-dd"
       >
       </el-date-picker>
-      <el-button type="success" size="mini" @click="searchByName()" class="ml-10" icon="el-icon-search">搜索</el-button>
+      <el-button type="success" size="mini" @click="searchByName()" class="ml-10">
+        <i class="el-icon-search" style="color: rgb(247, 251, 255)"></i>
+        <span class="light-font-color">搜索</span>
+      </el-button>
     </el-row>
     <el-row class="df-jr-ac ml-20 mt-10">
       <el-col class="tl">
@@ -120,7 +123,7 @@ export default {
       tag: 1,
       blurSearch: '', //查询
       semesterInfo: {
-        pkSemesterId: -1,
+        pkSemesterId: null,
         name: '',
         weekCount: 0,
         openSchoolTime: ''
@@ -163,8 +166,8 @@ export default {
       } else {
         let result = await API.init('/semester/id', this.semesterInfo, 'post')
         if (result.code == 1) {
-          let semesterInfo = this.semesterList1.filter((semester) => {
-            if (semester.pkSemesterId == this.semester.pkSemesterId) {
+           this.semesterList1.filter((semester) => {
+            if (semester.pkSemesterId == this.semesterInfo.pkSemesterId) {
               return semester
             }
           })
@@ -174,8 +177,7 @@ export default {
             type: 'success'
           })
           //修改用户信息
-          let index = this.semesterList1.indexOf(semesterInfo[0])
-          this.semesterList.splice(index, 1, this.semesterInfo)
+          this.getSemesterAll()
         }
       }
     },
@@ -194,14 +196,14 @@ export default {
             pkSemesterId: row.pkSemesterId
           }
         }).then((res) => {
-        if (res.data.code == 1) {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          })
-          let index = this.semesterList1.indexOf(row)
-          this.semesterList.splice(index, 1)
-        }
+          if (res.data.code == 1) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            let index = this.semesterList1.indexOf(row)
+            this.semesterList.splice(index, 1)
+          }
         })
       })
     },
@@ -211,12 +213,13 @@ export default {
     },
     //修改学期信息
     handleEdit(row) {
+      console.log(row)
       this.semesterInfo.pkSemesterId = row.pkSemesterId
       this.semesterInfo.name = row.name
       this.semesterInfo.weekCount = row.weekCount
       this.semesterInfo.openSchoolTime = row.openSchoolTime
       this.dialogFormVisible = true
-      this.flag = 2
+      this.tag = 2
     },
     //下一页
     nextPage() {

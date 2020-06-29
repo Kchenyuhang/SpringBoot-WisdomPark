@@ -12,7 +12,10 @@
       <el-select v-model="search.status" placeholder="请选择" v-if="searchShow" class="statu-search ml-10">
         <el-option v-for="item in status" :key="item.value" :label="item.label" :value="item.value"></el-option>
       </el-select>
-      <el-button type="success" size="mini" class="ml-10" icon="el-icon-search" v-if="searchShow" @click="searchByStatus">搜索</el-button>
+      <el-button type="success" size="mini" class="ml-10" v-if="searchShow" @click="searchByStatus">
+        <i class="el-icon-search" style="color: rgb(247, 251, 255)"></i>
+        <span class="light-font-color">搜索</span>
+      </el-button>
     </el-row>
     <el-row class="df-jr-ac ml-20 mt-10">
       <el-col class="tl">

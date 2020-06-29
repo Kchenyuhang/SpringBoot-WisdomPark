@@ -494,6 +494,10 @@ el-input {
   color: #f7fbff;
 } */
 
+.el-button--success {
+  background-color: #13ce66;
+}
+
 >>> .el-input__prefix {
   display: flex;
   align-items: center;

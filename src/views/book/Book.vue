@@ -756,4 +756,8 @@ el-input {
 >>> .el-select__caret {
   margin-top: 5px;
 }
+
+.el-button--success {
+  background-color: #13ce66;
+}
 </style>

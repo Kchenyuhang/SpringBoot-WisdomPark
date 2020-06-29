@@ -44,6 +44,9 @@ Vue.prototype.check = check
 
 Vue.config.productionTip = false
 
+/* 全局引入echarts */
+import echarts from "echarts";
+Vue.prototype.$echarts = echarts;
 // router.beforeEach((to, from, next) => {
 //   let token = localStorage.getItem('token')
 //   let isLogin

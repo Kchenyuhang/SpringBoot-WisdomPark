@@ -1,9 +1,6 @@
 <template>
   <div style="width: 100%">
-    <el-row
-      type="flex"
-      class="ml-20 mt-10"
-    >
+    <el-row type="flex" class="ml-20 mt-10">
       <el-input
         v-model="blurSearch"
         prefix-icon="el-icon-search"
@@ -22,77 +19,37 @@
         v-if="searchShow"
       >
       </el-date-picker>
-      <el-button
-        type="success"
-        size="mini"
-        @click="searchAppInfoByCreate()"
-        class="ml-10"
-        icon="el-icon-search"
-        v-if="searchShow"
-      >搜索</el-button>
+      <el-button type="success" size="mini" @click="searchAppInfoByCreate()" class="ml-10" v-if="searchShow">
+        <i class="el-icon-search" style="color: rgb(247, 251, 255)"></i>
+        <span class="light-font-color">搜索</span>
+      </el-button>
     </el-row>
     <el-row class="df-jr-ac ml-20 mt-10">
       <el-col class="tl">
-        <el-button
-          type="primary"
-          icon="el-icon-plus"
-          @click="openDialog"
-          size="mini"
-        >
+        <el-button type="primary" icon="el-icon-plus" @click="openDialog" size="mini">
           <span class="light-font-color">新增</span>
         </el-button>
-        <el-button
-          type="success"
-          icon="el-icon-edit"
-          disabled
-          size="mini"
-        >
+        <!-- <el-button type="success" icon="el-icon-edit" disabled size="mini">
           <span class="light-font-color">修改</span>
         </el-button>
-        <el-button
-          type="danger"
-          icon="el-icon-delete"
-          disabled
-          size="mini"
-        >
+        <el-button type="danger" icon="el-icon-delete" disabled size="mini">
           <span class="light-font-color">删除</span>
         </el-button>
-        <el-button
-          type="warning"
-          icon="el-icon-download"
-          disabled
-          size="mini"
-        >
+        <el-button type="warning" icon="el-icon-download" disabled size="mini">
           <span class="light-font-color">导出</span>
-        </el-button>
+        </el-button> -->
       </el-col>
       <el-col class="tr mr-20">
-        <el-button
-          size="mini"
-          style="width: 45px"
-          class="search-btn"
-          @click="searchShow = !searchShow"
-          @mouseover="searchOver()"
-        >
-          <i
-            class="el-icon-search"
-            style="color: white"
-          ></i>
+        <el-button size="mini" style="width: 45px" class="search-btn" @click="searchShow = !searchShow" @mouseover="searchOver()">
+          <i class="el-icon-search" style="color: white"></i>
         </el-button>
-        <el-button
-          icon="el-icon-refresh"
-          size="small"
-          @click="flush()"
-        ></el-button>
+        <el-button icon="el-icon-refresh" size="small" @click="flush()"></el-button>
       </el-col>
     </el-row>
     <!-- 表格 -->
     <el-row>
       <el-col span="1"></el-col>
-      <el-col
-        span="23"
-        class="ml-20 mt-10"
-      >
+      <el-col span="23" class="ml-20 mt-10">
         <el-row>
           <el-table
             ref="multipleTable"
@@ -101,52 +58,20 @@
             style="width: 100%;"
             class="light-small-font"
           >
-            <el-table-column
-              label="楼栋名称"
-              min-width="15%"
-            >
+            <el-table-column label="楼栋名称" min-width="15%">
               <template slot-scope="scope">{{ scope.row.name }}</template>
             </el-table-column>
-            <el-table-column
-              prop="latitude"
-              label="经度"
-              min-width="15%"
-            ></el-table-column>
-            <el-table-column
-              prop="longitude"
-              label="纬度"
-              show-overflow-tooltip
-              min-width="20%"
-            > </el-table-column>
+            <el-table-column prop="latitude" label="经度" min-width="15%"></el-table-column>
+            <el-table-column prop="longitude" label="纬度" show-overflow-tooltip min-width="20%"> </el-table-column>
 
-            <el-table-column
-              prop="gmtCreate"
-              label="创建时间"
-              show-overflow-tooltip
-              min-width="20%"
-            > </el-table-column>
-            <el-table-column
-              label="操作"
-              align="center"
-              show-overflow-tooltip
-              min-width="30%"
-            >
+            <el-table-column prop="gmtCreate" label="创建时间" show-overflow-tooltip min-width="20%"> </el-table-column>
+            <el-table-column label="操作" align="center" show-overflow-tooltip min-width="30%">
               <template slot-scope="scope">
                 <p class="tc">
-                  <el-button
-                    size="mini"
-                    icon="el-icon-edit"
-                    type="primary"
-                    @click="handleEdit(scope.row)"
-                  >
+                  <el-button size="mini" icon="el-icon-edit" type="primary" @click="handleEdit(scope.row)">
                     <span class="light-font-color">编辑</span>
                   </el-button>
-                  <el-button
-                    size="mini"
-                    icon="el-icon-delete"
-                    type="danger"
-                    @click="handleDelete(scope.row)"
-                  >
+                  <el-button size="mini" icon="el-icon-delete" type="danger" @click="handleDelete(scope.row)">
                     <span class="light-font-color">删除</span>
                   </el-button>
                 </p>
@@ -170,90 +95,28 @@
       </el-col>
     </el-row>
     <!-- 新增 -->
-    <div
-      class="dialog"
-      v-if="dialogFormVisible"
-    >
-      <el-form
-        class="mt-10 dialog-form dc-jc-ac"
-        :model="towerInfo"
-        style="padding: 0px 20px;"
-      >
-        <p
-          style="width: 90%;"
-          class="dark-large-font tl"
-        >{{ msg }}楼栋</p>
-        <el-form-item
-          required
-          label="楼栋名"
-          class="mt-20"
-          :label-width="formLabelWidth"
-          style="width: 90%;"
-        >
-          <el-input
-            v-model="towerInfo.name"
-            autocomplete="off"
-            placeholder="请输入楼栋名"
-            style="width: 80%"
-          ></el-input>
+    <div class="dialog" v-if="dialogFormVisible">
+      <el-form class="mt-10 dialog-form dc-jc-ac" :model="towerInfo" style="padding: 0px 20px;">
+        <p style="width: 90%;" class="dark-large-font tl">{{ msg }}楼栋</p>
+        <el-form-item required label="楼栋名" class="mt-20" :label-width="formLabelWidth" style="width: 90%;">
+          <el-input v-model="towerInfo.name" autocomplete="off" placeholder="请输入楼栋名" style="width: 80%"></el-input>
         </el-form-item>
-        <p
-          class="df-jb-ac"
-          style="width: 90%;"
-        >
-          <el-form-item
-            required
-            label="经度"
-            :label-width="formLabelWidth"
-            style="width: 40%;"
-          >
-            <el-input
-              v-model="lng"
-              class="ml-10"
-              placeholder="经度"
-              autocomplete="off"
-              style="width: 50%"
-            ></el-input>
+        <p class="df-jb-ac" style="width: 90%;">
+          <el-form-item required label="经度" :label-width="formLabelWidth" style="width: 40%;">
+            <el-input v-model="lng" class="ml-10" placeholder="经度" autocomplete="off" style="width: 50%"></el-input>
           </el-form-item>
-          <el-form-item
-            required
-            label="纬度"
-            :label-width="formLabelWidth"
-            style="width: 40%;"
-          >
-            <el-input
-              v-model="lat"
-              class="ml-10"
-              autocomplete="off"
-              placeholder="纬度"
-              style="width: 50%"
-            ></el-input>
+          <el-form-item required label="纬度" :label-width="formLabelWidth" style="width: 40%;">
+            <el-input v-model="lat" class="ml-10" autocomplete="off" placeholder="纬度" style="width: 50%"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button
-              type="primary"
-              size="mini"
-              @click="mapVisible = true"
-            >定位</el-button>
+            <el-button type="primary" size="mini" @click="mapVisible = true">定位</el-button>
           </el-form-item>
         </p>
 
-        <el-dialog
-          :visible.sync="mapVisible"
-          :modal="false"
-          width="350px"
-          class="dialog"
-        >
+        <el-dialog :visible.sync="mapVisible" :modal="false" width="350px" class="dialog">
           <!-- //地图 -->
           <div class="amap-page-container">
-            <el-amap
-              vid="amap"
-              :plugin="plugin"
-              class="amap-demo"
-              :center="center"
-              :zoom="zoom"
-              :events="events"
-            >
+            <el-amap vid="amap" :plugin="plugin" class="amap-demo" :center="center" :zoom="zoom" :events="events">
               <!-- 点击显示标记 -->
               <el-amap-marker
                 v-for="(marker, index) in markers"
@@ -269,38 +132,14 @@
             </el-amap>
           </div>
         </el-dialog>
-        <el-form-item
-          required
-          label="类型"
-          :label-width="formLabelWidth"
-          style="width: 90%;"
-        >
-          <el-select
-            v-model="towerInfo.type"
-            placeholder="选择楼栋类型"
-            style="width: 80%"
-          >
-            <el-option
-              v-for="(item, index) in towerType"
-              :key="index"
-              :label="item.name"
-              :value="item.value"
-            ></el-option>
+        <el-form-item required label="类型" :label-width="formLabelWidth" style="width: 90%;">
+          <el-select v-model="towerInfo.type" placeholder="选择楼栋类型" style="width: 80%">
+            <el-option v-for="(item, index) in towerType" :key="index" :label="item.name" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <p
-          class="mt-20 tr"
-          style="width: 90%"
-        >
-          <el-button
-            @click="dialogFormVisible = false"
-            size="small"
-          >取 消</el-button>
-          <el-button
-            type="primary"
-            @click="addTowerInfo(tag)"
-            size="small"
-          >确定</el-button>
+        <p class="mt-20 tr" style="width: 90%">
+          <el-button @click="dialogFormVisible = false" size="small">取 消</el-button>
+          <el-button type="primary" @click="addTowerInfo(tag)" size="small">确定</el-button>
         </p>
       </el-form>
     </div>
@@ -458,8 +297,10 @@ export default {
             message: '新增成功',
             type: 'success'
           })
-          this.dialogFormVisible = false
-          this.towerList.splice(0, 0, tower)
+          /* this.dialogFormVisible = false
+          this.towerList.splice(0, 0, tower) */
+          this.dialogFormVisible = true
+          this.getTowerList()
         }
       } else {
         let result = await API.init('/tower/single', this.towerInfo, 'post')
@@ -521,6 +362,11 @@ export default {
             })
             let index = this.towerList1.indexOf(row)
             this.towerList1.splice(index, 1)
+            this.towerList = this.towerList.filter((tower) => {
+              if (tower.pkTowerId !== row.pkTowerId) {
+                return tower
+              }
+            })
             this.towerList.splice(index, 1)
           }
         })

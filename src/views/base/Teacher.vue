@@ -12,7 +12,10 @@
       <el-select v-model="search.status" placeholder="请选择" v-if="searchShow" class="statu-search ml-10">
         <el-option v-for="item in status" :key="item.value" :label="item.label" :value="item.value"></el-option>
       </el-select>
-      <el-button type="success" size="mini" class="ml-10" icon="el-icon-search" v-if="searchShow" @click="searchByStatus">搜索</el-button>
+      <el-button type="success" size="mini" class="ml-10" v-if="searchShow" @click="searchByStatus">
+        <i class="el-icon-search" style="color: rgb(247, 251, 255)"></i>
+        <span class="light-font-color">搜索</span>
+      </el-button>
     </el-row>
     <el-row class="df-jr-ac ml-20 mt-10">
       <el-col class="tl">
@@ -513,15 +516,7 @@ export default {
   color: #f7fbff;
 }
 
-.el-range-separator {
-  margin-bottom: 10px;
-}
-.el-input__prefix {
-  display: flex;
-  align-items: center;
-}
-
-.el-input__icon {
+>>> .el-input__icon {
   color: #ddd;
   margin-bottom: 10px;
 }
@@ -538,27 +533,27 @@ export default {
   background-color: #909399;
 }
 
-.el-input__inner {
+>>> .el-input__inner {
   height: 30px;
 }
 
-.el-icon-edit {
+>>> .el-icon-edit {
   color: #f7fbff;
 }
 
-.el-icon-plus {
+>>> .el-icon-plus {
   color: #f7fbff;
 }
 
-.el-icon-delete {
+>>> .el-icon-delete {
   color: #f7fbff;
 }
 
-.el-icon-download {
+>>> .el-icon-download {
   color: #f7fbff;
 }
 
-.el-range-separator {
+>>> .el-range-separator {
   margin-bottom: 10px;
 }
 
@@ -566,12 +561,12 @@ export default {
   color: #f7fbff;
 } */
 
-.el-input__prefix {
+>>> .el-input__prefix {
   display: flex;
   align-items: center;
 }
 
-.el-select__caret {
+>>>.el-select__caret {
   margin-top: 5px;
 }
 

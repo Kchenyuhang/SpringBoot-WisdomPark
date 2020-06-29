@@ -17,20 +17,20 @@
         <i class="el-icon-s-home"></i>
         <span class="logo-title font-white">首页</span>
       </el-menu-item>
-      <el-submenu v-for="(item, index) in menuList.slice(1)" :key="index" :index="item.name">
+      <el-submenu v-for="(item, index) in menuList.slice(1)" :key="index" style="padding: 0" :index="item.name">
         <template slot="title">
           <p class="row" @click="changeMenu(item)">
             <i :class="item.icon" style="flex: 0 0 20%; text-align: left;"></i>
             <span style="flex: 0 0 80%; text-align: left;" class="font-white">{{ item.name }}</span>
           </p>
         </template>
-        <el-menu-item-group>
+        <el-menu-item-group style="margin: 0">
           <el-menu-item
             v-for="(item1, index1) in item.subMenus"
             :key="index1"
             @click="changeChildMenu(item1, item.name)"
             :route="item1.path"
-            style="color: white"
+            style="color: white;"
             :index="index + '-' + index1"
             >{{ item1.name }}</el-menu-item
           >
@@ -74,13 +74,13 @@ export default {
       Bus.$emit('childMenuName', item1, parentName)
     },
     goIndex(){
-      this.$router.push("/")
+      this.$router.push("home")
     }
   }
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   min-width: 200px;
   height: 100%;
@@ -129,4 +129,5 @@ a {
 .font-white {
   color: #bfcbd9;
 }
+
 </style>

@@ -395,16 +395,8 @@ el-input {
 >>> .el-icon-download {
   color: #f7fbff;
 }
-.dialog {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 10000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.7);
+
+.el-button--success {
+  background-color: #13ce66;
 }
 </style>

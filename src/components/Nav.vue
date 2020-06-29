@@ -12,11 +12,11 @@
             </el-breadcrumb>
           </el-col>
           <el-col class="nav-header-right">
-            <img src="@/assets/search.png" alt="" style="height: 28px; width:28px" />
+            <!-- <img src="@/assets/search.png" alt="" style="height: 28px; width:28px" />
             <el-tooltip class="item" effect="dark" content="全屏" placement="bottom">
               <img src="@/assets/full_screen.png" alt="" style="height: 28px; width:28px" />
-            </el-tooltip>
-            <el-dropdown>
+            </el-tooltip> -->
+            <el-dropdown class="cursor">
               <el-avatar :size="45" src="https://empty">
                 <img :src="user.sysUserAvatar" />
               </el-avatar>
@@ -113,7 +113,6 @@ export default {
       }
       _this.menu.childName = ''
       _this.menu.name = menuName.name
-      console.log(menuName)
     }),
       Bus.$on('childMenuName', function(childMenuName, parentName) {
         if (_this.tags.length < 10) {
@@ -208,7 +207,7 @@ export default {
     //当标签删除完之后跳转到首页
     tags: function() {
       if (this.tags.length == 0) {
-        this.$router.push('/')
+        this.$router.push('home')
       }
     }
   },

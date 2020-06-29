@@ -1,0 +1,15 @@
+.body {
+    margin: 0;
+    background-color: #f0f2f5;
+}
+
+.dashboard-head {
+    height: 100px;
+    margin: 0 20px;
+}
+
+.head-card {
+    height: 100px;
+    background-color: #ffffff;
+}
+

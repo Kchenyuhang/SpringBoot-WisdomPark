@@ -556,6 +556,9 @@ el-input {
   margin-bottom: 10px;
 }
 
+.el-button--success {
+  background-color: #13ce66;
+}
 /* >>> .el-icon-search {
   color: #f7fbff;
 } */

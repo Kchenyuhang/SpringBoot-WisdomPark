@@ -1,17 +1,8 @@
 <template>
   <div style="width:100%">
     <!-- 考务下的学生数据-->
-    <el-dialog
-      title="学生信息"
-      :visible.sync="selectcenterDialogVisible"
-      width="30%"
-      :modal="false"
-      center
-    >
-      <div
-        v-for="(item, index) in students"
-        :key="index"
-      >
+    <el-dialog title="学生信息" :visible.sync="selectcenterDialogVisible" width="30%" :modal="false" center>
+      <div v-for="(item, index) in students" :key="index">
         <div class="students-style">
           <div class="stu-left">
             {{ item.userName }}
@@ -23,13 +14,7 @@
       </div>
     </el-dialog>
     <!-- 增加弹出框 -->
-    <el-dialog
-      title="新增考务"
-      :visible.sync="addcenterDialogVisible"
-      width="30%"
-      :modal="false"
-      center
-    >
+    <el-dialog title="新增考务" :visible.sync="addcenterDialogVisible" width="30%" :modal="false" center>
       <div class="block">
         <span class="demonstration ">考试时间</span>
         <el-date-picker
@@ -94,12 +79,7 @@
       </div>
       <div class="between-style">
         <div class="sub-title">输入类型</div>
-        <el-input
-          v-model="type"
-          placeholder="请输入类型"
-          type="text"
-          class="inline-input"
-        ></el-input>
+        <el-input v-model="type" placeholder="请输入类型" type="text" class="inline-input"></el-input>
       </div>
       <div class="between-style">
         <div class="sub-title">输入总分</div>
@@ -111,26 +91,14 @@
           class="inline-input"
         ></el-input>
       </div>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
+      <span slot="footer" class="dialog-footer">
         <el-button @click="addcenterDialogVisible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="confirmAdd"
-        >确 定</el-button>
+        <el-button type="primary" @click="confirmAdd">确 定</el-button>
       </span>
     </el-dialog>
 
     <!-- 修改弹出框 -->
-    <el-dialog
-      title="修改考务数据"
-      :visible.sync="updatecenterDialogVisible"
-      width="30%"
-      :modal="false"
-      center
-    >
+    <el-dialog title="修改考务数据" :visible.sync="updatecenterDialogVisible" width="30%" :modal="false" center>
       <div class="block between-style">
         <span class="demonstration">考试时间</span>
         <el-date-picker
@@ -195,33 +163,20 @@
       </div>
       <div class="between-style">
         <div class="sub-title">输入类型</div>
-        <el-input
-          v-model="type"
-          placeholder="请输入类型"
-          class="inline-input"
-        ></el-input>
+        <el-input v-model="type" placeholder="请输入类型" class="inline-input"></el-input>
       </div>
       <div class="between-style">
         <p>总分</p>
         <p class="sum-style">{{ sum }}</p>
       </div>
 
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
+      <span slot="footer" class="dialog-footer">
         <el-button @click="updatecenterDialogVisible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="confirmUpdate"
-        >确 定</el-button>
+        <el-button type="primary" @click="confirmUpdate">确 定</el-button>
       </span>
     </el-dialog>
 
-    <el-row
-      type="flex"
-      class="ml-20 mt-10"
-    >
+    <el-row type="flex" class="ml-20 mt-10">
       <el-input
         type="text"
         v-model="input"
@@ -232,167 +187,82 @@
         @input="filterSearch()"
       ></el-input>
 
-      <el-button
-        type="success"
-        size="mini"
-        class="ml-10"
-        icon="el-icon-search"
-      >搜索</el-button>
+      <el-button type="success" size="mini" class="ml-10">
+        <i class="el-icon-search" style="color: rgb(247, 251, 255)"></i>
+            <span class="light-font-color">搜索</span></el-button>
     </el-row>
     <el-row class="df-jr-ac ml-20 mt-10">
       <el-col class="tl">
-        <el-button
-          type="primary"
-          icon="el-icon-plus"
-          size="small"
-          @click="addcenterDialogVisible = true"
-        ><span>添加考试</span></el-button>
-        <el-button
-          type="danger"
-          icon="el-icon-delete"
-          size="small"
-          @click="delAll()"
-          disabled=""
-        >批量删除</el-button>
-        <!-- 删除提示框
-        <el-dialog title="提示" :visible.sync="batchdelVisible" width="300px" center>
-          <div class="del-dialog-cnt">批量删除一卡通信息后不可恢复，是否确定删除？</div>
-          <span slot="footer" class="dialog-footer">
-            <el-button @click="batchdelVisible = false">取 消</el-button>
-            <el-button type="primary" @click="deleteBatch()">确 定</el-button>
-          </span>
-        </el-dialog> -->
+        <el-button type="primary" icon="el-icon-plus" size="small" @click="addcenterDialogVisible = true"><span class="light-font-color">添加考试</span></el-button>
+        <el-button type="danger" icon="el-icon-delete" size="small" @click="delAll()" disabled="">
+          <span class="light-font-color">批量删除</span>
+        </el-button>
       </el-col>
       <el-col class="tr mr-20">
-        <el-button
-          icon="el-icon-refresh"
-          size="small"
-        ></el-button>
+        <el-button icon="el-icon-refresh" size="small"></el-button>
       </el-col>
     </el-row>
     <!-- 表格展示 -->
     <el-row>
       <el-col span="1"></el-col>
-      <el-col
-        span="23"
-        class="ml-20 mt-10"
-      >
-        <el-table
-          :data="examinationList"
-          stripe="true"
-          style="width: 100%;"
-          @selection-change="handleSelectionChange"
-        >
-          <el-table-column
-            type="selection"
-            min-width="10%"
-          > </el-table-column>
-          <el-table-column
-            label="学期"
-            show-overflow-tooltip
-            min-width="13%"
-          >
+      <el-col span="23" class="ml-20 mt-10">
+        <el-table :data="examinationList" class="light-small-font" stripe="true" style="width: 100%;" @selection-change="handleSelectionChange">
+          <el-table-column type="selection" min-width="10%"> </el-table-column>
+          <el-table-column label="学期" show-overflow-tooltip min-width="13%">
             <template slot-scope="scope">
               <span style="margin-left:-5%">{{ scope.row.semester }}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            label="课程"
-            show-overflow-tooltip
-            min-width="8%"
-          >
+          <el-table-column label="课程" show-overflow-tooltip min-width="8%">
             <template slot-scope="scope">
               <span>{{ scope.row.name }}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            label="类型"
-            show-overflow-tooltip
-            min-width="10%"
-          >
+          <el-table-column label="类型" show-overflow-tooltip min-width="10%">
             <template slot-scope="scope">
               <span>{{ scope.row.type }}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            label="监考老师"
-            show-overflow-tooltip
-            min-width="8%"
-          >
+          <el-table-column label="监考老师" show-overflow-tooltip min-width="8%">
             <template slot-scope="scope">
               <span>{{ scope.row.teacherName }}</span>
             </template>
           </el-table-column>
 
-          <el-table-column
-            label="开始时间"
-            show-overflow-tooltip
-            min-width="14%"
-          >
+          <el-table-column label="开始时间" show-overflow-tooltip min-width="14%">
             <template slot-scope="scope">
               <i class="el-icon-time"></i>
               <span>{{ scope.row.startTime }}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            label="结束时间"
-            show-overflow-tooltip
-            min-width="14%"
-          >
+          <el-table-column label="结束时间" show-overflow-tooltip min-width="14%">
             <template slot-scope="scope">
               <i class="el-icon-time"></i>
               <span>{{ scope.row.finishTime }}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            label="地点"
-            show-overflow-tooltip
-            min-width="10%"
-          >
+          <el-table-column label="地点" show-overflow-tooltip min-width="10%">
             <template slot-scope="scope">
               <span>{{ scope.row.area }}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            label="创建时间"
-            show-overflow-tooltip
-            min-width="14%"
-          >
+          <el-table-column label="创建时间" show-overflow-tooltip min-width="14%">
             <template slot-scope="scope">
               <i class="el-icon-time"></i>
               <span>{{ scope.row.gmtCreate }}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            label="操作"
-            show-overflow-tooltip
-            min-width="26%"
-          >
+          <el-table-column label="操作" show-overflow-tooltip min-width="26%">
             <template slot-scope="scope">
-              <el-button
-                size="mini"
-                type="success"
-                @click="handleUpdate(scope.$index, scope.row)"
-              >编辑</el-button>
-              <el-button
-                size="mini"
-                type="primary"
-                @click="handleDetail(scope.$index, scope.row)"
-              >考生管理</el-button>
-              <el-button
-                size="mini"
-                type="danger"
-                @click="handleDelete(scope.row)"
-              >删除</el-button>
+              <el-button size="mini" type="success" @click="handleUpdate(scope.$index, scope.row)"><span class="light-font-color">编辑</span></el-button>
+              <el-button size="mini" type="primary" @click="handleDetail(scope.$index, scope.row)"><span class="light-font-color">考生管理</span></el-button>
+              <el-button size="mini" type="danger" @click="handleDelete(scope.row)"><span class="light-font-color">删除</span></el-button>
             </template>
           </el-table-column>
         </el-table>
       </el-col>
     </el-row>
-    <div
-      class="block"
-      style="margin-top:2%"
-    >
+    <div class="block" style="margin-top:2%">
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -815,7 +685,7 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .top-input {
   width: 200px;
   height: 30px;
@@ -884,5 +754,92 @@ el-input {
 }
 .sum-style {
   margin-left: 60px;
+}
+
+.el-input__icon {
+  color: #ddd;
+  margin-bottom: 10px;
+}
+
+.el-button--success {
+  background-color: #13ce66;
+}
+
+.search-btn:hover {
+  background-color: #909399;
+}
+
+.el-input__inner {
+  height: 30px;
+}
+
+.el-icon-edit {
+  color: #f7fbff;
+}
+
+.el-icon-plus {
+  color: #f7fbff;
+}
+
+.el-icon-delete {
+  color: #f7fbff;
+}
+
+.el-icon-download {
+  color: #f7fbff;
+}
+
+.el-range-separator {
+  margin-bottom: 10px;
+}
+.el-input__prefix {
+  display: flex;
+  align-items: center;
+}
+
+>>> .el-input__icon {
+  color: #ddd;
+  margin-bottom: 10px;
+}
+
+.search-btn {
+  background-color: #f4f4f5;
+}
+
+.search-btn:hover {
+  background-color: #909399;
+}
+
+>>> .el-input__inner {
+  height: 30px;
+}
+
+>>> .el-icon-edit {
+  color: #f7fbff;
+}
+
+>>> .el-icon-plus {
+  color: #f7fbff;
+}
+
+>>> .el-icon-delete {
+  color: #f7fbff;
+}
+
+>>> .el-icon-download {
+  color: #f7fbff;
+}
+
+>>> .el-range-separator {
+  margin-bottom: 10px;
+}
+
+/* >>> .el-icon-search {
+  color: #f7fbff;
+} */
+
+>>> .el-input__prefix {
+  display: flex;
+  align-items: center;
 }
 </style>

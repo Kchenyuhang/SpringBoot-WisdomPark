@@ -46,7 +46,7 @@
     <el-row>
       <el-col span="1"></el-col>
       <el-col span="23" class="ml-20 mt-20">
-        <el-table :data="feedbackList.slice(start, end)" border stripe="true" style="width: 100%;">
+        <el-table :data="feedbackList.slice(start, end)" class="light-small-font" border stripe="true" style="width: 100%;">
           <el-table-column type="selection" min-width="5%" @selection-change="handleSelectionChange"> </el-table-column>
           <el-table-column label="反馈标题" show-overflow-tooltip min-width="15%">
             <template slot-scope="scope">
@@ -216,6 +216,9 @@ export default {
         pageSize: 10
       }
       let result = (await API.init('/feedback/page', quertDto, 'post')).data
+      for (let i = 0; i < result.length; i++) {
+        result[i].gmtCreate = this.global.formatDate(result[i].gmtCreate)
+      }
       this.feedbackList = result
       this.time = null
     },

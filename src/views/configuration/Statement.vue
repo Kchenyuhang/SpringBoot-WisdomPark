@@ -63,9 +63,21 @@
         >
           <el-table-column type="selection" min-width="5%"> </el-table-column>
           <el-table-column label="声明标题" min-width="10%">
-            <template slot-scope="scope">{{ scope.row.statementTitle }}</template>
+            <template slot-scope="scope">
+              <el-popover placement="top" trigger="hover">
+                <span class="text-ellipsis"> {{ scope.row.statementTitle }}</span>
+                <span slot="reference" class="text-ellipsis"> {{ scope.row.statementTitle }}</span>
+              </el-popover>
+            </template>
           </el-table-column>
-          <el-table-column prop="statementContent" label="声明内容" min-width="25%"></el-table-column>
+          <el-table-column label="声明内容" min-width="25%">
+            <template slot-scope="scope">
+              <el-popover placement="top" trigger="hover">
+                <p style="width: 400px; min-height: 100px">{{ scope.row.statementContent }}</p>
+                <p slot="reference" class="text-ellipsis"> {{ scope.row.statementContent }}</p>
+              </el-popover>
+            </template>
+          </el-table-column>
           <el-table-column prop="statementType" label="声明分类" show-overflow-tooltip min-width="20%"> </el-table-column>
           <el-table-column prop="gmtCreate" label="创建时间" show-overflow-tooltip min-width="20%"> </el-table-column>
           <el-table-column label="操作" align="center" show-overflow-tooltip min-width="20%">
@@ -175,9 +187,7 @@ export default {
   created() {
     this.getStatementAll()
   },
-  watch: {
-   
-  },
+  watch: {},
   mounted() {},
   methods: {
     // 分页查询所有
@@ -258,12 +268,12 @@ export default {
       this.dialogFormVisible = true
       this.tag = 1
       this.msg = ' 新增 '
-      this.statementInfo.statementType.name = ''
+      this.statementInfo.statementType = ''
       this.statementInfo.statementTitle = ''
       this.statementInfo.statementContent = ''
     },
     async addStatementInfo(tag) {
-      let time = (new Date()).valueOf()
+      let time = new Date().valueOf()
       this.statementInfo.gmtCreate = this.global.formatDate(time)
       if (tag == 1) {
         let result = await API.init('/statement/increase', this.statementInfo, 'post')
